@@ -1,282 +1,401 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bad Stock — Weekly Tracking | Stock Quality LATAM</title>
+<title>Bad Stock — Weekly Tracking | Stock Quality</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg:#0f1117;--card:#1a1d27;--card2:#22263a;--border:#2e3350;
-  --yellow:#ffe600;--red:#ff4d6a;--green:#00c48c;--blue:#4f8ef7;
-  --orange:#ff8c42;--purple:#a78bfa;--text:#e8eaf0;--muted:#8890a8;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;}
+  :root {
+    --bg: #0f1117; --card: #1a1d27; --card2: #22263a; --border: #2e3350;
+    --yellow: #ffe600; --red: #ff4d6a; --green: #00c48c;
+    --blue: #4f8ef7; --orange: #ff8c42; --purple: #a78bfa;
+    --text: #e8eaf0; --muted: #8890a8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
 
-/* HEADER */
-.header{background:var(--card);border-bottom:2px solid var(--yellow);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.header h1{font-size:16px;font-weight:700;}
-.header h1 span{color:var(--yellow);}
-.header-meta{font-size:10px;color:var(--muted);text-align:right;line-height:1.8;}
-.refresh-btn{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer;margin-left:8px;}
-.refresh-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+  /* HEADER */
+  .header { background: var(--card); border-bottom: 2px solid var(--yellow); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 17px; font-weight: 700; }
+  .header h1 span { color: var(--yellow); }
+  .header .meta { color: var(--muted); font-size: 11px; text-align: right; line-height: 1.7; }
 
-/* TABS */
-.tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;padding:0 24px;gap:2px;position:sticky;top:52px;z-index:99;}
-.tab{padding:9px 16px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);transition:all .15s;white-space:nowrap;}
-.tab.active{color:var(--yellow);border-bottom-color:var(--yellow);}
-.tab:hover:not(.active){color:var(--text);}
+  /* NAV TABS */
+  .tabs { background: var(--card); border-bottom: 1px solid var(--border); display: flex; padding: 0 28px; gap: 4px; }
+  .tab { padding: 10px 18px; font-size: 12px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; color: var(--muted); transition: all 0.15s; }
+  .tab.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+  .tab:hover:not(.active) { color: var(--text); }
 
-/* FILTER BAR */
-.filterbar{background:var(--card2);border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:88px;z-index:98;}
-.filter-group{display:flex;align-items:center;gap:6px;}
-.filter-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
-.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--muted);transition:all .15s;background:var(--card);}
-.pill.active{color:#0f1117;}
-.pill.mlb.active{background:var(--blue);border-color:var(--blue);}
-.pill.mlm.active{background:var(--orange);border-color:var(--orange);}
-.pill.mla.active{background:var(--green);border-color:var(--green);}
-.pill.mlc.active{background:var(--purple);border-color:var(--purple);}
-.pill.mco.active{background:var(--red);border-color:var(--red);}
-.pill.init.active{background:var(--yellow);border-color:var(--yellow);}
-.pill:hover:not(.active){border-color:var(--text);color:var(--text);}
-select.filter-sel{background:var(--card);border:1px solid var(--border);color:var(--text);padding:3px 8px;border-radius:5px;font-size:11px;cursor:pointer;}
-select.filter-sel:focus{outline:1px solid var(--yellow);}
-.filter-divider{width:1px;height:20px;background:var(--border);}
+  /* PANELS */
+  .panel { display: none; padding: 20px 28px; flex-direction: column; gap: 20px; }
+  .panel.active { display: flex; }
 
-/* PANELS */
-.panel{display:none;padding:16px 24px;flex-direction:column;gap:16px;}
-.panel.active{display:flex;}
+  /* SECTION TITLE */
+  .sec { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
 
-/* SECTION */
-.sec{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  /* KPI CARDS */
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; position: relative; overflow: hidden; }
+  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .kpi-card.mlb::before { background: var(--blue); }
+  .kpi-card.mlm::before { background: var(--orange); }
+  .kpi-card.mla::before { background: var(--green); }
+  .kpi-card.mlc::before { background: var(--purple); }
+  .kpi-card.mco::before { background: var(--red); }
+  .site-lbl { font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
+  .kpi-card.mlb .site-lbl { color: var(--blue); }
+  .kpi-card.mlm .site-lbl { color: var(--orange); }
+  .kpi-card.mla .site-lbl { color: var(--green); }
+  .kpi-card.mlc .site-lbl { color: var(--purple); }
+  .kpi-card.mco .site-lbl { color: var(--red); }
+  .big-pct { font-size: 26px; font-weight: 800; line-height: 1; }
+  .sub { font-size: 11px; color: var(--muted); margin: 3px 0 8px; }
+  .comps { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; border-top: 1px solid var(--border); padding-top: 8px; }
+  .comp-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; }
+  .comp-val { font-size: 12px; font-weight: 600; }
+  .vs-target { font-size: 10px; margin-top: 6px; padding: 4px 8px; background: rgba(255,230,0,0.07); border-radius: 4px; border: 1px solid rgba(255,230,0,0.15); }
+  .trend-mini { font-size: 9px; color: var(--muted); margin-top: 5px; line-height: 1.4; }
 
-/* KPI GRID */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;}
-.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;transition:opacity .2s;}
-.kpi-card.hidden{display:none;}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.kpi-card.MLB::before{background:var(--blue);}
-.kpi-card.MLM::before{background:var(--orange);}
-.kpi-card.MLA::before{background:var(--green);}
-.kpi-card.MLC::before{background:var(--purple);}
-.kpi-card.MCO::before{background:var(--red);}
-.site-lbl{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:6px;}
-.kpi-card.MLB .site-lbl{color:var(--blue);}
-.kpi-card.MLM .site-lbl{color:var(--orange);}
-.kpi-card.MLA .site-lbl{color:var(--green);}
-.kpi-card.MLC .site-lbl{color:var(--purple);}
-.kpi-card.MCO .site-lbl{color:var(--red);}
-.big-pct{font-size:24px;font-weight:800;line-height:1;}
-.sub{font-size:10px;color:var(--muted);margin:2px 0 6px;}
-.comps{display:grid;grid-template-columns:1fr 1fr;gap:4px;border-top:1px solid var(--border);padding-top:6px;}
-.comp-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;}
-.comp-val{font-size:11px;font-weight:600;}
-.vs-target{font-size:10px;margin-top:5px;padding:3px 7px;background:rgba(255,230,0,.07);border-radius:4px;border:1px solid rgba(255,230,0,.15);}
-.trend-mini{font-size:9px;color:var(--muted);margin-top:4px;line-height:1.4;}
-.dlt{font-size:10px;margin-left:3px;}
-.dlt.up{color:var(--red);}
-.dlt.dn{color:var(--green);}
+  /* DELTA */
+  .dlt { font-size: 10px; margin-left: 3px; }
+  .dlt.up { color: var(--red); }
+  .dlt.dn { color: var(--green); }
 
-/* CARD */
-.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
 
-/* GRIDS */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.g21{display:grid;grid-template-columns:2fr 1fr;gap:14px;}
+  /* GRIDS */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .g21 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .g12 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
 
-/* TABLE */
-table{width:100%;border-collapse:collapse;}
-thead th{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:5px 8px;text-align:left;border-bottom:1px solid var(--border);}
-tbody td{padding:6px 8px;border-bottom:1px solid rgba(46,51,80,.4);font-size:11px;}
-tbody tr:last-child td{border-bottom:none;}
-tbody tr:hover{background:rgba(79,142,247,.04);}
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; }
+  thead th { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  tbody td { padding: 7px 10px; border-bottom: 1px solid rgba(46,51,80,0.4); font-size: 12px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(79,142,247,0.04); }
 
-/* BADGES */
-.b{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:700;}
-.b3p{background:rgba(79,142,247,.15);color:var(--blue);}
-.bcbt{background:rgba(255,140,66,.15);color:var(--orange);}
-.b1p{background:rgba(0,196,140,.15);color:var(--green);}
-.btot{background:rgba(232,234,240,.08);color:var(--text);}
+  /* BADGES */
+  .b { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; }
+  .b3p { background: rgba(79,142,247,0.15); color: var(--blue); }
+  .bcbt { background: rgba(255,140,66,0.15); color: var(--orange); }
+  .b1p { background: rgba(0,196,140,0.15); color: var(--green); }
+  .btot { background: rgba(232,234,240,0.08); color: var(--text); }
 
-/* COLORS */
-.vr{color:var(--red);font-weight:600;}
-.vg{color:var(--green);font-weight:600;}
-.vy{color:var(--yellow);font-weight:600;}
-.vw{color:var(--text);font-weight:600;}
+  /* VALUE COLORS */
+  .vr { color: var(--red); font-weight: 600; }
+  .vg { color: var(--green); font-weight: 600; }
+  .vy { color: var(--yellow); font-weight: 600; }
+  .vw { color: var(--text); font-weight: 600; }
 
-/* TARGETS */
-.tgt-note{border-radius:8px;padding:10px 14px;font-size:11px;}
-input[type=number]{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:3px 6px;font-size:11px;width:65px;text-align:center;}
-input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yellow);}
-.btn{background:var(--yellow);color:#0f1117;font-weight:700;font-size:12px;padding:6px 16px;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
-.btn:hover{background:#ffd900;}
+  /* TARGETS TABLE */
+  .targets-note { background: rgba(255,230,0,0.06); border: 1px solid rgba(255,230,0,0.2); border-radius: 8px; padding: 12px 16px; font-size: 11px; color: var(--yellow); }
+  input[type=number] { background: var(--card2); border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 3px 6px; font-size: 12px; width: 70px; text-align: center; }
+  input[type=number]:focus { outline: 1px solid var(--yellow); border-color: var(--yellow); }
+  .btn { background: var(--yellow); color: #0f1117; font-weight: 700; font-size: 12px; padding: 7px 18px; border: none; border-radius: 6px; cursor: pointer; margin-top: 12px; }
+  .btn:hover { background: #ffd900; }
 
-/* PROGRESS BAR */
-.pbar-wrap{background:rgba(46,51,80,.5);border-radius:3px;height:4px;margin-top:3px;overflow:hidden;}
-.pbar{height:100%;border-radius:3px;transition:width .3s;}
+  /* PROGRESS BAR */
+  .pbar-wrap { background: rgba(46,51,80,0.5); border-radius: 3px; height: 5px; margin-top: 3px; overflow: hidden; }
+  .pbar { height: 100%; border-radius: 3px; transition: width 0.3s; }
 
-/* FOOTER */
-.footer{padding:8px 24px;color:var(--muted);font-size:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;}
-.rk{display:inline-block;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:18px;background:var(--card2);}
+  /* FOOTER */
+  .footer { padding: 10px 28px; color: var(--muted); font-size: 10px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; }
 
-/* REFRESH PANEL */
-.refresh-panel{background:rgba(0,196,140,.06);border:1px solid rgba(0,196,140,.2);border-radius:8px;padding:12px 16px;font-size:11px;}
-.refresh-panel b{color:var(--green);}
-
-/* NO DATA */
-.no-data{color:var(--muted);font-size:12px;padding:20px;text-align:center;}
-
-@media(max-width:900px){.g21,.g2{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}}
+  /* RANK NUMBER */
+  .rk { display: inline-block; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700; text-align: center; line-height: 20px; background: var(--card2); }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div>
     <h1>Bad Stock <span>Weekly Tracking</span> — LATAM</h1>
-    <div style="color:var(--muted);font-size:11px;margin-top:1px;">Stock Quality · Stock Management · MeLi Shipping</div>
+    <div style="color:var(--muted);font-size:11px;margin-top:2px;">Stock Quality · Stock Management · W13 (28/03/2026)</div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <div class="header-meta">
-      <span id="hdr-week" style="color:var(--yellow);font-weight:700;">W13 (24/03/2026)★</span><br>
-      Fonte: BigQuery · DM_SHP_SALES_STOCK_MANAGEMENT_REPORT<br>
-      <span id="hdr-targets" style="color:var(--green);">✓ Targets Mar/2026</span>
-      &nbsp;<span id="hdr-status" style="color:var(--muted)"></span>
-    </div>
-    <button class="refresh-btn" onclick="showTab('refresh', event)">🔄 Dados</button>
+  <div class="meta">
+    Última atualização: <strong>30/03/2026</strong><br>
+    Fonte: BigQuery · DM_DASH_SHP_STOCK_QUALITY_SUMMARY<br>
+    <span id="targets-status" style="color:var(--green)">✓ Targets Mar/2026 aplicados</span>
   </div>
 </div>
 
 <!-- TABS -->
 <div class="tabs">
-  <div class="tab active" onclick="showTab('overview',event)">Visão Geral</div>
-  <div class="tab" onclick="showTab('initiative',event)">Iniciativa</div>
-  <div class="tab" onclick="showTab('vertical',event)">Verticais</div>
-  <div class="tab" onclick="showTab('targets',event)">⚙ Targets</div>
-  <div class="tab" onclick="showTab('refresh',event)">↺ Atualizar</div>
+  <div class="tab active" onclick="showTab('overview')">Visão Geral</div>
+  <div class="tab" onclick="showTab('initiative')">Iniciativa (3P / CBT)</div>
+  <div class="tab" onclick="showTab('vertical')">Verticais</div>
+  <div class="tab" onclick="showTab('sellers')">Top Sellers</div>
+  <div class="tab" onclick="showTab('targets')">⚙ Targets</div>
 </div>
 
-<!-- FILTER BAR -->
-<div class="filterbar">
-  <div class="filter-group">
-    <span class="filter-label">País</span>
-    <span class="pill mlb active" onclick="toggleCountry('MLB',this)">MLB</span>
-    <span class="pill mlm active" onclick="toggleCountry('MLM',this)">MLM</span>
-    <span class="pill mla active" onclick="toggleCountry('MLA',this)">MLA</span>
-    <span class="pill mlc active" onclick="toggleCountry('MLC',this)">MLC</span>
-    <span class="pill mco active" onclick="toggleCountry('MCO',this)">MCO</span>
-  </div>
-  <div class="filter-divider"></div>
-  <div class="filter-group">
-    <span class="filter-label">Iniciativa</span>
-    <span class="pill init active" id="init-all"  onclick="setInit('ALL',this)">Todos</span>
-    <span class="pill init" id="init-3p"           onclick="setInit('3P',this)">3P</span>
-    <span class="pill init" id="init-3pe"          onclick="setInit('ESTRELLA',this)">3P Ases.</span>
-    <span class="pill init" id="init-3pne"         onclick="setInit('NO_ESTRELLA',this)">3P N.Ases.</span>
-    <span class="pill init" id="init-cbt"          onclick="setInit('CBT',this)">CBT</span>
-    <span class="pill init" id="init-1p"           onclick="setInit('1P/PL',this)">1P/PL</span>
-  </div>
-  <div class="filter-divider"></div>
-  <div class="filter-group">
-    <span class="filter-label">Semana</span>
-    <select class="filter-sel" id="week-sel" onchange="setWeek(this.value)">
-      <option value="W1">W1 — 03/01/2026</option>
-      <option value="W2">W2 — 10/01/2026</option>
-      <option value="W3">W3 — 17/01/2026</option>
-      <option value="W4">W4 — 24/01/2026</option>
-      <option value="W5">W5 — 31/01/2026</option>
-      <option value="W6">W6 — 07/02/2026</option>
-      <option value="W7">W7 — 14/02/2026</option>
-      <option value="W8">W8 — 21/02/2026</option>
-      <option value="W9">W9 — 28/02/2026</option>
-      <option value="W10">W10 — 07/03/2026</option>
-      <option value="W11">W11 — 14/03/2026</option>
-      <option value="W12">W12 — 21/03/2026</option>
-      <option value="W13" selected>W13 — 24/03/2026 ★ atual</option>
-    </select>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">Mês</span>
-    <select class="filter-sel" id="month-sel" onchange="setMonth(this.value)">
-      <option value="ALL" selected>Todos (Jan–Mar)</option>
-      <option value="1">Janeiro 2026 (W1–W5)</option>
-      <option value="2">Fevereiro 2026 (W6–W9)</option>
-      <option value="3">Março 2026 (W10–W13)</option>
-    </select>
-  </div>
-</div>
-
-<!-- ═══════════════════ OVERVIEW ═══ -->
+<!-- ═══════════════════════════════════════════ OVERVIEW ═══ -->
 <div id="panel-overview" class="panel active">
+
+  <!-- KPI CARDS -->
   <div>
-    <div class="sec" id="ov-title">Bad Stock % por País — <span id="ov-week-lbl">W12 (21/03/2026)</span></div>
-    <div class="kpi-grid" id="kpi-grid"></div>
+    <div class="sec">Bad Stock % por País — W13 (28/03/2026) vs W12 (21/03)</div>
+    <div class="kpi-grid">
+      <div class="kpi-card mlb">
+        <div class="site-lbl">MLB · Brasil</div>
+        <div class="big-pct">10.50%<span class="dlt dn">▼0.31pp</span></div>
+        <div class="sub">7.36M itens bad / 70.1M total</div>
+        <div class="comps">
+          <div><div class="comp-lbl">Aging</div><div class="comp-val">2.96%</div></div>
+          <div><div class="comp-lbl">Aging+Exc.</div><div class="comp-val">4.27%</div></div>
+          <div><div class="comp-lbl">Stranded</div><div class="comp-val">2.06%</div></div>
+          <div><div class="comp-lbl">Sin Venta</div><div class="comp-val">1.20%</div></div>
+        </div>
+        <div class="vs-target" id="tgt-mlb">Target: <span id="tv-mlb">—</span> · Desvio: <span id="td-mlb">aguardando</span></div>
+        <div class="trend-mini">W9: 11.99 → W10: 11.35 → W11: 10.71 → W12: 10.81 → <b>W13: 10.50</b></div>
+      </div>
+      <div class="kpi-card mlm">
+        <div class="site-lbl">MLM · México</div>
+        <div class="big-pct">15.34%<span class="dlt dn">▼0.17pp</span></div>
+        <div class="sub">9.08M itens bad / 59.2M total</div>
+        <div class="comps">
+          <div><div class="comp-lbl">Aging</div><div class="comp-val">4.15%</div></div>
+          <div><div class="comp-lbl">Aging+Exc.</div><div class="comp-val">7.94%</div></div>
+          <div><div class="comp-lbl">Stranded</div><div class="comp-val">1.27%</div></div>
+          <div><div class="comp-lbl">Sin Venta</div><div class="comp-val">1.98%</div></div>
+        </div>
+        <div class="vs-target" id="tgt-mlm">Target: <span id="tv-mlm">—</span> · Desvio: <span id="td-mlm">aguardando</span></div>
+        <div class="trend-mini">W9: 13.67 → W10: 14.46 → W11: 14.49 → W12: 15.51 → <b>W13: 15.34</b></div>
+      </div>
+      <div class="kpi-card mla">
+        <div class="site-lbl">MLA · Argentina</div>
+        <div class="big-pct">12.77%<span class="dlt up">▲0.27pp</span></div>
+        <div class="sub">820.9K itens bad / 6.43M total</div>
+        <div class="comps">
+          <div><div class="comp-lbl">Aging</div><div class="comp-val">5.08%</div></div>
+          <div><div class="comp-lbl">Aging+Exc.</div><div class="comp-val">5.12%</div></div>
+          <div><div class="comp-lbl">Stranded</div><div class="comp-val">1.37%</div></div>
+          <div><div class="comp-lbl">Sin Venta</div><div class="comp-val">1.18%</div></div>
+        </div>
+        <div class="vs-target" id="tgt-mla">Target: <span id="tv-mla">—</span> · Desvio: <span id="td-mla">aguardando</span></div>
+        <div class="trend-mini">W9: 13.28 → W10: 12.98 → W11: 11.66 → W12: 12.50 → <b>W13: 12.77</b></div>
+      </div>
+      <div class="kpi-card mlc">
+        <div class="site-lbl">MLC · Chile</div>
+        <div class="big-pct">13.16%<span class="dlt dn">▼0.34pp</span></div>
+        <div class="sub">732.1K itens bad / 5.56M total</div>
+        <div class="comps">
+          <div><div class="comp-lbl">Aging</div><div class="comp-val">4.66%</div></div>
+          <div><div class="comp-lbl">Aging+Exc.</div><div class="comp-val">5.73%</div></div>
+          <div><div class="comp-lbl">Stranded</div><div class="comp-val">0.99%</div></div>
+          <div><div class="comp-lbl">Sin Venta</div><div class="comp-val">1.77%</div></div>
+        </div>
+        <div class="vs-target" id="tgt-mlc">Target: <span id="tv-mlc">—</span> · Desvio: <span id="td-mlc">aguardando</span></div>
+        <div class="trend-mini">W9: 14.94 → W10: 14.99 → W11: 13.94 → W12: 13.50 → <b>W13: 13.16</b></div>
+      </div>
+      <div class="kpi-card mco">
+        <div class="site-lbl">MCO · Colombia</div>
+        <div class="big-pct">19.13%<span class="dlt up">▲0.63pp</span></div>
+        <div class="sub">177.9K itens bad / 930.1K total</div>
+        <div class="comps">
+          <div><div class="comp-lbl">Aging</div><div class="comp-val">8.63%</div></div>
+          <div><div class="comp-lbl">Aging+Exc.</div><div class="comp-val">6.67%</div></div>
+          <div><div class="comp-lbl">Stranded</div><div class="comp-val">1.03%</div></div>
+          <div><div class="comp-lbl">Sin Venta</div><div class="comp-val">2.77%</div></div>
+        </div>
+        <div class="vs-target" id="tgt-mco">Target: <span id="tv-mco">—</span> · Desvio: <span id="td-mco">aguardando</span></div>
+        <div class="trend-mini">W9: 19.83 → W10: 19.62 → W11: 18.67 → W12: 18.50 → <b>W13: 19.13</b></div>
+      </div>
+    </div>
   </div>
+
+  <!-- TREND + COMPOSITION -->
   <div class="g21">
     <div class="card">
-      <div class="sec">Evolução Bad Stock % — <span id="trend-period-lbl">W9 a W12</span></div>
-      <canvas id="trendChart" height="160"></canvas>
+      <div class="sec">Evolução Bad Stock % por País — W9 a W13</div>
+      <canvas id="trendChart" height="170"></canvas>
     </div>
     <div class="card">
-      <div class="sec">Composição — <span id="comp-week-lbl">W12</span></div>
-      <canvas id="compChart" height="160"></canvas>
+      <div class="sec">Composição Bad Stock — W13</div>
+      <canvas id="compChart" height="170"></canvas>
     </div>
   </div>
+
+  <!-- LATAM SUMMARY TABLE -->
   <div class="card">
-    <div class="sec">Resumo LATAM — <span id="sum-week-lbl">W12 (21/03/2026)</span></div>
+    <div class="sec">Resumo LATAM — W13 (28/03/2026)</div>
     <table>
-      <thead><tr><th>País</th><th>Bad Stock %</th><th>vs Target</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
-      <tbody id="summary-table"></tbody>
+      <thead><tr><th>País</th><th>Bad Stock %</th><th>Bad Stock (itens)</th><th>Stranded</th><th>Sin Venta</th><th>Aging</th><th>Aging+Exc.</th><th>Total Stock</th><th>W-o-W</th></tr></thead>
+      <tbody>
+        <tr><td><b style="color:var(--blue)">MLB</b></td><td class="vy">10.50%</td><td>7,360,343</td><td>2.06%</td><td>1.20%</td><td>2.96%</td><td>4.27%</td><td>70.1M</td><td class="vg">▼0.31pp</td></tr>
+        <tr><td><b style="color:var(--orange)">MLM</b></td><td class="vr">15.34%</td><td>9,081,255</td><td>1.27%</td><td>1.98%</td><td>4.15%</td><td>7.94%</td><td>59.2M</td><td class="vg">▼0.17pp</td></tr>
+        <tr><td><b style="color:var(--green)">MLA</b></td><td class="vy">12.77%</td><td>820,943</td><td>1.37%</td><td>1.18%</td><td>5.08%</td><td>5.12%</td><td>6.43M</td><td class="vr">▲0.27pp</td></tr>
+        <tr><td><b style="color:var(--purple)">MLC</b></td><td class="vy">13.16%</td><td>732,067</td><td>0.99%</td><td>1.77%</td><td>4.66%</td><td>5.73%</td><td>5.56M</td><td class="vg">▼0.34pp</td></tr>
+        <tr><td><b style="color:var(--red)">MCO</b></td><td class="vr">19.13%</td><td>177,898</td><td>1.03%</td><td>2.77%</td><td>8.63%</td><td>6.67%</td><td>930.1K</td><td class="vr">▲0.63pp</td></tr>
+      </tbody>
     </table>
   </div>
 </div>
 
-<!-- ═══════════════════ INICIATIVA ═══ -->
+<!-- ═══════════════════════════════════════════ INICIATIVA ═══ -->
 <div id="panel-initiative" class="panel">
-  <div class="card">
-    <div class="sec">Bad Stock por País e Iniciativa — <span id="init-week-lbl">W13 (24/03)★</span></div>
-    <div style="overflow-x:auto">
-    <table>
-      <thead><tr><th>País</th><th>Iniciativa</th><th>Segmento</th><th>Bad Stock %</th><th>vs Target</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
-      <tbody id="init-summary-table"></tbody>
-    </table>
+  <div class="g2">
+    <div class="card">
+      <div class="sec">Bad Stock por Iniciativa — MLB W13 (28/03/2026)</div>
+      <table>
+        <thead><tr><th>Iniciativa</th><th>Bad Stock %</th><th>Stranded</th><th>Sin Venta</th><th>Aging</th><th>Aging+Exc.</th></tr></thead>
+        <tbody>
+          <tr><td><span class="b btot">TOTAL</span></td><td class="vy">10.5%</td><td>2.1%</td><td>1.2%</td><td>3.0%</td><td>4.3%</td></tr>
+          <tr><td><span class="b b3p">3P</span></td><td class="vg">9.7%</td><td>1.7%</td><td>1.0%</td><td>2.8%</td><td>4.3%</td></tr>
+          <tr><td><span class="b b1p">1P/PL</span></td><td class="vr">15.8%</td><td>4.7%</td><td>2.4%</td><td>4.3%</td><td>4.4%</td></tr>
+          <tr><td><span class="b bcbt">CBT</span></td><td style="color:var(--muted)">N/D</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:8px;font-size:10px;color:var(--muted)">CBT não disponível para MLB · Denominador: Total Stock Físico</div>
+      <div style="margin-top:10px;background:rgba(79,142,247,0.05);border:1px solid rgba(79,142,247,0.15);border-radius:6px;padding:8px 12px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.8px;color:var(--muted);margin-bottom:6px">TARGETS MAR/2026 — MLB 3P</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:11px">
+          <div><span style="color:var(--muted)">Bad Stock</span><br><b>11.0%</b></div>
+          <div><span style="color:var(--muted)">Stranded</span><br><b>1.9%</b></div>
+          <div><span style="color:var(--muted)">Sin Venta</span><br><b>1.1%</b></div>
+          <div><span style="color:var(--muted)">Aging</span><br><b>4.0%</b> · Exc.<b> 4.0%</b></div>
+        </div>
+      </div>
     </div>
-    <div style="margin-top:8px;font-size:10px;color:var(--muted);">Fonte: BigQuery · meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT · CBT disponível somente para MLM e MLC. Filtre por iniciativa no topo.</div>
+    <div class="card">
+      <div class="sec">Bad Stock por Iniciativa — Composição</div>
+      <canvas id="initChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- TARGETS BY INITIATIVE -->
+  <div class="card">
+    <div class="sec">Targets Bad Stock % por Iniciativa — Mar/2026</div>
+    <table>
+      <thead><tr><th>País</th><th>Iniciativa</th><th>Bad Stock Tgt</th><th>Stranded Tgt</th><th>Sin Venta Tgt</th><th>Aging Tgt</th><th>Aging+Exc. Tgt</th></tr></thead>
+      <tbody>
+        <tr><td><b style="color:var(--blue)">MLB</b></td><td><span class="b b3p">3P</span></td><td>11.0%</td><td>1.9%</td><td>1.1%</td><td>4.0%</td><td>4.0%</td></tr>
+        <tr><td><b style="color:var(--orange)">MLM</b></td><td><span class="b btot">3P+CBT</span></td><td class="vy">13.2%</td><td colspan="4" style="color:var(--muted)">componentes abaixo</td></tr>
+        <tr><td><b style="color:var(--orange)">MLM</b></td><td><span class="b b3p">3P</span></td><td>12.3%</td><td>1.1%</td><td>1.8%</td><td>3.9%</td><td>5.5%</td></tr>
+        <tr><td><b style="color:var(--orange)">MLM</b></td><td><span class="b bcbt">CBT</span></td><td>15.5%</td><td>1.1%</td><td>2.5%</td><td>3.6%</td><td>8.3%</td></tr>
+        <tr><td><b style="color:var(--green)">MLA</b></td><td><span class="b b3p">3P</span></td><td>11.1%</td><td>0.9%</td><td>1.6%</td><td>5.2%</td><td>3.3%</td></tr>
+        <tr><td><b style="color:var(--purple)">MLC</b></td><td><span class="b btot">3P+CBT</span></td><td class="vg">14.8%</td><td colspan="4" style="color:var(--muted)">componentes abaixo</td></tr>
+        <tr><td><b style="color:var(--purple)">MLC</b></td><td><span class="b b3p">3P</span></td><td>14.5%</td><td>0.9%</td><td>1.9%</td><td>6.6%</td><td>5.1%</td></tr>
+        <tr><td><b style="color:var(--purple)">MLC</b></td><td><span class="b bcbt">CBT</span></td><td>18.9%</td><td>1.4%</td><td>6.1%</td><td>4.6%</td><td>6.7%</td></tr>
+        <tr><td><b style="color:var(--red)">MCO</b></td><td><span class="b b3p">3P</span></td><td>23.4%</td><td>1.1%</td><td>2.9%</td><td>12.0%</td><td>7.4%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="sec">Stranded por Iniciativa e País</div>
+      <table>
+        <thead><tr><th>País</th><th>Iniciativa</th><th>% Stranded</th><th>Itens</th></tr></thead>
+        <tbody>
+          <tr><td>MLB</td><td><span class="b b3p">3P Asesorado</span></td><td>0.08%</td><td>40,704</td></tr>
+          <tr><td>MLB</td><td><span class="b b3p">3P No Ases.</span></td><td>0.95%</td><td>486,262</td></tr>
+          <tr><td>MLB</td><td><span class="b b1p">1P</span></td><td>0.37%</td><td>187,574</td></tr>
+          <tr><td>MLM</td><td><span class="b b3p">3P Asesorado</span></td><td>0.07%</td><td>30,823</td></tr>
+          <tr><td>MLM</td><td><span class="b b3p">3P No Ases.</span></td><td>0.56%</td><td>247,409</td></tr>
+          <tr><td>MLM</td><td><span class="b bcbt">CBT</span></td><td>0.12%</td><td>52,185</td></tr>
+          <tr><td>MLC</td><td><span class="b b3p">3P Asesorado</span></td><td>0.18%</td><td>6,851</td></tr>
+          <tr><td>MLC</td><td><span class="b bcbt">CBT</span></td><td>0.09%</td><td>3,372</td></tr>
+          <tr><td>MCO</td><td><span class="b b3p">3P No Ases.</span></td><td>1.33%</td><td>8,601</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="sec">Sin Venta por Iniciativa e País</div>
+      <table>
+        <thead><tr><th>País</th><th>Iniciativa</th><th>% Sin Venta</th><th>Itens</th></tr></thead>
+        <tbody>
+          <tr><td>MLB</td><td><span class="b b3p">3P No Ases.</span></td><td>1.88%</td><td>965,825</td></tr>
+          <tr><td>MLB</td><td><span class="b b1p">1P</span></td><td>0.16%</td><td>81,466</td></tr>
+          <tr><td>MLM</td><td><span class="b b3p">3P No Ases.</span></td><td>1.30%</td><td>574,282</td></tr>
+          <tr><td>MLM</td><td><span class="b bcbt">CBT</span></td><td>0.62%</td><td>272,678</td></tr>
+          <tr><td>MLM</td><td><span class="b b3p">3P Asesorado</span></td><td>0.33%</td><td>146,584</td></tr>
+          <tr><td>MLC</td><td><span class="b b3p">3P No Ases.</span></td><td>2.74%</td><td>103,995</td></tr>
+          <tr><td>MLC</td><td><span class="b bcbt">CBT</span></td><td>0.50%</td><td>18,871</td></tr>
+          <tr><td>MCO</td><td><span class="b b3p">3P No Ases.</span></td><td>2.97%</td><td>19,248</td></tr>
+          <tr><td>MCO</td><td><span class="b b3p">3P Asesorado</span></td><td>0.99%</td><td>6,446</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════════ VERTICAIS ═══ -->
+<!-- ═══════════════════════════════════════════ VERTICAIS ═══ -->
 <div id="panel-vertical" class="panel">
-  <div class="card">
-    <div class="sec">Bad Stock % por Vertical — <span id="vert-country-lbl">MLB + MLM · W30/2025</span></div>
-    <canvas id="vertChart" height="220"></canvas>
+  <div style="background:rgba(79,142,247,0.06);border:1px solid rgba(79,142,247,0.2);border-radius:6px;padding:8px 14px;font-size:11px;color:var(--blue)">
+    ℹ Dados de Excedente (Aging+Surplus) por vertical — período Jul/2025. Estrutura de ranking mantém-se estável. Atualização para Jan-Mar/26 requer exportação manual do datasource DM_HYPER_SHP_STOCK_QUALITY_SELLERS.
   </div>
-  <div class="card">
-    <div class="sec">Detalhamento por Vertical</div>
-    <div style="font-size:10px;color:var(--muted);margin-bottom:8px;">Fonte: BigQuery · W13 (25/03/2026) · TOTAL initiative · todos os KPIs disponíveis. Target = Mar/2026.</div>
-    <div style="overflow-x:auto">
-    <table>
-      <thead><tr><th>País</th><th>Iniciativa</th><th>Vertical</th><th>Bad Stock %</th><th>vs Target</th><th>BS (un.)</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
-      <tbody id="vert-unified-table"></tbody>
-    </table>
+  <div class="g2">
+    <div class="card">
+      <div class="sec">Top Verticais — Excedente % (MLB)</div>
+      <canvas id="vertMLBChart" height="260"></canvas>
+    </div>
+    <div class="card">
+      <div class="sec">Top Verticais — Excedente % (MLM)</div>
+      <canvas id="vertMLMChart" height="260"></canvas>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="sec">Excedente por Vertical — Ranking LATAM (MLB W30/2025)</div>
+      <table>
+        <thead><tr><th>#</th><th>Vertical</th><th>% Excedente</th><th>Itens</th><th>Barra</th></tr></thead>
+        <tbody id="vert-table"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="sec">Excedente por Vertical — MLM W30/2025</div>
+      <table>
+        <thead><tr><th>#</th><th>Vertical</th><th>% Excedente</th><th>Itens</th></tr></thead>
+        <tbody id="vert-mlm-table"></tbody>
+      </table>
     </div>
   </div>
 </div>
 
-
-<!-- ═══════════════════ TARGETS ═══ -->
-<div id="panel-targets" class="panel">
-  <div class="tgt-note" style="color:var(--green);border:1px solid rgba(0,196,140,.3);background:rgba(0,196,140,.06);">
-    ✓ Targets Mar/2026 da planilha de planejamento. Iniciativas: 3P para MLB/MLA/MCO · 3P+CBT para MLM e MLC. Edite e clique "Aplicar" para ajustar.
+<!-- ═══════════════════════════════════════════ SELLERS ═══ -->
+<div id="panel-sellers" class="panel">
+  <div class="g2">
+    <div class="card">
+      <div class="sec">Top Sellers — Aging + Excedente (MLB, W10 07/03/2026)</div>
+      <canvas id="sellersChart" height="260"></canvas>
+    </div>
+    <div class="card">
+      <div class="sec">Detalhamento — Aging + Excedente por Seller</div>
+      <table>
+        <thead><tr><th>#</th><th>Seller</th><th>Itens</th><th>W9</th><th>W10</th><th>Var.</th></tr></thead>
+        <tbody>
+          <tr><td><span class="rk">1</span></td><td>CIA BRASILEIRA</td><td class="vr">110,658</td><td>44,059</td><td>110,658</td><td class="vr">+151%</td></tr>
+          <tr><td><span class="rk">2</span></td><td>NATURA_OFICIAL</td><td class="vr">50,259</td><td>47,800</td><td>50,259</td><td class="vr">+5%</td></tr>
+          <tr><td><span class="rk">3</span></td><td>BOA_SUPERMERCADOS</td><td class="vy">49,236</td><td>52,018</td><td>49,236</td><td class="vg">▼5%</td></tr>
+          <tr><td><span class="rk">4</span></td><td>GRUPO_CARREFOUR_MERCADO</td><td class="vy">46,564</td><td>56,765</td><td>46,564</td><td class="vg">▼18%</td></tr>
+          <tr><td><span class="rk">5</span></td><td>PERFUFLEX</td><td>31,994</td><td>23,024</td><td>31,994</td><td class="vr">+39%</td></tr>
+          <tr><td><span class="rk">6</span></td><td>ANGANG20230629001753</td><td>27,074</td><td>33,444</td><td>27,074</td><td class="vg">▼19%</td></tr>
+          <tr><td><span class="rk">7</span></td><td>GALANTELEDS</td><td>27,028</td><td>42,660</td><td>27,028</td><td class="vg">▼37%</td></tr>
+          <tr><td><span class="rk">8</span></td><td>MORIXEHERMANOS</td><td>6,708</td><td>66,778</td><td>6,708</td><td class="vg">▼90%</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;font-size:10px;color:var(--muted)">
+        ℹ Para top 20 completo e dados recentes (W13): exportar CSV de <b>DM_HYPER_SHP_STOCK_QUALITY_SELLERS</b> no Tableau → Stock Management Hub → View "AGING & SURPLUS".
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ TARGETS ═══ -->
+<div id="panel-targets" class="panel">
+  <div class="targets-note" style="color:var(--green);border-color:rgba(0,196,140,0.3);background:rgba(0,196,140,0.06)">
+    ✓ Targets de Mar/2026 carregados da planilha de planejamento. Iniciativas: 3P para MLB/MLA/MCO · 3P+CBT para MLM e MLC. Edite e clique "Aplicar" para ajustar.
+  </div>
+
+  <!-- REFERÊNCIA MENSAL 2026 -->
   <div class="card">
-    <div class="sec">Planejamento 2026 — Bad Stock % por País e Iniciativa</div>
+    <div class="sec">Targets Bad Stock % — Planejamento 2026 por País e Iniciativa</div>
     <div style="overflow-x:auto">
     <table>
-      <thead><tr><th>País</th><th>Inciativa</th><th>Jan</th><th>Feb</th><th style="color:var(--yellow)">Mar ◀</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr></thead>
+      <thead><tr><th>País</th><th>Iniciativa</th><th>Jan</th><th>Feb</th><th style="color:var(--yellow)">Mar ◀</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr></thead>
       <tbody>
         <tr><td><b style="color:var(--blue)">MLB</b></td><td><span class="b b3p">3P</span></td><td>13.0%</td><td>12.0%</td><td class="vy">11.0%</td><td>11.0%</td><td>11.0%</td><td>10.5%</td><td>10.0%</td><td>10.0%</td><td>9.5%</td><td>9.5%</td><td>9.0%</td><td>10.0%</td></tr>
         <tr><td><b style="color:var(--orange)">MLM</b></td><td><span class="b btot">3P+CBT</span></td><td>13.3%</td><td>12.8%</td><td class="vr">13.2%</td><td>13.3%</td><td>13.4%</td><td>13.7%</td><td>12.4%</td><td>11.6%</td><td>11.6%</td><td>11.3%</td><td>10.7%</td><td>11.6%</td></tr>
@@ -291,1005 +410,275 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     </table>
     </div>
   </div>
+
+  <!-- COMPONENTES POR PAÍS -->
   <div class="card">
-    <div class="sec">Desvio Atual vs Target Mar/2026 — por Componente</div>
+    <div class="sec">Targets por Componente — Mar/2026 · Desvio vs Atual W13</div>
     <table>
-      <thead><tr><th>País</th><th>Iniciativa</th><th>Atual</th><th>Target BS</th><th>Desvio</th><th>Stranded</th><th>Sin Venta</th><th>Aging</th><th>Aging+Exc.</th></tr></thead>
+      <thead><tr><th>País</th><th>Iniciativa</th><th>Atual W13</th><th>Target Bad Stock</th><th>Desvio</th><th>Stranded Tgt</th><th>Sin Venta Tgt</th><th>Aging Tgt</th><th>Aging+Exc. Tgt</th></tr></thead>
       <tbody id="tgt-detail-table"></tbody>
     </table>
   </div>
-  <div class="card">
-    <div class="sec">Ajustar Targets Manuais (aplicados nos KPI cards)</div>
-    <table>
-      <thead><tr><th>País</th><th>Atual</th><th>Target BS%</th><th>Stranded</th><th>Sin Venta</th><th>Aging</th><th>Aging+Exc.</th></tr></thead>
-      <tbody>
-        <tr><td><b style="color:var(--blue)">MLB</b></td><td id="ta-cur-mlb" class="vy">—</td><td><input type="number" id="t-mlb" step="0.1" value="11.0"></td><td><input type="number" id="ts-mlb" step="0.1" value="1.9"></td><td><input type="number" id="tn-mlb" step="0.1" value="1.1"></td><td><input type="number" id="ta-mlb" step="0.1" value="4.0"></td><td><input type="number" id="te-mlb" step="0.1" value="4.0"></td></tr>
-        <tr><td><b style="color:var(--orange)">MLM</b></td><td id="ta-cur-mlm" class="vr">—</td><td><input type="number" id="t-mlm" step="0.1" value="13.2"></td><td><input type="number" id="ts-mlm" step="0.1" value="1.1"></td><td><input type="number" id="tn-mlm" step="0.1" value="1.8"></td><td><input type="number" id="ta-mlm" step="0.1" value="3.9"></td><td><input type="number" id="te-mlm" step="0.1" value="5.5"></td></tr>
-        <tr><td><b style="color:var(--green)">MLA</b></td><td id="ta-cur-mla" class="vy">—</td><td><input type="number" id="t-mla" step="0.1" value="11.1"></td><td><input type="number" id="ts-mla" step="0.1" value="0.9"></td><td><input type="number" id="tn-mla" step="0.1" value="1.6"></td><td><input type="number" id="ta-mla" step="0.1" value="5.2"></td><td><input type="number" id="te-mla" step="0.1" value="3.3"></td></tr>
-        <tr><td><b style="color:var(--purple)">MLC</b></td><td id="ta-cur-mlc" class="vr">—</td><td><input type="number" id="t-mlc" step="0.1" value="14.8"></td><td><input type="number" id="ts-mlc" step="0.1" value="0.9"></td><td><input type="number" id="tn-mlc" step="0.1" value="1.9"></td><td><input type="number" id="ta-mlc" step="0.1" value="6.6"></td><td><input type="number" id="te-mlc" step="0.1" value="5.1"></td></tr>
-        <tr><td><b style="color:var(--red)">MCO</b></td><td id="ta-cur-mco" class="vr">—</td><td><input type="number" id="t-mco" step="0.1" value="23.4"></td><td><input type="number" id="ts-mco" step="0.1" value="1.1"></td><td><input type="number" id="tn-mco" step="0.1" value="2.9"></td><td><input type="number" id="ta-mco" step="0.1" value="12.0"></td><td><input type="number" id="te-mco" step="0.1" value="7.4"></td></tr>
-      </tbody>
-    </table>
-    <button class="btn" onclick="renderAll()">Aplicar Targets ▶</button>
-  </div>
-</div>
 
-<!-- ═══════════════════ ATUALIZAR ═══ -->
-<div id="panel-refresh" class="panel">
-  <div class="refresh-panel">
-    <b>Como atualizar os dados do dashboard</b><br><br>
-    Os dados são extraídos via <b>BigQuery</b> — tabela <code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code>.<br>
-    Semanas MeLi: referência no <b>sábado</b> — W13 = 28/03/2026, W14 = 04/04/2026, etc.<br><br>
-    <b>Dados atuais:</b> W13 parcial (25/03/2026) · W1–W13 completo para todos os países<br><br>
-    Para atualizar com nova semana, peça ao Claude Code:<br>
-    <code style="background:var(--card2);padding:3px 8px;border-radius:4px;font-size:11px;">
-      "Atualize o dashboard de bad stock com os dados do BigQuery para W14 (04/04/2026)"
-    </code>
-  </div>
+  <!-- AJUSTE MANUAL -->
   <div class="card">
-    <div class="sec">Histórico de atualizações</div>
+    <div class="sec">Ajustar Target — Bad Stock % por País (aplicado nos KPI cards)</div>
     <table>
-      <thead><tr><th>Semana MeLi</th><th>Data de Referência</th><th>Data Atualização</th><th>Status</th></tr></thead>
+      <thead><tr><th>País</th><th>Atual W13</th><th>Target Bad Stock %</th><th>Target Stranded %</th><th>Target Sin Venta %</th><th>Target Aging %</th><th>Target Aging+Exc. %</th></tr></thead>
       <tbody>
-        <tr><td>W13 ★</td><td>25/03/2026 (parcial)</td><td>26/03/2026</td><td><span style="color:var(--green)">✓ Atual via BigQuery</span></td></tr>
-        <tr><td>W12</td><td>21/03/2026 (Sáb)</td><td>26/03/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
-        <tr><td>W11</td><td>14/03/2026 (Sáb)</td><td>26/03/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
-        <tr><td>W10</td><td>07/03/2026 (Sáb)</td><td>26/03/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
-        <tr><td>W9</td><td>28/02/2026 (Sáb)</td><td>26/03/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
-        <tr><td>W8</td><td>21/02/2026 (Sáb)</td><td>26/03/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
-        <tr><td>W1–W7</td><td>03/01–14/02/2026</td><td>26/03/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
-        <tr><td>W14</td><td>28/03/2026 (Sáb)</td><td>—</td><td><span style="color:var(--muted)">⏳ Aguardando</span></td></tr>
+        <tr>
+          <td><b style="color:var(--blue)">MLB</b></td>
+          <td class="vy">10.50%</td>
+          <td><input type="number" id="t-mlb" step="0.1" value="11.0"></td>
+          <td><input type="number" id="ts-mlb" step="0.1" value="1.9"></td>
+          <td><input type="number" id="tn-mlb" step="0.1" value="1.1"></td>
+          <td><input type="number" id="ta-mlb" step="0.1" value="4.0"></td>
+          <td><input type="number" id="te-mlb" step="0.1" value="4.0"></td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--orange)">MLM</b></td>
+          <td class="vr">15.34%</td>
+          <td><input type="number" id="t-mlm" step="0.1" value="13.2"></td>
+          <td><input type="number" id="ts-mlm" step="0.1" value="1.1"></td>
+          <td><input type="number" id="tn-mlm" step="0.1" value="1.8"></td>
+          <td><input type="number" id="ta-mlm" step="0.1" value="3.9"></td>
+          <td><input type="number" id="te-mlm" step="0.1" value="5.5"></td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--green)">MLA</b></td>
+          <td class="vy">12.77%</td>
+          <td><input type="number" id="t-mla" step="0.1" value="11.1"></td>
+          <td><input type="number" id="ts-mla" step="0.1" value="0.9"></td>
+          <td><input type="number" id="tn-mla" step="0.1" value="1.6"></td>
+          <td><input type="number" id="ta-mla" step="0.1" value="5.2"></td>
+          <td><input type="number" id="te-mla" step="0.1" value="3.3"></td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--purple)">MLC</b></td>
+          <td class="vy">13.16%</td>
+          <td><input type="number" id="t-mlc" step="0.1" value="14.8"></td>
+          <td><input type="number" id="ts-mlc" step="0.1" value="0.9"></td>
+          <td><input type="number" id="tn-mlc" step="0.1" value="1.9"></td>
+          <td><input type="number" id="ta-mlc" step="0.1" value="6.6"></td>
+          <td><input type="number" id="te-mlc" step="0.1" value="5.1"></td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--red)">MCO</b></td>
+          <td class="vr">19.13%</td>
+          <td><input type="number" id="t-mco" step="0.1" value="23.4"></td>
+          <td><input type="number" id="ts-mco" step="0.1" value="1.1"></td>
+          <td><input type="number" id="tn-mco" step="0.1" value="2.9"></td>
+          <td><input type="number" id="ta-mco" step="0.1" value="12.0"></td>
+          <td><input type="number" id="te-mco" step="0.1" value="7.4"></td>
+        </tr>
       </tbody>
     </table>
-  </div>
-  <div class="card">
-    <div class="sec">Fontes de dados BigQuery</div>
-    <table>
-      <thead><tr><th>Tabela</th><th>Conteúdo</th><th>Filtros usados</th></tr></thead>
-      <tbody>
-        <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code></td><td>KPIs por país/semana (KPI_INITIATIVE=TOTAL)</td><td>KPI_PERIOD=DAY, KPI_VERTICAL=TOTAL, DIM_ESTRELLA=TOTAL</td></tr>
-        <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code></td><td>Breakdown por iniciativa (3P/CBT/1P/PL)</td><td>KPI_INITIATIVE IN (3P,CBT,3P+CBT,1P/PL), DIM_ESTRELLA=TOTAL</td></tr>
-        <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code></td><td>Bad Stock % por vertical</td><td>KPI_VERTICAL != TOTAL, KPI_INITIATIVE=TOTAL, DIM_ESTRELLA=TOTAL</td></tr>
-        <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code></td><td>Segmentação 3P Asesorado vs Não Asesorado</td><td>KPI_INITIATIVE=3P, DIM_ESTRELLA IN (ESTRELLA, NO ESTRELLA, TOTAL)</td></tr>
-      </tbody>
-    </table>
+    <button class="btn" onclick="applyTargets()">Aplicar Targets ▶</button>
   </div>
 </div>
 
 <div class="footer">
-  <span>Stock Quality · Stock Management · MeLi Shipping</span>
-  <span id="footer-date">BigQuery · DM_SHP_SALES_STOCK_MANAGEMENT_REPORT · W13 (25/03/2026)★ atual · Atualizado: 26/03/2026</span>
+  <span>Stock Quality Team · Stock Management · MeLi Shipping</span>
+  <span>BigQuery · WHOWNER.DM_DASH_SHP_STOCK_QUALITY_SUMMARY · 30/03/2026</span>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════════════════
-// DATA — semanas MeLi (sábado = referência)
-// ══════════════════════════════════════════════════════════════════════════════
-const WEEKS = [
-  { id:'W1',  date:'03/01/2026', month:1, label:'W1 (03/01)'  },
-  { id:'W2',  date:'10/01/2026', month:1, label:'W2 (10/01)'  },
-  { id:'W3',  date:'17/01/2026', month:1, label:'W3 (17/01)'  },
-  { id:'W4',  date:'24/01/2026', month:1, label:'W4 (24/01)'  },
-  { id:'W5',  date:'31/01/2026', month:1, label:'W5 (31/01)'  },
-  { id:'W6',  date:'07/02/2026', month:2, label:'W6 (07/02)'  },
-  { id:'W7',  date:'14/02/2026', month:2, label:'W7 (14/02)'  },
-  { id:'W8',  date:'21/02/2026', month:2, label:'W8 (21/02)'  },
-  { id:'W9',  date:'28/02/2026', month:2, label:'W9 (28/02)'  },
-  { id:'W10', date:'07/03/2026', month:3, label:'W10 (07/03)' },
-  { id:'W11', date:'14/03/2026', month:3, label:'W11 (14/03)' },
-  { id:'W12', date:'21/03/2026', month:3, label:'W12 (21/03)'  },
-  { id:'W13', date:'24/03/2026', month:3, label:'W13 (24/03)★', current:true },
-];
-
-// Bad Stock data: bs=Bad Stock%, str=Stranded, sv=Sin Venta, ag=Aging, exc=Aging+Exc
-// Fonte: BigQuery meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT · TOTAL initiative/vertical/estrella
-const KPI = {
-  W1:  { MLB:{bs:14.52,str:2.23,sv:1.58,ag:3.44,exc:7.26}, MLM:{bs:15.75,str:1.35,sv:1.56,ag:3.68,exc:9.16}, MLA:{bs:17.38,str:1.18,sv:1.51,ag:5.24,exc:9.44}, MLC:{bs:17.68,str:1.04,sv:1.99,ag:5.48,exc:9.17}, MCO:{bs:23.63,str:3.48,sv:2.85,ag:8.51,exc:8.78} },
-  W2:  { MLB:{bs:14.16,str:2.74,sv:1.68,ag:3.53,exc:6.20}, MLM:{bs:13.05,str:1.23,sv:1.66,ag:3.39,exc:6.76}, MLA:{bs:15.87,str:1.55,sv:1.43,ag:5.18,exc:7.70}, MLC:{bs:16.88,str:1.46,sv:1.93,ag:5.56,exc:7.93}, MCO:{bs:22.07,str:1.58,sv:3.38,ag:8.95,exc:8.13} },
-  W3:  { MLB:{bs:15.10,str:2.58,sv:1.73,ag:3.72,exc:7.07}, MLM:{bs:14.25,str:1.26,sv:1.79,ag:3.43,exc:7.77}, MLA:{bs:17.29,str:1.28,sv:1.44,ag:5.92,exc:8.62}, MLC:{bs:17.29,str:1.37,sv:1.91,ag:6.04,exc:7.96}, MCO:{bs:24.51,str:1.53,sv:3.91,ag:9.78,exc:9.25} },
-  W4:  { MLB:{bs:14.33,str:2.31,sv:1.71,ag:3.80,exc:6.52}, MLM:{bs:14.50,str:1.20,sv:1.89,ag:3.72,exc:7.69}, MLA:{bs:16.51,str:1.36,sv:1.41,ag:5.62,exc:8.04}, MLC:{bs:17.01,str:1.37,sv:2.23,ag:5.80,exc:7.58}, MCO:{bs:24.19,str:1.31,sv:4.12,ag:9.69,exc:8.99} },
-  W5:  { MLB:{bs:14.68,str:2.35,sv:1.55,ag:4.00,exc:6.77}, MLM:{bs:14.71,str:1.22,sv:1.89,ag:3.71,exc:7.88}, MLA:{bs:15.92,str:1.23,sv:1.33,ag:5.49,exc:7.78}, MLC:{bs:16.61,str:1.26,sv:2.11,ag:5.74,exc:7.48}, MCO:{bs:23.54,str:1.09,sv:3.68,ag:9.60,exc:9.08} },
-  W6:  { MLB:{bs:14.68,str:2.14,sv:1.47,ag:3.95,exc:7.12}, MLM:{bs:15.03,str:1.17,sv:1.90,ag:3.78,exc:8.17}, MLA:{bs:15.58,str:1.07,sv:1.27,ag:5.38,exc:7.77}, MLC:{bs:16.68,str:1.40,sv:2.06,ag:5.78,exc:7.42}, MCO:{bs:23.01,str:1.18,sv:3.41,ag:9.55,exc:8.77} },
-  W7:  { MLB:{bs:14.11,str:2.09,sv:1.44,ag:3.94,exc:6.63}, MLM:{bs:15.06,str:1.25,sv:1.89,ag:3.68,exc:8.22}, MLA:{bs:15.17,str:1.22,sv:1.28,ag:5.27,exc:7.32}, MLC:{bs:16.48,str:1.43,sv:2.16,ag:5.74,exc:7.10}, MCO:{bs:22.42,str:1.14,sv:3.14,ag:9.50,exc:8.57} },
-  W8:  { MLB:{bs:13.62,str:1.97,sv:1.42,ag:3.73,exc:6.48}, MLM:{bs:14.96,str:1.32,sv:2.03,ag:3.49,exc:8.11}, MLA:{bs:15.66,str:1.22,sv:1.39,ag:5.41,exc:7.63}, MLC:{bs:15.83,str:1.08,sv:2.06,ag:5.68,exc:6.99}, MCO:{bs:20.84,str:1.11,sv:2.88,ag:9.03,exc:7.76} },
-  W9:  { MLB:{bs:12.93,str:2.22,sv:1.37,ag:3.70,exc:5.63}, MLM:{bs:14.93,str:1.12,sv:2.11,ag:4.01,exc:7.69}, MLA:{bs:14.81,str:1.49,sv:1.31,ag:5.41,exc:6.58}, MLC:{bs:15.42,str:1.14,sv:1.95,ag:5.62,exc:6.68}, MCO:{bs:19.73,str:1.08,sv:2.81,ag:8.86,exc:6.92} },
-  W10: { MLB:{bs:12.11,str:2.16,sv:1.30,ag:3.42,exc:5.21}, MLM:{bs:15.41,str:1.17,sv:2.15,ag:3.95,exc:8.15}, MLA:{bs:14.68,str:1.96,sv:1.30,ag:5.69,exc:5.70}, MLC:{bs:15.38,str:1.36,sv:1.94,ag:5.61,exc:6.44}, MCO:{bs:19.73,str:0.99,sv:2.97,ag:8.83,exc:6.89} },
-  W11: { MLB:{bs:11.22,str:1.97,sv:1.28,ag:3.19,exc:4.77}, MLM:{bs:15.33,str:1.21,sv:2.15,ag:3.99,exc:7.98}, MLA:{bs:13.34,str:1.26,sv:1.24,ag:5.44,exc:5.37}, MLC:{bs:14.31,str:1.02,sv:1.92,ag:5.35,exc:6.00}, MCO:{bs:18.72,str:1.04,sv:2.86,ag:8.30,exc:6.48} },
-  W12: { MLB:{bs:10.81,str:1.87,sv:1.25,ag:3.17,exc:4.52}, MLM:{bs:15.51,str:1.27,sv:2.13,ag:4.01,exc:8.09}, MLA:{bs:12.50,str:1.27,sv:1.13,ag:4.98,exc:5.09}, MLC:{bs:13.50,str:0.97,sv:1.91,ag:4.99,exc:5.62}, MCO:{bs:18.50,str:1.19,sv:2.75,ag:8.02,exc:6.50} },
-  W13: { MLB:{bs:10.88,str:2.12,sv:1.20,ag:3.12,exc:4.42}, MLM:{bs:15.75,str:1.45,sv:2.06,ag:4.01,exc:8.23}, MLA:{bs:12.85,str:1.52,sv:1.14,ag:5.02,exc:5.14}, MLC:{bs:13.69,str:1.35,sv:1.81,ag:4.85,exc:5.66}, MCO:{bs:19.68,str:1.35,sv:2.87,ag:8.59,exc:6.84} },
-};
-
-// Monthly targets (by month number)
-const TARGETS = {
-  1: {MLB:{bs:13.0,str:3.5,sv:1.4,ag:4.0,exc:4.1},MLM:{bs:13.3,str:1.3,sv:1.9,ag:4.1,exc:5.7},MLA:{bs:12.6,str:1.1,sv:1.6,ag:5.5,exc:4.5},MLC:{bs:16.4,str:1.6,sv:2.2,ag:6.2,exc:6.0},MCO:{bs:23.6,str:1.9,sv:3.1,ag:10.8,exc:7.7}},
-  2: {MLB:{bs:12.0,str:2.5,sv:1.4,ag:4.0,exc:4.1},MLM:{bs:12.8,str:1.2,sv:1.9,ag:4.0,exc:4.9},MLA:{bs:11.5,str:1.0,sv:1.7,ag:5.5,exc:3.4},MLC:{bs:15.4,str:0.9,sv:2.0,ag:7.0,exc:5.1},MCO:{bs:21.2,str:1.2,sv:2.9,ag:11.5,exc:5.6}},
-  3: {MLB:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},MLM:{bs:13.2,str:1.1,sv:1.8,ag:3.9,exc:5.5},MLA:{bs:11.1,str:0.9,sv:1.6,ag:5.2,exc:3.3},MLC:{bs:14.8,str:0.9,sv:1.9,ag:6.6,exc:5.1},MCO:{bs:23.4,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
-};
-
-const SITE_COLORS = {MLB:'#4f8ef7',MLM:'#ff8c42',MLA:'#00c48c',MLC:'#a78bfa',MCO:'#ff4d6a'};
-const SITE_NAMES  = {MLB:'MLB · Brasil',MLM:'MLM · México',MLA:'MLA · Argentina',MLC:'MLC · Chile',MCO:'MCO · Colombia'};
-const ALL_SITES   = ['MLB','MLM','MLA','MLC','MCO'];
-
-// ══════════════════════════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════════════════════════
-let state = {
-  countries: [...ALL_SITES],
-  initiative: 'ALL',
-  selectedWeek: 'W13',
-  filterMonth: 'ALL',
-};
-
-// ══════════════════════════════════════════════════════════════════════════════
-// FILTER CONTROLS
-// ══════════════════════════════════════════════════════════════════════════════
-function toggleCountry(site, el) {
-  const idx = state.countries.indexOf(site);
-  if (idx === -1) { state.countries.push(site); el.classList.add('active'); }
-  else if (state.countries.length > 1) { state.countries.splice(idx,1); el.classList.remove('active'); }
-  renderAll();
+// ── TAB NAVIGATION ────────────────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
 }
 
-function setInit(val, el) {
-  state.initiative = val;
-  document.querySelectorAll('.pill.init').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  renderAll();
-}
-
-function setWeek(val) {
-  state.selectedWeek = val;
-  state.filterMonth = 'ALL';
-  document.getElementById('month-sel').value = 'ALL';
-  renderAll();
-}
-
-function setMonth(val) {
-  state.filterMonth = val;
-  if (val !== 'ALL') {
-    // set selectedWeek to most recent week in that month
-    const weeksInMonth = WEEKS.filter(w => w.month === parseInt(val));
-    if (weeksInMonth.length) {
-      state.selectedWeek = weeksInMonth[weeksInMonth.length-1].id;
-      document.getElementById('week-sel').value = state.selectedWeek;
-    }
-  }
-  renderAll();
-}
-
-// Filtered weeks for trend chart
-function filteredWeeks() {
-  if (state.filterMonth === 'ALL') return WEEKS;
-  return WEEKS.filter(w => w.month === parseInt(state.filterMonth));
-}
-
-// Target for current week's month
-function targetForWeek(weekId, site) {
-  const w = WEEKS.find(x => x.id === weekId);
-  if (!w) return null;
-  return (TARGETS[w.month] || {})[site] || null;
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER — KPI CARDS
-// ══════════════════════════════════════════════════════════════════════════════
-function renderKPIs() {
-  const wid = state.selectedWeek;
-  const wData = KPI[wid] || {};
-  const wObj  = WEEKS.find(w => w.id === wid);
-  const wLabel = wObj ? wObj.label : wid;
-
-  document.getElementById('ov-week-lbl').textContent = wLabel;
-  document.getElementById('comp-week-lbl').textContent = wid;
-  document.getElementById('sum-week-lbl').textContent = `${wLabel}`;
-  document.getElementById('hdr-week').textContent = wLabel;
-
-  // prev week for WoW
-  const wIdx = WEEKS.findIndex(w => w.id === wid);
-  const prevId = wIdx > 0 ? WEEKS[wIdx-1].id : null;
-  const prevData = prevId ? (KPI[prevId] || {}) : {};
-
-  const grid = document.getElementById('kpi-grid');
-  grid.innerHTML = '';
-
-  ALL_SITES.forEach(site => {
-    const d = wData[site];
-    const visible = state.countries.includes(site);
-    if (!d || d.bs === null) {
-      if (visible) grid.innerHTML += `<div class="kpi-card ${site}"><div class="site-lbl">${SITE_NAMES[site]}</div><div style="color:var(--muted);font-size:11px;padding:10px 0">Dados não disponíveis para ${wid}</div></div>`;
-      return;
-    }
-    const tgt = targetForWeek(wid, site);
-    const prev = prevData[site];
-    const wow = (prev && prev.bs !== null) ? (d.bs - prev.bs) : null;
-
-    const wowHtml = wow !== null
-      ? `<span class="dlt ${wow>0?'up':'dn'}">${wow>0?'▲':'▼'}${Math.abs(wow).toFixed(2)}pp</span>`
-      : '';
-
-    const tgtHtml = tgt
-      ? (() => {
-          const dev = (d.bs - tgt.bs).toFixed(2);
-          const n = parseFloat(dev);
-          const c = n>0?'#ff4d6a':'#00c48c';
-          const s = n>0?'+':'';
-          return `Target: <b>${tgt.bs.toFixed(1)}%</b> · Desvio: <span style="color:${c};font-weight:700">${s}${dev}pp</span>`;
-        })()
-      : 'Target: —';
-
-    const trendHtml = (() => {
-      const pts = WEEKS.map(w => {
-        const v = (KPI[w.id]||{})[site];
-        return (v && v.bs !== null) ? `${w.id}: ${v.bs.toFixed(2)}` : null;
-      }).filter(Boolean);
-      return pts.join(' → ');
-    })();
-
-    const compHtml = `
-      <div class="comps">
-        <div><div class="comp-lbl">Aging</div><div class="comp-val">${d.ag.toFixed(2)}%</div></div>
-        <div><div class="comp-lbl">Aging+Exc.</div><div class="comp-val">${d.exc.toFixed(2)}%</div></div>
-        <div><div class="comp-lbl">Stranded</div><div class="comp-val">${d.str.toFixed(2)}%</div></div>
-        <div><div class="comp-lbl">Sin Venta</div><div class="comp-val">${d.sv.toFixed(2)}%</div></div>
-      </div>`;
-
-    const subHtml = `Bad Stock: ${d.bs.toFixed(2)}%`;
-
-    const bsClass = tgt ? (d.bs > tgt.bs ? 'vr' : d.bs > tgt.bs*0.95 ? 'vy' : 'vg') : 'vy';
-
-    grid.innerHTML += `
-      <div class="kpi-card ${site}" style="${visible?'':'display:none'}">
-        <div class="site-lbl">${SITE_NAMES[site]}</div>
-        <div class="big-pct"><span class="${bsClass}">${d.bs.toFixed(2)}%</span>${wowHtml}</div>
-        <div class="sub">${subHtml}</div>
-        ${compHtml}
-        <div class="vs-target">${tgtHtml}</div>
-        <div class="trend-mini">${trendHtml}</div>
-      </div>`;
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER — SUMMARY TABLE
-// ══════════════════════════════════════════════════════════════════════════════
-function renderSummary() {
-  const wid = state.selectedWeek;
-  const wData = KPI[wid] || {};
-
-  const tbody = document.getElementById('summary-table');
-  tbody.innerHTML = '';
-
-  function pct(v) { return v !== null ? v.toFixed(2)+'%' : '—'; }
-  function devTd(act, tgtVal) {
-    if (act === null || tgtVal == null) return '<td>—</td>';
-    const n = act - tgtVal;
-    return `<td><span style="color:${n>0?'#ff4d6a':'#00c48c'};font-weight:700">${n>0?'+':''}${n.toFixed(2)}pp</span></td>`;
-  }
-
-  state.countries.forEach(site => {
-    const d = wData[site];
-    if (!d || d.bs === null) return;
-    const tgt = targetForWeek(wid, site);
-    const bsDev = tgt ? (d.bs - tgt.bs) : null;
-    const bsDevHtml = bsDev !== null
-      ? `<span style="color:${bsDev>0?'#ff4d6a':'#00c48c'};font-weight:700">${bsDev>0?'+':''}${bsDev.toFixed(2)}pp</span>`
-      : '—';
-    tbody.innerHTML += `<tr>
-      <td><b style="color:${SITE_COLORS[site]}">${site}</b></td>
-      <td class="${tgt?(d.bs>tgt.bs?'vr':'vg'):'vy'}">${pct(d.bs)}</td>
-      <td>${bsDevHtml}</td>
-      <td>${pct(d.str)}</td>${devTd(d.str, tgt&&tgt.str)}
-      <td>${pct(d.sv)}</td>${devTd(d.sv, tgt&&tgt.sv)}
-      <td>${pct(d.ag)}</td>${devTd(d.ag, tgt&&tgt.ag)}
-      <td>${pct(d.exc)}</td>${devTd(d.exc, tgt&&tgt.exc)}
-    </tr>`;
-  });
-
-  // Update targets tab current values
-  ALL_SITES.forEach(site => {
-    const el = document.getElementById(`ta-cur-${site.toLowerCase()}`);
-    if (el && wData[site] && wData[site].bs !== null) el.textContent = wData[site].bs.toFixed(2)+'%';
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER — TREND CHART
-// ══════════════════════════════════════════════════════════════════════════════
-let trendChart = null;
-function renderTrendChart() {
-  const weeks = filteredWeeks();
-  document.getElementById('trend-period-lbl').textContent =
-    weeks.length > 1 ? `${weeks[0].id} a ${weeks[weeks.length-1].id}` : (weeks[0]||{}).id||'';
-
-  const labels = weeks.map(w => w.label);
-  const datasets = state.countries.map(site => ({
-    label: site,
-    data: weeks.map(w => (KPI[w.id]||{})[site]?.bs ?? null),
-    borderColor: SITE_COLORS[site],
-    backgroundColor: SITE_COLORS[site]+'15',
-    tension: 0.35,
-    pointRadius: 4,
-    spanGaps: true,
-  }));
-
-  // Add target line for selected week's month
-  const wObj = WEEKS.find(w => w.id === state.selectedWeek);
-  if (wObj && state.countries.length === 1) {
-    const tgt = (TARGETS[wObj.month]||{})[state.countries[0]];
-    if (tgt) {
-      datasets.push({
-        label: `Target ${state.countries[0]}`,
-        data: weeks.map(() => tgt.bs),
-        borderColor: '#ffe600',
-        borderDash: [4,4],
-        borderWidth: 1,
-        pointRadius: 0,
-        fill: false,
-      });
-    }
-  }
-
-  if (trendChart) { trendChart.destroy(); trendChart = null; }
-  const ctx = document.getElementById('trendChart');
-  if (!ctx) return;
-  trendChart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { labels: { color:'#8890a8', boxWidth:10, font:{size:11} } },
-        tooltip: { mode:'index', intersect:false, callbacks:{ label: c => ` ${c.dataset.label}: ${c.parsed.y!=null?c.parsed.y.toFixed(2)+'%':'N/D'}` } }
-      },
-      scales: {
-        x: { grid:{color:'rgba(46,51,80,.5)'}, ticks:{color:'#8890a8',font:{size:10}} },
-        y: { grid:{color:'rgba(46,51,80,.5)'}, ticks:{color:'#8890a8',callback:v=>v+'%'}, min:8 }
-      }
-    }
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER — COMP CHART (barras empilhadas, mesmo período do gráfico de tendência)
-// ══════════════════════════════════════════════════════════════════════════════
-let compChart = null;
-function renderCompChart() {
-  const weeks = filteredWeeks();
-  document.getElementById('comp-week-lbl').textContent =
-    weeks.length > 1 ? `${weeks[0].id}–${weeks[weeks.length-1].id}` : (weeks[0]||{}).id||'';
-
-  if (compChart) { compChart.destroy(); compChart = null; }
-  const ctx = document.getElementById('compChart');
-  if (!ctx) return;
-
-  const sites = state.countries;
-  const labels = weeks.map(w => w.label);
-
-  // Média dos componentes entre os países selecionados (onde disponível)
-  function compAvg(field) {
-    return weeks.map(w => {
-      const vals = sites.map(s => {
-        const d = (KPI[w.id]||{})[s];
-        return (d && d[field] != null) ? d[field] : null;
-      }).filter(v => v !== null);
-      return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
-    });
-  }
-
-  const strD = compAvg('str');
-  const svD  = compAvg('sv');
-  const agD  = compAvg('ag');
-  const excD = compAvg('exc');
-  const bsD  = compAvg('bs');
-
-  const hasComp = strD.some(v => v !== null);
-
-  if (!hasComp) {
-    // Só BS% disponível — barras simples
-    compChart = new Chart(ctx, {
-      type:'bar',
-      data:{ labels, datasets:[{ label:'Bad Stock %', data:bsD, backgroundColor:'rgba(79,142,247,.6)', borderRadius:3 }] },
-      options:{
-        responsive:true,
-        plugins:{
-          legend:{labels:{color:'#8890a8',boxWidth:8,font:{size:10}}},
-          tooltip:{callbacks:{label:c=>` Bad Stock: ${c.parsed.y!=null?c.parsed.y.toFixed(2)+'%':'N/D'}`}}
-        },
-        scales:{
-          x:{grid:{display:false},ticks:{color:'#8890a8',font:{size:10}}},
-          y:{grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v+'%'},min:0}
-        }
-      }
-    });
-    return;
-  }
-
-  compChart = new Chart(ctx, {
-    type:'bar',
-    data:{
-      labels,
-      datasets:[
-        { label:'Stranded',   data:strD, backgroundColor:'#ff4d6a' },
-        { label:'Sin Venta',  data:svD,  backgroundColor:'#ff8c42' },
-        { label:'Aging',      data:agD,  backgroundColor:'#a78bfa' },
-        { label:'Aging+Exc.', data:excD, backgroundColor:'#4f8ef7' },
-      ]
-    },
-    options:{
-      responsive:true,
-      plugins:{
-        legend:{labels:{color:'#8890a8',boxWidth:8,font:{size:10}}},
-        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y!=null?c.parsed.y.toFixed(2)+'%':'N/D'}`}}
-      },
-      scales:{
-        x:{stacked:true,grid:{display:false},ticks:{color:'#8890a8',font:{size:10}}},
-        y:{stacked:true,grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v+'%'},min:0}
-      }
-    }
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER — TARGET DETAIL TABLE
-// ══════════════════════════════════════════════════════════════════════════════
-function renderTargetDetail() {
-  const wid = state.selectedWeek;
-  const wData = KPI[wid] || {};
-  const tbody = document.getElementById('tgt-detail-table');
-  if (!tbody) return;
-
-  let rows = '';
-  ALL_SITES.forEach(s => {
-    const d = wData[s];
-    const tgt = targetForWeek(wid, s);
-    if (!d || !tgt) return;
-    const dev = d.bs - tgt.bs;
-    const c = dev>0?'#ff4d6a':'#00c48c';
-    const sign = dev>0?'+':'';
-
-    function dv(act, t) {
-      if (act === null || t === null) return '—';
-      const n = act - t;
-      const cl = n>0?'#ff4d6a':'#00c48c';
-      return `<span style="color:${cl};font-weight:700">${n>0?'+':''}${n.toFixed(2)}pp</span> <span style="color:var(--muted);font-size:10px">(tgt ${t.toFixed(1)}%)</span>`;
-    }
-
-    const initLabel = (s==='MLM'||s==='MLC') ? '<span class="b btot">3P+CBT</span>' : '<span class="b b3p">3P</span>';
-    rows += `<tr>
-      <td><b style="color:${SITE_COLORS[s]}">${s}</b></td>
-      <td>${initLabel}</td>
-      <td class="${dev>0?'vr':'vg'}">${d.bs.toFixed(2)}%</td>
-      <td>${tgt.bs.toFixed(1)}%</td>
-      <td><span style="color:${c};font-weight:700">${sign}${dev.toFixed(2)}pp</span></td>
-      <td>${dv(d.str, tgt.str)}</td>
-      <td>${dv(d.sv,  tgt.sv)}</td>
-      <td>${dv(d.ag,  tgt.ag)}</td>
-      <td>${dv(d.exc, tgt.exc)}</td>
-    </tr>`;
-  });
-  tbody.innerHTML = rows || '<tr><td colspan="9" class="no-data">Sem dados para a semana selecionada</td></tr>';
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// INIT KPI — por iniciativa · W2–W13 · Fonte: BigQuery
-// Iniciativas: 3P, CBT (somente MLM/MLC), 3P+CBT, 1P/PL
-// ══════════════════════════════════════════════════════════════════════════════
-const INIT_KPI = {
-  W2:  {
-    MLB:{ '3P':{bs:12.63,str:2.23,sv:1.53,ag:3.24,exc:5.62}, CBT:null, '3P+CBT':{bs:12.63,str:2.23,sv:1.53,ag:3.24,exc:5.62}, '1P/PL':{bs:24.37,str:6.12,sv:2.73,ag:5.45,exc:10.06} },
-    MLM:{ '3P':{bs:10.72,str:0.98,sv:1.47,ag:2.88,exc:5.39}, CBT:{bs:11.79,str:1.36,sv:2.17,ag:1.91,exc:6.34}, '3P+CBT':{bs:11.03,str:1.09,sv:1.67,ag:2.60,exc:5.66}, '1P/PL':{bs:40.15,str:3.20,sv:1.47,ag:13.98,exc:21.48} },
-    MLA:{ '3P':{bs:13.36,str:1.36,sv:1.33,ag:4.81,exc:5.85}, CBT:null, '3P+CBT':{bs:13.36,str:1.36,sv:1.33,ag:4.81,exc:5.85}, '1P/PL':{bs:37.00,str:3.20,sv:2.28,ag:8.26,exc:23.26} },
-    MLC:{ '3P':{bs:16.53,str:1.38,sv:1.81,ag:6.03,exc:7.30}, CBT:{bs:16.70,str:1.03,sv:3.96,ag:2.42,exc:9.29}, '3P+CBT':{bs:16.54,str:1.36,sv:1.98,ag:5.74,exc:7.46}, '1P/PL':{bs:20.59,str:2.58,sv:1.31,ag:3.48,exc:13.22} },
-    MCO:{ '3P':{bs:21.24,str:1.57,sv:3.41,ag:9.04,exc:7.19}, CBT:null, '3P+CBT':{bs:21.24,str:1.57,sv:3.41,ag:9.04,exc:7.19}, '1P/PL':{bs:39.32,str:1.77,sv:2.69,ag:7.10,exc:27.76} },
+// ── TREND CHART ───────────────────────────────────────────────────────────────
+new Chart(document.getElementById('trendChart'), {
+  type: 'line',
+  data: {
+    labels: ['W9 (28/02)', 'W10 (07/03)', 'W11 (14/03)', 'W12 (21/03)', 'W13 (28/03)'],
+    datasets: [
+      { label: 'MLB', data: [11.99, 11.35, 10.71, 10.81, 10.50], borderColor: '#4f8ef7', backgroundColor: 'rgba(79,142,247,0.07)', tension: 0.35, pointRadius: 4 },
+      { label: 'MLM', data: [13.67, 14.46, 14.49, 15.51, 15.34], borderColor: '#ff8c42', backgroundColor: 'rgba(255,140,66,0.07)', tension: 0.35, pointRadius: 4 },
+      { label: 'MLA', data: [13.28, 12.98, 11.66, 12.50, 12.77], borderColor: '#00c48c', backgroundColor: 'rgba(0,196,140,0.07)', tension: 0.35, pointRadius: 4 },
+      { label: 'MLC', data: [14.94, 14.99, 13.94, 13.50, 13.16], borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.07)', tension: 0.35, pointRadius: 4 },
+      { label: 'MCO', data: [19.83, 19.62, 18.67, 18.50, 19.13], borderColor: '#ff4d6a', backgroundColor: 'rgba(255,77,106,0.07)', tension: 0.35, pointRadius: 4 },
+    ]
   },
-  W3:  {
-    MLB:{ '3P':{bs:13.56,str:2.35,sv:1.55,ag:3.48,exc:6.18}, CBT:null, '3P+CBT':{bs:13.56,str:2.35,sv:1.55,ag:3.48,exc:6.18}, '1P/PL':{bs:25.58,str:4.14,sv:2.93,ag:5.31,exc:13.19} },
-    MLM:{ '3P':{bs:11.64,str:1.04,sv:1.59,ag:2.83,exc:6.17}, CBT:{bs:13.27,str:1.28,sv:2.29,ag:1.90,exc:7.80}, '3P+CBT':{bs:12.11,str:1.11,sv:1.79,ag:2.56,exc:6.64}, '1P/PL':{bs:46.06,str:3.47,sv:1.68,ag:16.34,exc:24.56} },
-    MLA:{ '3P':{bs:14.79,str:1.17,sv:1.35,ag:5.45,exc:6.82}, CBT:null, '3P+CBT':{bs:14.79,str:1.17,sv:1.35,ag:5.45,exc:6.82}, '1P/PL':{bs:37.93,str:2.18,sv:2.22,ag:9.84,exc:23.55} },
-    MLC:{ '3P':{bs:16.77,str:1.29,sv:1.81,ag:6.46,exc:7.21}, CBT:{bs:20.48,str:0.92,sv:4.53,ag:3.56,exc:11.46}, '3P+CBT':{bs:17.04,str:1.26,sv:2.01,ag:6.24,exc:7.52}, '1P/PL':{bs:19.87,str:2.43,sv:0.96,ag:4.16,exc:12.32} },
-    MCO:{ '3P':{bs:23.66,str:1.51,sv:3.97,ag:9.84,exc:8.30}, CBT:null, '3P+CBT':{bs:23.66,str:1.51,sv:3.97,ag:9.84,exc:8.30}, '1P/PL':{bs:40.92,str:1.79,sv:2.86,ag:8.78,exc:27.48} },
-  },
-  W4:  {
-    MLB:{ '3P':{bs:12.70,str:1.81,sv:1.53,ag:3.67,exc:5.69}, CBT:null, '3P+CBT':{bs:12.70,str:1.81,sv:1.53,ag:3.67,exc:5.69}, '1P/PL':{bs:25.49,str:5.66,sv:2.92,ag:4.69,exc:12.22} },
-    MLM:{ '3P':{bs:11.71,str:0.92,sv:1.66,ag:2.93,exc:6.19}, CBT:{bs:13.25,str:1.38,sv:2.49,ag:1.92,exc:7.47}, '3P+CBT':{bs:12.16,str:1.05,sv:1.90,ag:2.64,exc:6.56}, '1P/PL':{bs:50.16,str:3.38,sv:1.67,ag:20.16,exc:24.94} },
-    MLA:{ '3P':{bs:14.24,str:1.26,sv:1.31,ag:5.24,exc:6.42}, CBT:null, '3P+CBT':{bs:14.24,str:1.26,sv:1.31,ag:5.24,exc:6.42}, '1P/PL':{bs:35.55,str:2.03,sv:2.34,ag:8.94,exc:21.59} },
-    MLC:{ '3P':{bs:16.20,str:1.32,sv:2.06,ag:6.14,exc:6.68}, CBT:{bs:20.63,str:0.86,sv:4.75,ag:3.73,exc:11.30}, '3P+CBT':{bs:16.52,str:1.28,sv:2.25,ag:5.97,exc:7.00}, '1P/PL':{bs:22.09,str:2.23,sv:2.14,ag:4.10,exc:13.48} },
-    MCO:{ '3P':{bs:23.46,str:1.32,sv:4.19,ag:9.91,exc:7.98}, CBT:null, '3P+CBT':{bs:23.46,str:1.32,sv:4.19,ag:9.91,exc:7.98}, '1P/PL':{bs:35.45,str:1.18,sv:3.05,ag:6.42,exc:24.51} },
-  },
-  W5:  {
-    MLB:{ '3P':{bs:13.01,str:1.79,sv:1.35,ag:3.82,exc:6.04}, CBT:null, '3P+CBT':{bs:13.01,str:1.79,sv:1.35,ag:3.82,exc:6.04}, '1P/PL':{bs:25.88,str:5.98,sv:2.87,ag:5.30,exc:11.73} },
-    MLM:{ '3P':{bs:12.43,str:0.97,sv:1.64,ag:3.12,exc:6.70}, CBT:{bs:13.14,str:1.36,sv:2.57,ag:1.90,exc:7.31}, '3P+CBT':{bs:12.64,str:1.08,sv:1.91,ag:2.76,exc:6.88}, '1P/PL':{bs:44.81,str:3.12,sv:1.64,ag:17.43,exc:22.55} },
-    MLA:{ '3P':{bs:13.66,str:0.99,sv:1.24,ag:5.23,exc:6.18}, CBT:null, '3P+CBT':{bs:13.66,str:0.99,sv:1.24,ag:5.23,exc:6.18}, '1P/PL':{bs:34.59,str:3.01,sv:2.14,ag:7.94,exc:20.87} },
-    MLC:{ '3P':{bs:15.71,str:1.12,sv:1.92,ag:6.16,exc:6.49}, CBT:{bs:20.84,str:0.81,sv:4.57,ag:3.41,exc:12.04}, '3P+CBT':{bs:16.07,str:1.10,sv:2.11,ag:5.97,exc:6.89}, '1P/PL':{bs:22.17,str:2.72,sv:2.19,ag:3.75,exc:13.36} },
-    MCO:{ '3P':{bs:23.13,str:1.02,sv:3.78,ag:9.96,exc:8.31}, CBT:null, '3P+CBT':{bs:23.13,str:1.02,sv:3.78,ag:9.96,exc:8.31}, '1P/PL':{bs:30.11,str:1.86,sv:2.40,ag:5.14,exc:20.32} },
-  },
-  W6:  {
-    MLB:{ '3P':{bs:13.43,str:1.75,sv:1.26,ag:3.83,exc:6.58}, CBT:null, '3P+CBT':{bs:13.43,str:1.75,sv:1.26,ag:3.83,exc:6.58}, '1P/PL':{bs:23.35,str:4.63,sv:2.87,ag:4.87,exc:10.97} },
-    MLM:{ '3P':{bs:13.02,str:0.91,sv:1.66,ag:3.27,exc:7.18}, CBT:{bs:13.28,str:1.24,sv:2.57,ag:1.95,exc:7.53}, '3P+CBT':{bs:13.10,str:1.00,sv:1.93,ag:2.88,exc:7.28}, '1P/PL':{bs:43.64,str:3.31,sv:1.59,ag:17.12,exc:21.52} },
-    MLA:{ '3P':{bs:13.51,str:0.92,sv:1.18,ag:5.24,exc:6.15}, CBT:null, '3P+CBT':{bs:13.51,str:0.92,sv:1.18,ag:5.24,exc:6.15}, '1P/PL':{bs:32.32,str:2.10,sv:2.00,ag:6.96,exc:20.62} },
-    MLC:{ '3P':{bs:15.90,str:1.34,sv:1.89,ag:6.16,exc:6.49}, CBT:{bs:20.68,str:0.77,sv:4.41,ag:3.28,exc:12.21}, '3P+CBT':{bs:16.25,str:1.30,sv:2.08,ag:5.95,exc:6.91}, '1P/PL':{bs:21.73,str:2.42,sv:1.99,ag:4.28,exc:12.88} },
-    MCO:{ '3P':{bs:22.79,str:1.14,sv:3.52,ag:9.88,exc:8.20}, CBT:null, '3P+CBT':{bs:22.79,str:1.14,sv:3.52,ag:9.88,exc:8.20}, '1P/PL':{bs:28.52,str:1.57,sv:2.25,ag:5.91,exc:18.05} },
-  },
-  W7:  {
-    MLB:{ '3P':{bs:13.02,str:1.70,sv:1.23,ag:3.82,exc:6.26}, CBT:null, '3P+CBT':{bs:13.02,str:1.70,sv:1.23,ag:3.82,exc:6.26}, '1P/PL':{bs:21.75,str:4.53,sv:2.85,ag:4.90,exc:9.45} },
-    MLM:{ '3P':{bs:13.29,str:1.05,sv:1.68,ag:3.28,exc:7.27}, CBT:{bs:13.70,str:1.40,sv:2.53,ag:2.01,exc:7.76}, '3P+CBT':{bs:13.41,str:1.15,sv:1.93,ag:2.91,exc:7.42}, '1P/PL':{bs:41.67,str:2.57,sv:1.52,ag:15.96,exc:21.48} },
-    MLA:{ '3P':{bs:13.19,str:1.00,sv:1.20,ag:5.23,exc:5.74}, CBT:null, '3P+CBT':{bs:13.19,str:1.00,sv:1.20,ag:5.23,exc:5.74}, '1P/PL':{bs:30.60,str:2.62,sv:1.97,ag:6.13,exc:19.41} },
-    MLC:{ '3P':{bs:15.49,str:1.29,sv:2.00,ag:6.03,exc:6.17}, CBT:{bs:22.94,str:1.49,sv:4.49,ag:3.76,exc:13.21}, '3P+CBT':{bs:16.01,str:1.31,sv:2.17,ag:5.87,exc:6.66}, '1P/PL':{bs:22.53,str:2.75,sv:2.27,ag:4.76,exc:12.26} },
-    MCO:{ '3P':{bs:22.33,str:1.09,sv:3.24,ag:9.74,exc:8.23}, CBT:null, '3P+CBT':{bs:22.33,str:1.09,sv:3.24,ag:9.74,exc:8.23}, '1P/PL':{bs:27.81,str:1.60,sv:2.21,ag:7.76,exc:15.53} },
-  },
-  W8:  {
-    MLB:{ '3P':{bs:12.58,str:1.69,sv:1.23,ag:3.68,exc:5.96}, CBT:null, '3P+CBT':{bs:12.58,str:1.69,sv:1.23,ag:3.68,exc:5.96}, '1P/PL':{bs:20.93,str:3.61,sv:2.77,ag:4.32,exc:10.21} },
-    MLM:{ '3P':{bs:13.10,str:1.06,sv:1.79,ag:3.12,exc:7.12}, CBT:{bs:14.62,str:1.52,sv:2.73,ag:2.10,exc:8.26}, '3P+CBT':{bs:13.55,str:1.20,sv:2.07,ag:2.83,exc:7.45}, '1P/PL':{bs:38.82,str:2.62,sv:1.59,ag:14.65,exc:19.83} },
-    MLA:{ '3P':{bs:13.91,str:0.99,sv:1.31,ag:5.37,exc:6.23}, CBT:null, '3P+CBT':{bs:13.91,str:0.99,sv:1.31,ag:5.37,exc:6.23}, '1P/PL':{bs:29.62,str:2.58,sv:2.09,ag:6.45,exc:18.49} },
-    MLC:{ '3P':{bs:14.70,str:0.94,sv:1.91,ag:5.84,exc:6.01}, CBT:{bs:24.91,str:1.45,sv:4.36,ag:4.52,exc:14.58}, '3P+CBT':{bs:15.34,str:0.97,sv:2.06,ag:5.75,exc:6.54}, '1P/PL':{bs:22.27,str:2.11,sv:2.17,ag:5.47,exc:12.35} },
-    MCO:{ '3P':{bs:20.81,str:1.01,sv:2.98,ag:9.31,exc:7.47}, CBT:null, '3P+CBT':{bs:20.81,str:1.01,sv:2.98,ag:9.31,exc:7.47}, '1P/PL':{bs:25.25,str:1.79,sv:2.07,ag:7.12,exc:13.94} },
-  },
-  W9:  {
-    MLB:{ '3P':{bs:12.12,str:1.80,sv:1.20,ag:3.35,exc:5.76}, CBT:null, '3P+CBT':{bs:12.12,str:1.80,sv:1.20,ag:3.35,exc:5.76}, '1P/PL':{bs:18.68,str:4.70,sv:2.51,ag:6.14,exc:5.32} },
-    MLM:{ '3P':{bs:13.13,str:0.88,sv:1.86,ag:3.26,exc:7.13}, CBT:{bs:15.21,str:1.17,sv:2.89,ag:2.44,exc:8.71}, '3P+CBT':{bs:13.73,str:0.96,sv:2.16,ag:3.02,exc:7.59}, '1P/PL':{bs:32.57,str:2.62,sv:1.39,ag:18.27,exc:10.21} },
-    MLA:{ '3P':{bs:13.28,str:1.27,sv:1.24,ag:4.97,exc:5.79}, CBT:null, '3P+CBT':{bs:13.28,str:1.27,sv:1.24,ag:4.97,exc:5.79}, '1P/PL':{bs:26.85,str:2.79,sv:1.88,ag:9.26,exc:12.92} },
-    MLC:{ '3P':{bs:14.44,str:0.94,sv:1.83,ag:5.71,exc:5.95}, CBT:{bs:23.85,str:0.89,sv:4.02,ag:3.97,exc:14.97}, '3P+CBT':{bs:15.05,str:0.93,sv:1.97,ag:5.60,exc:6.53}, '1P/PL':{bs:20.14,str:3.00,sv:1.76,ag:6.37,exc:8.86} },
-    MCO:{ '3P':{bs:19.83,str:0.97,sv:2.90,ag:8.96,exc:6.95}, CBT:null, '3P+CBT':{bs:19.83,str:0.97,sv:2.90,ag:8.96,exc:6.95}, '1P/PL':{bs:22.45,str:1.92,sv:2.22,ag:9.73,exc:8.27} },
-  },
-  W10: {
-    MLB:{ '3P':{bs:11.49,str:1.84,sv:1.14,ag:3.14,exc:5.36}, CBT:null, '3P+CBT':{bs:11.49,str:1.84,sv:1.14,ag:3.14,exc:5.36}, '1P/PL':{bs:16.64,str:3.88,sv:2.34,ag:5.49,exc:4.92} },
-    MLM:{ '3P':{bs:14.17,str:0.95,sv:1.93,ag:3.47,exc:7.82}, CBT:{bs:15.52,str:1.04,sv:2.86,ag:2.56,exc:9.06}, '3P+CBT':{bs:14.56,str:0.97,sv:2.20,ag:3.21,exc:8.18}, '1P/PL':{bs:28.05,str:3.20,sv:1.32,ag:14.36,exc:9.12} },
-    MLA:{ '3P':{bs:13.21,str:1.79,sv:1.23,ag:5.25,exc:4.91}, CBT:null, '3P+CBT':{bs:13.21,str:1.79,sv:1.23,ag:5.25,exc:4.91}, '1P/PL':{bs:27.38,str:2.74,sv:1.81,ag:10.10,exc:12.70} },
-    MLC:{ '3P':{bs:14.49,str:1.16,sv:1.81,ag:5.70,exc:5.80}, CBT:{bs:24.06,str:1.97,sv:4.02,ag:3.79,exc:14.28}, '3P+CBT':{bs:15.15,str:1.22,sv:1.96,ag:5.57,exc:6.39}, '1P/PL':{bs:19.20,str:2.63,sv:1.79,ag:6.81,exc:7.85} },
-    MCO:{ '3P':{bs:19.97,str:0.93,sv:3.08,ag:8.98,exc:6.94}, CBT:null, '3P+CBT':{bs:19.97,str:0.93,sv:3.08,ag:8.98,exc:6.94}, '1P/PL':{bs:21.26,str:1.20,sv:2.26,ag:9.45,exc:8.34} },
-  },
-  W11: {
-    MLB:{ '3P':{bs:10.71,str:1.83,sv:1.11,ag:2.96,exc:4.80}, CBT:null, '3P+CBT':{bs:10.71,str:1.83,sv:1.11,ag:2.96,exc:4.80}, '1P/PL':{bs:14.39,str:2.87,sv:2.35,ag:4.61,exc:4.55} },
-    MLM:{ '3P':{bs:14.27,str:1.05,sv:1.95,ag:3.65,exc:7.62}, CBT:{bs:14.98,str:1.06,sv:2.76,ag:2.57,exc:8.58}, '3P+CBT':{bs:14.49,str:1.06,sv:2.19,ag:3.32,exc:7.91}, '1P/PL':{bs:27.61,str:3.49,sv:1.46,ag:13.65,exc:8.98} },
-    MLA:{ '3P':{bs:11.66,str:1.16,sv:1.19,ag:4.81,exc:4.47}, CBT:null, '3P+CBT':{bs:11.66,str:1.16,sv:1.19,ag:4.81,exc:4.47}, '1P/PL':{bs:26.56,str:2.06,sv:1.65,ag:10.35,exc:12.48} },
-    MLC:{ '3P':{bs:13.25,str:0.92,sv:1.79,ag:5.29,exc:5.24}, CBT:{bs:23.37,str:0.82,sv:4.13,ag:3.89,exc:14.53}, '3P+CBT':{bs:13.93,str:0.91,sv:1.94,ag:5.20,exc:5.87}, '1P/PL':{bs:18.05,str:2.12,sv:1.67,ag:6.83,exc:7.31} },
-    MCO:{ '3P':{bs:18.67,str:1.00,sv:2.91,ag:8.33,exc:6.39}, CBT:null, '3P+CBT':{bs:18.67,str:1.00,sv:2.91,ag:8.33,exc:6.39}, '1P/PL':{bs:19.41,str:1.51,sv:2.22,ag:7.90,exc:7.77} },
-  },
-  W12: {
-    MLB:{ '3P':{bs:10.26,str:1.80,sv:1.07,ag:2.95,exc:4.42}, CBT:null, '3P+CBT':{bs:10.26,str:1.80,sv:1.07,ag:2.95,exc:4.42}, '1P/PL':{bs:14.38,str:2.30,sv:2.38,ag:4.56,exc:5.14} },
-    MLM:{ '3P':{bs:14.65,str:1.04,sv:1.96,ag:3.85,exc:7.79}, CBT:{bs:15.17,str:1.04,sv:2.69,ag:2.65,exc:8.78}, '3P+CBT':{bs:14.81,str:1.04,sv:2.18,ag:3.48,exc:8.10}, '1P/PL':{bs:25.25,str:4.38,sv:1.43,ag:11.45,exc:7.97} },
-    MLA:{ '3P':{bs:10.88,str:1.03,sv:1.12,ag:4.48,exc:4.23}, CBT:null, '3P+CBT':{bs:10.88,str:1.03,sv:1.12,ag:4.48,exc:4.23}, '1P/PL':{bs:25.26,str:3.18,sv:1.24,ag:8.92,exc:11.89} },
-    MLC:{ '3P':{bs:12.45,str:0.83,sv:1.78,ag:4.93,exc:4.91}, CBT:{bs:23.16,str:0.69,sv:3.89,ag:3.73,exc:14.85}, '3P+CBT':{bs:13.13,str:0.83,sv:1.91,ag:4.85,exc:5.54}, '1P/PL':{bs:17.08,str:2.40,sv:1.86,ag:6.37,exc:6.44} },
-    MCO:{ '3P':{bs:18.41,str:1.10,sv:2.80,ag:8.04,exc:6.42}, CBT:null, '3P+CBT':{bs:18.41,str:1.10,sv:2.80,ag:8.04,exc:6.42}, '1P/PL':{bs:19.81,str:2.36,sv:2.02,ag:7.78,exc:7.65} },
-  },
-  W13: {
-    MLB:{ '3P':{bs:10.27,str:1.97,sv:1.02,ag:2.93,exc:4.35}, CBT:null, '3P+CBT':{bs:10.27,str:1.97,sv:1.02,ag:2.93,exc:4.35}, '1P/PL':{bs:14.72,str:3.11,sv:2.38,ag:4.34,exc:4.88} },
-    MLM:{ '3P':{bs:14.77,str:1.15,sv:1.88,ag:3.85,exc:7.89}, CBT:{bs:15.38,str:1.02,sv:2.58,ag:2.80,exc:8.98}, '3P+CBT':{bs:14.96,str:1.11,sv:2.10,ag:3.51,exc:8.24}, '1P/PL':{bs:26.89,str:6.23,sv:1.51,ag:10.92,exc:8.22} },
-    MLA:{ '3P':{bs:11.37,str:1.20,sv:1.12,ag:4.59,exc:4.43}, CBT:null, '3P+CBT':{bs:11.37,str:1.20,sv:1.12,ag:4.59,exc:4.43}, '1P/PL':{bs:23.91,str:3.93,sv:1.28,ag:8.24,exc:10.44} },
-    MLC:{ '3P':{bs:12.77,str:1.22,sv:1.69,ag:4.85,exc:5.00}, CBT:{bs:23.08,str:0.81,sv:3.56,ag:3.76,exc:14.95}, '3P+CBT':{bs:13.43,str:1.19,sv:1.81,ag:4.78,exc:5.63}, '1P/PL':{bs:15.97,str:2.77,sv:1.86,ag:5.39,exc:5.94} },
-    MCO:{ '3P':{bs:19.61,str:1.21,sv:2.92,ag:8.64,exc:6.81}, CBT:null, '3P+CBT':{bs:19.61,str:1.21,sv:2.92,ag:8.64,exc:6.81}, '1P/PL':{bs:20.60,str:3.27,sv:2.14,ag:7.97,exc:7.22} },
-  },
-};
-
-// ══════════════════════════════════════════════════════════════════════════════
-// VERT DATA — Bad Stock % por Vertical · W13 (25/03/2026) · Fonte: BigQuery
-// ══════════════════════════════════════════════════════════════════════════════
-const VERT_DATA = {
-  MLB: [
-    {v:'ENTERTAINMENT',              bs:18.11,str:2.04,sv:1.48,ag:5.84,exc:8.74,u:296533},
-    {v:'T & B',                      bs:15.56,str:1.93,sv:1.63,ag:5.02,exc:6.96,u:370691},
-    {v:'FASHION',                    bs:12.37,str:1.55,sv:2.01,ag:4.52,exc:4.25,u:1208362},
-    {v:'CPG',                        bs:11.97,str:2.31,sv:0.45,ag:3.44,exc:5.77,u:1140007},
-    {v:'OTHERS',                     bs:11.50,str:1.75,sv:1.04,ag:4.16,exc:4.54,u:24224},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:11.45,str:2.19,sv:0.97,ag:4.07,exc:4.21,u:452050},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:10.96,str:2.06,sv:2.33,ag:2.47,exc:4.10,u:1169720},
-    {v:'TECHNOLOGY',                 bs:10.04,str:3.38,sv:0.82,ag:2.31,exc:3.52,u:520142},
-    {v:'SPORTS',                     bs:9.81, str:1.43,sv:0.88,ag:2.68,exc:4.81,u:250018},
-    {v:'FURNISHING & HOUSEWARE',     bs:9.71, str:1.86,sv:0.95,ag:2.44,exc:4.46,u:706437},
-    {v:'HOME ELECTRONICS',           bs:9.33, str:3.21,sv:0.61,ag:2.39,exc:3.11,u:370751},
-    {v:'BEAUTY',                     bs:9.08, str:2.07,sv:0.82,ag:2.99,exc:3.19,u:426702},
-    {v:'HEALTH',                     bs:6.61, str:1.24,sv:0.45,ag:1.52,exc:3.40,u:370548},
-  ],
-  MLM: [
-    {v:'T & B',                      bs:27.06,str:1.51,sv:3.01,ag:6.90,exc:15.64,u:932306},
-    {v:'ENTERTAINMENT',              bs:21.64,str:1.64,sv:2.95,ag:7.82,exc:9.19,u:125156},
-    {v:'TECHNOLOGY',                 bs:18.70,str:1.93,sv:2.24,ag:4.65,exc:9.88,u:1287140},
-    {v:'OTHERS',                     bs:15.99,str:1.06,sv:1.33,ag:3.74,exc:9.86,u:39573},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:15.96,str:0.90,sv:2.02,ag:4.73,exc:8.30,u:786171},
-    {v:'SPORTS',                     bs:15.95,str:0.66,sv:1.66,ag:3.77,exc:9.85,u:340708},
-    {v:'FURNISHING & HOUSEWARE',     bs:14.98,str:0.70,sv:2.07,ag:3.06,exc:9.14,u:916832},
-    {v:'FASHION',                    bs:14.81,str:1.08,sv:3.20,ag:3.76,exc:6.76,u:1634062},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:14.43,str:0.96,sv:1.53,ag:3.21,exc:8.73,u:1284783},
-    {v:'BEAUTY',                     bs:13.67,str:3.27,sv:1.41,ag:4.75,exc:4.24,u:725512},
-    {v:'HEALTH',                     bs:12.91,str:1.18,sv:1.42,ag:2.92,exc:7.39,u:301553},
-    {v:'CPG',                        bs:12.32,str:2.29,sv:0.71,ag:3.27,exc:6.06,u:461441},
-    {v:'HOME ELECTRONICS',           bs:12.11,str:1.23,sv:1.31,ag:2.93,exc:6.64,u:285897},
-  ],
-  MLA: [
-    {v:'OTHERS',                     bs:30.25,str:0.78,sv:1.29,ag:9.18,exc:18.98,u:5097},
-    {v:'T & B',                      bs:22.73,str:1.05,sv:2.95,ag:10.23,exc:8.46,u:40645},
-    {v:'FASHION',                    bs:17.09,str:1.12,sv:2.55,ag:8.43,exc:4.91,u:111685},
-    {v:'HOME ELECTRONICS',           bs:16.75,str:1.91,sv:0.88,ag:6.03,exc:7.93,u:51576},
-    {v:'BEAUTY',                     bs:16.04,str:2.93,sv:1.07,ag:5.26,exc:6.78,u:104039},
-    {v:'ENTERTAINMENT',              bs:12.54,str:1.87,sv:0.85,ag:6.59,exc:3.19,u:10448},
-    {v:'CPG',                        bs:12.50,str:1.69,sv:0.62,ag:3.35,exc:6.84,u:189499},
-    {v:'TECHNOLOGY',                 bs:12.12,str:1.34,sv:1.07,ag:6.02,exc:3.68,u:57547},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:11.78,str:1.16,sv:1.05,ag:6.55,exc:3.00,u:26179},
-    {v:'SPORTS',                     bs:10.73,str:0.99,sv:1.35,ag:4.69,exc:3.68,u:25227},
-    {v:'FURNISHING & HOUSEWARE',     bs:10.24,str:1.11,sv:1.04,ag:4.40,exc:3.67,u:73498},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:10.03,str:1.32,sv:1.05,ag:4.36,exc:3.29,u:88665},
-    {v:'HEALTH',                     bs:7.49, str:0.82,sv:0.81,ag:2.64,exc:3.22,u:30599},
-  ],
-  MLC: [
-    {v:'T & B',                      bs:25.73,str:0.86,sv:3.59,ag:11.46,exc:9.80,u:63504},
-    {v:'ENTERTAINMENT',              bs:21.20,str:1.85,sv:3.90,ag:7.82,exc:7.55,u:13474},
-    {v:'FASHION',                    bs:17.83,str:0.98,sv:5.36,ag:5.76,exc:5.72,u:117701},
-    {v:'SPORTS',                     bs:17.28,str:1.10,sv:2.55,ag:6.43,exc:7.19,u:35132},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:15.84,str:1.23,sv:1.95,ag:7.44,exc:5.20,u:30223},
-    {v:'OTHERS',                     bs:14.94,str:0.49,sv:0.95,ag:7.78,exc:5.72,u:2150},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:13.56,str:0.93,sv:1.44,ag:5.24,exc:5.93,u:107265},
-    {v:'TECHNOLOGY',                 bs:13.43,str:1.94,sv:1.38,ag:5.62,exc:4.48,u:52861},
-    {v:'HEALTH',                     bs:12.93,str:1.12,sv:1.39,ag:4.11,exc:6.31,u:34966},
-    {v:'HOME ELECTRONICS',           bs:12.65,str:1.62,sv:1.00,ag:4.30,exc:5.72,u:25090},
-    {v:'FURNISHING & HOUSEWARE',     bs:12.55,str:0.81,sv:1.53,ag:4.92,exc:5.28,u:52467},
-    {v:'CPG',                        bs:10.53,str:1.62,sv:0.57,ag:2.54,exc:5.81,u:145835},
-    {v:'BEAUTY',                     bs:9.90, str:1.46,sv:0.99,ag:4.14,exc:3.31,u:57016},
-  ],
-  MCO: [
-    {v:'T & B',                      bs:40.57,str:1.65,sv:7.64,ag:16.06,exc:15.13,u:18768},
-    {v:'ENTERTAINMENT',              bs:27.33,str:4.49,sv:5.02,ag:10.86,exc:6.93,u:2931},
-    {v:'CPG',                        bs:23.57,str:2.62,sv:3.31,ag:6.07,exc:11.57,u:22818},
-    {v:'FASHION',                    bs:22.10,str:0.77,sv:3.57,ag:14.46,exc:3.22,u:15975},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:21.43,str:1.16,sv:1.73,ag:12.61,exc:5.90,u:8476},
-    {v:'OTHERS',                     bs:20.04,str:0.25,sv:2.58,ag:14.20,exc:3.01,u:566},
-    {v:'TECHNOLOGY',                 bs:19.16,str:1.47,sv:2.35,ag:9.50,exc:5.79,u:26272},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:18.72,str:0.74,sv:3.49,ag:8.30,exc:6.18,u:18982},
-    {v:'FURNISHING & HOUSEWARE',     bs:17.71,str:0.62,sv:2.95,ag:7.16,exc:6.96,u:15617},
-    {v:'SPORTS',                     bs:17.30,str:0.46,sv:1.88,ag:8.15,exc:6.76,u:8529},
-    {v:'HEALTH',                     bs:17.26,str:0.92,sv:1.40,ag:8.04,exc:6.87,u:14350},
-    {v:'BEAUTY',                     bs:15.10,str:1.99,sv:2.27,ag:5.54,exc:5.29,u:18564},
-    {v:'HOME ELECTRONICS',           bs:12.43,str:0.61,sv:2.19,ag:4.84,exc:4.78,u:8192},
-  ],
-};
-
-// ══════════════════════════════════════════════════════════════════════════════
-// SEG KPI — Segmentação DIM_ESTRELLA · 3P initiative · W2–W13 · BigQuery
-// Colunas: bs, str, sv, ag, exc (%), u = bad stock unidades
-// ══════════════════════════════════════════════════════════════════════════════
-const SEG_KPI = {
-  W2: {
-    MLB: { ESTRELLA:{bs:1.23,str:1.22,sv:0.01,ag:0,exc:0,u:325198}, 'NO ESTRELLA':{bs:22.14,str:3.08,sv:2.79,ag:5.95,exc:10.32,u:7023695} },
-    MLM: { ESTRELLA:{bs:0.36,str:0.32,sv:0.03,ag:0,exc:0,u:36961}, 'NO ESTRELLA':{bs:15.17,str:1.25,sv:2.09,ag:4.12,exc:7.70,u:3652650} },
-    MLA: { ESTRELLA:{bs:0.70,str:0.68,sv:0.02,ag:0,exc:0,u:9065}, 'NO ESTRELLA':{bs:17.12,str:1.56,sv:1.72,ag:6.24,exc:7.59,u:741916} },
-    MLC: { ESTRELLA:{bs:0.96,str:0.95,sv:0.01,ag:0,exc:0,u:6975}, 'NO ESTRELLA':{bs:20.49,str:1.49,sv:2.27,ag:7.56,exc:9.15,u:583535} },
-    MCO: { ESTRELLA:{bs:1.03,str:1.00,sv:0.03,ag:0,exc:0,u:2335}, 'NO ESTRELLA':{bs:28.80,str:1.79,sv:4.68,ag:12.42,exc:9.88,u:174609} },
-  },
-  W3: {
-    MLB: { ESTRELLA:{bs:1.55,str:1.52,sv:0.03,ag:0,exc:0,u:401354}, 'NO ESTRELLA':{bs:23.45,str:3.03,sv:2.80,ag:6.35,exc:11.26,u:7363876} },
-    MLM: { ESTRELLA:{bs:0.55,str:0.50,sv:0.06,ag:0,exc:0,u:57088}, 'NO ESTRELLA':{bs:16.23,str:1.27,sv:2.23,ag:4.00,exc:8.73,u:4037624} },
-    MLA: { ESTRELLA:{bs:0.72,str:0.69,sv:0.03,ag:0,exc:0,u:9132}, 'NO ESTRELLA':{bs:19.00,str:1.31,sv:1.74,ag:7.07,exc:8.86,u:801503} },
-    MLC: { ESTRELLA:{bs:1.09,str:1.04,sv:0.05,ag:0,exc:0,u:8229}, 'NO ESTRELLA':{bs:20.66,str:1.35,sv:2.25,ag:8.06,exc:8.99,u:627729} },
-    MCO: { ESTRELLA:{bs:1.10,str:1.02,sv:0.07,ag:0,exc:0,u:2383}, 'NO ESTRELLA':{bs:31.77,str:1.69,sv:5.37,ag:13.37,exc:11.29,u:192035} },
-  },
-  W4: {
-    MLB: { ESTRELLA:{bs:1.12,str:1.07,sv:0.04,ag:0,exc:0,u:286553}, 'NO ESTRELLA':{bs:22.20,str:2.42,sv:2.75,ag:6.68,exc:10.34,u:6955351} },
-    MLM: { ESTRELLA:{bs:0.53,str:0.44,sv:0.09,ag:0,exc:0,u:54171}, 'NO ESTRELLA':{bs:16.26,str:1.12,sv:2.30,ag:4.13,exc:8.71,u:4109065} },
-    MLA: { ESTRELLA:{bs:0.71,str:0.66,sv:0.05,ag:0,exc:0,u:8994}, 'NO ESTRELLA':{bs:18.20,str:1.44,sv:1.67,ag:6.77,exc:8.30,u:787946} },
-    MLC: { ESTRELLA:{bs:0.67,str:0.56,sv:0.11,ag:0,exc:0,u:5218}, 'NO ESTRELLA':{bs:20.07,str:1.51,sv:2.54,ag:7.67,exc:8.34,u:630390} },
-    MCO: { ESTRELLA:{bs:0.61,str:0.54,sv:0.06,ag:0,exc:0,u:1340}, 'NO ESTRELLA':{bs:31.95,str:1.60,sv:5.73,ag:13.60,exc:10.94,u:188696} },
-  },
-  W5: {
-    MLB: { ESTRELLA:{bs:0.86,str:0.85,sv:0.00,ag:0,exc:0,u:227392}, 'NO ESTRELLA':{bs:23.77,str:2.62,sv:2.54,ag:7.20,exc:11.39,u:7115940} },
-    MLM: { ESTRELLA:{bs:0.41,str:0.40,sv:0.00,ag:0,exc:0,u:45084}, 'NO ESTRELLA':{bs:17.72,str:1.22,sv:2.36,ag:4.49,exc:9.64,u:4481399} },
-    MLA: { ESTRELLA:{bs:0.57,str:0.56,sv:0.01,ag:0,exc:0,u:7897}, 'NO ESTRELLA':{bs:17.99,str:1.13,sv:1.65,ag:6.96,exc:8.23,u:754662} },
-    MLC: { ESTRELLA:{bs:0.48,str:0.47,sv:0.01,ag:0,exc:0,u:3681}, 'NO ESTRELLA':{bs:19.41,str:1.28,sv:2.39,ag:7.66,exc:8.07,u:616552} },
-    MCO: { ESTRELLA:{bs:0.39,str:0.36,sv:0.02,ag:0,exc:0,u:866}, 'NO ESTRELLA':{bs:31.75,str:1.27,sv:5.21,ag:13.73,exc:11.45,u:188228} },
-  },
-  W6: {
-    MLB: { ESTRELLA:{bs:0.90,str:0.89,sv:0.02,ag:0,exc:0,u:231275}, 'NO ESTRELLA':{bs:24.36,str:2.50,sv:2.35,ag:7.18,exc:12.32,u:7136052} },
-    MLM: { ESTRELLA:{bs:0.45,str:0.43,sv:0.02,ag:0,exc:0,u:49303}, 'NO ESTRELLA':{bs:18.45,str:1.11,sv:2.37,ag:4.68,exc:10.29,u:4679046} },
-    MLA: { ESTRELLA:{bs:0.52,str:0.50,sv:0.02,ag:0,exc:0,u:6788}, 'NO ESTRELLA':{bs:17.65,str:1.05,sv:1.56,ag:6.91,exc:8.11,u:723628} },
-    MLC: { ESTRELLA:{bs:1.83,str:1.72,sv:0.10,ag:0,exc:0,u:13770}, 'NO ESTRELLA':{bs:19.26,str:1.25,sv:2.32,ag:7.64,exc:8.04,u:606670} },
-    MCO: { ESTRELLA:{bs:0.64,str:0.57,sv:0.07,ag:0,exc:0,u:1486}, 'NO ESTRELLA':{bs:31.22,str:1.36,sv:4.83,ag:13.64,exc:11.32,u:189607} },
-  },
-  W7: {
-    MLB: { ESTRELLA:{bs:1.04,str:1.01,sv:0.02,ag:0,exc:0,u:264933}, 'NO ESTRELLA':{bs:23.54,str:2.30,sv:2.29,ag:7.18,exc:11.75,u:6852959} },
-    MLM: { ESTRELLA:{bs:0.64,str:0.59,sv:0.05,ag:0,exc:0,u:71575}, 'NO ESTRELLA':{bs:18.87,str:1.26,sv:2.39,ag:4.73,exc:10.48,u:4787744} },
-    MLA: { ESTRELLA:{bs:0.75,str:0.72,sv:0.03,ag:0.01,exc:0,u:9642}, 'NO ESTRELLA':{bs:17.10,str:1.09,sv:1.57,ag:6.87,exc:7.55,u:698627} },
-    MLC: { ESTRELLA:{bs:1.80,str:1.74,sv:0.06,ag:0,exc:0,u:13562}, 'NO ESTRELLA':{bs:18.65,str:1.19,sv:2.44,ag:7.42,exc:7.59,u:609585} },
-    MCO: { ESTRELLA:{bs:0.66,str:0.53,sv:0.13,ag:0,exc:0,u:1625}, 'NO ESTRELLA':{bs:30.82,str:1.31,sv:4.46,ag:13.55,exc:11.46,u:192852} },
-  },
-  W8: {
-    MLB: { ESTRELLA:{bs:1.02,str:0.99,sv:0.03,ag:0,exc:0,u:263567}, 'NO ESTRELLA':{bs:22.78,str:2.32,sv:2.28,ag:6.93,exc:11.23,u:6672579} },
-    MLM: { ESTRELLA:{bs:0.69,str:0.57,sv:0.12,ag:0,exc:0,u:78998}, 'NO ESTRELLA':{bs:18.58,str:1.28,sv:2.53,ag:4.50,exc:10.26,u:4835190} },
-    MLA: { ESTRELLA:{bs:0.68,str:0.65,sv:0.03,ag:0,exc:0,u:8470}, 'NO ESTRELLA':{bs:18.00,str:1.09,sv:1.71,ag:7.02,exc:8.16,u:720593} },
-    MLC: { ESTRELLA:{bs:0.62,str:0.53,sv:0.10,ag:0,exc:0,u:4678}, 'NO ESTRELLA':{bs:17.85,str:1.03,sv:2.31,ag:7.14,exc:7.35,u:598985} },
-    MCO: { ESTRELLA:{bs:0.49,str:0.33,sv:0.16,ag:0,exc:0,u:1216}, 'NO ESTRELLA':{bs:28.96,str:1.28,sv:4.11,ag:13.04,exc:10.46,u:180180} },
-  },
-  W9: {
-    MLB: { ESTRELLA:{bs:1.05,str:1.05,sv:0.00,ag:0,exc:0,u:287389}, 'NO ESTRELLA':{bs:22.91,str:2.52,sv:2.37,ag:6.61,exc:11.38,u:6409801} },
-    MLM: { ESTRELLA:{bs:0.45,str:0.45,sv:0.01,ag:0,exc:0,u:57104}, 'NO ESTRELLA':{bs:19.58,str:1.09,sv:2.80,ag:4.91,exc:10.76,u:4879510} },
-    MLA: { ESTRELLA:{bs:0.75,str:0.75,sv:0.01,ag:0,exc:0,u:10098}, 'NO ESTRELLA':{bs:17.65,str:1.45,sv:1.67,ag:6.70,exc:7.81,u:679013} },
-    MLC: { ESTRELLA:{bs:0.51,str:0.51,sv:0.00,ag:0,exc:0,u:3885}, 'NO ESTRELLA':{bs:17.79,str:1.04,sv:2.27,ag:7.08,exc:7.38,u:568865} },
-    MCO: { ESTRELLA:{bs:0.42,str:0.42,sv:0.00,ag:0,exc:0,u:1098}, 'NO ESTRELLA':{bs:28.13,str:1.21,sv:4.14,ag:12.79,exc:9.92,u:173270} },
-  },
-  W10: {
-    MLB: { ESTRELLA:{bs:1.11,str:1.10,sv:0.01,ag:0,exc:0,u:300434}, 'NO ESTRELLA':{bs:21.61,str:2.56,sv:2.23,ag:6.19,exc:10.59,u:5999484} },
-    MLM: { ESTRELLA:{bs:0.58,str:0.56,sv:0.03,ag:0,exc:0,u:71406}, 'NO ESTRELLA':{bs:20.79,str:1.14,sv:2.85,ag:5.16,exc:11.63,u:5225063} },
-    MLA: { ESTRELLA:{bs:0.82,str:0.77,sv:0.05,ag:0,exc:0,u:10645}, 'NO ESTRELLA':{bs:17.37,str:2.14,sv:1.63,ag:7.02,exc:6.56,u:671878} },
-    MLC: { ESTRELLA:{bs:0.84,str:0.83,sv:0.01,ag:0,exc:0,u:6204}, 'NO ESTRELLA':{bs:17.70,str:1.24,sv:2.23,ag:7.05,exc:7.17,u:552425} },
-    MCO: { ESTRELLA:{bs:0.57,str:0.53,sv:0.03,ag:0,exc:0,u:1418}, 'NO ESTRELLA':{bs:28.03,str:1.10,sv:4.34,ag:12.71,exc:9.82,u:169055} },
-  },
-  W11: {
-    MLB: { ESTRELLA:{bs:1.22,str:1.18,sv:0.03,ag:0,exc:0,u:334168}, 'NO ESTRELLA':{bs:19.57,str:2.43,sv:2.11,ag:5.72,exc:9.29,u:5761660} },
-    MLM: { ESTRELLA:{bs:0.65,str:0.61,sv:0.04,ag:0,exc:0,u:78801}, 'NO ESTRELLA':{bs:20.72,str:1.26,sv:2.85,ag:5.37,exc:11.22,u:5331395} },
-    MLA: { ESTRELLA:{bs:0.70,str:0.66,sv:0.03,ag:0,exc:0,u:9312}, 'NO ESTRELLA':{bs:15.21,str:1.32,sv:1.57,ag:6.37,exc:5.92,u:629477} },
-    MLC: { ESTRELLA:{bs:0.66,str:0.61,sv:0.05,ag:0,exc:0,u:5124}, 'NO ESTRELLA':{bs:16.11,str:0.99,sv:2.18,ag:6.50,exc:6.43,u:552207} },
-    MCO: { ESTRELLA:{bs:0.32,str:0.28,sv:0.03,ag:0,exc:0,u:836}, 'NO ESTRELLA':{bs:26.29,str:1.30,sv:4.10,ag:11.80,exc:9.04,u:166910} },
-  },
-  W12: {
-    MLB: { ESTRELLA:{bs:1.26,str:1.22,sv:0.04,ag:0,exc:0,u:355577}, 'NO ESTRELLA':{bs:18.56,str:2.33,sv:2.02,ag:5.68,exc:8.51,u:5649479} },
-    MLM: { ESTRELLA:{bs:0.69,str:0.62,sv:0.07,ag:0,exc:0,u:81594}, 'NO ESTRELLA':{bs:21.12,str:1.24,sv:2.83,ag:5.64,exc:11.41,u:5399306} },
-    MLA: { ESTRELLA:{bs:0.69,str:0.64,sv:0.05,ag:0,exc:0,u:9205}, 'NO ESTRELLA':{bs:13.95,str:1.15,sv:1.44,ag:5.84,exc:5.50,u:620331} },
-    MLC: { ESTRELLA:{bs:0.48,str:0.41,sv:0.07,ag:0,exc:0,u:4078}, 'NO ESTRELLA':{bs:15.22,str:0.93,sv:2.17,ag:6.06,exc:6.04,u:561852} },
-    MCO: { ESTRELLA:{bs:0.79,str:0.58,sv:0.21,ag:0,exc:0,u:2034}, 'NO ESTRELLA':{bs:25.56,str:1.31,sv:3.85,ag:11.31,exc:9.03,u:162339} },
-  },
-  W13: {
-    MLB: { ESTRELLA:{bs:1.22,str:1.18,sv:0.04,ag:0,exc:0,u:337655}, 'NO ESTRELLA':{bs:18.43,str:2.38,sv:1.97,ag:5.66,exc:8.39,u:5555941} },
-    MLM: { ESTRELLA:{bs:0.63,str:0.58,sv:0.05,ag:0,exc:0,u:72742}, 'NO ESTRELLA':{bs:21.20,str:1.30,sv:2.77,ag:5.61,exc:11.52,u:5345563} },
-    MLA: { ESTRELLA:{bs:0.67,str:0.60,sv:0.07,ag:0,exc:0,u:8526}, 'NO ESTRELLA':{bs:14.44,str:1.09,sv:1.48,ag:6.03,exc:5.81,u:618562} },
-    MLC: { ESTRELLA:{bs:0.73,str:0.60,sv:0.13,ag:0,exc:0,u:6148}, 'NO ESTRELLA':{bs:15.38,str:1.10,sv:2.18,ag:6.02,exc:6.07,u:562311} },
-    MCO: { ESTRELLA:{bs:0.99,str:0.75,sv:0.24,ag:0,exc:0,u:2407}, 'NO ESTRELLA':{bs:26.60,str:1.38,sv:4.05,ag:11.83,exc:9.30,u:164105} },
-  },
-};
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER — INITIATIVE TABLE
-// ══════════════════════════════════════════════════════════════════════════════
-function renderInitiativeTable() {
-  const wid = state.selectedWeek;
-  const wObj = WEEKS.find(w => w.id === wid);
-  const lblEl = document.getElementById('init-week-lbl');
-  if (lblEl && wObj) lblEl.textContent = wObj.label;
-
-  const tbody = document.getElementById('init-summary-table');
-  if (!tbody) return;
-
-  function pct(v) { return v !== null && v !== undefined ? v.toFixed(2)+'%' : '—'; }
-  function devTd(act, tgtVal) {
-    if (act === null || act === undefined || tgtVal == null) return '<td>—</td>';
-    const n = act - tgtVal;
-    return `<td><span style="color:${n>0?'#ff4d6a':'#00c48c'};font-weight:700">${n>0?'+':''}${n.toFixed(2)}pp</span></td>`;
-  }
-
-  // Determine which initiatives to show based on filter
-  const ini = state.initiative;
-  let initiatives;
-  if (ini === 'ALL')                                initiatives = ['3P','CBT','3P+CBT','1P/PL'];
-  else if (ini === 'ESTRELLA' || ini === 'NO_ESTRELLA') initiatives = ['3P'];
-  else                                              initiatives = [ini];
-
-  // Which segments to show for 3P rows
-  const segFilter = ini === 'ESTRELLA' ? ['ESTRELLA']
-                  : ini === 'NO_ESTRELLA' ? ['NO ESTRELLA']
-                  : ['TOTAL','ESTRELLA','NO ESTRELLA'];
-
-  const INIT_LABELS = {
-    '3P':      '<span class="b b3p">3P</span>',
-    'CBT':     '<span class="b bcbt">CBT</span>',
-    '3P+CBT':  '<span class="b btot">3P+CBT</span>',
-    '1P/PL':   '<span class="b b1p">1P/PL</span>',
-  };
-  const SEG_LABELS = {
-    'TOTAL':       '<span class="b btot">Total</span>',
-    'ESTRELLA':    '<span class="b b1p">Asesorado</span>',
-    'NO ESTRELLA': '<span class="b b3p">Não Ases.</span>',
-  };
-
-  const wInitData = INIT_KPI[wid];
-  const wSegData  = SEG_KPI[wid];
-  let rows = '';
-
-  state.countries.forEach(site => {
-    const tgt = targetForWeek(wid, site);
-    const tgt3p = tgt;
-
-    if (!wInitData || !wInitData[site]) {
-      const d = (KPI[wid]||{})[site];
-      if (!d) {
-        rows += `<tr><td><b style="color:${SITE_COLORS[site]}">${site}</b></td><td colspan="12" style="color:var(--muted)">Sem dados para ${wid}</td></tr>`;
-        return;
-      }
-      const bsDev = tgt ? (d.bs - tgt.bs) : null;
-      rows += `<tr>
-        <td><b style="color:${SITE_COLORS[site]}">${site}</b></td>
-        <td><span class="b btot">TOTAL</span></td>
-        <td>—</td>
-        <td class="${tgt?(d.bs>tgt.bs?'vr':'vg'):'vy'}">${pct(d.bs)}</td>
-        <td>${bsDev!==null?`<span style="color:${bsDev>0?'#ff4d6a':'#00c48c'};font-weight:700">${bsDev>0?'+':''}${bsDev.toFixed(2)}pp</span>`:'—'}</td>
-        <td>${pct(d.str)}</td>${devTd(d.str,tgt&&tgt.str)}
-        <td>${pct(d.sv)}</td>${devTd(d.sv,tgt&&tgt.sv)}
-        <td>${pct(d.ag)}</td>${devTd(d.ag,tgt&&tgt.ag)}
-        <td>${pct(d.exc)}</td>${devTd(d.exc,tgt&&tgt.exc)}
-      </tr>`;
-      return;
-    }
-
-    const siteData = wInitData[site];
-    const showInits = initiatives.filter(i => !(i === 'CBT' && !siteData.CBT));
-
-    showInits.forEach(initKey => {
-      const is3P = initKey === '3P';
-      const siteSeg = wSegData && wSegData[site];
-
-      if (is3P) {
-        // Show TOTAL (from INIT_KPI) + ESTRELLA/NO ESTRELLA (from SEG_KPI) sub-rows
-        const segsToShow = segFilter;
-        segsToShow.forEach(seg => {
-          let d;
-          if (seg === 'TOTAL') {
-            d = siteData['3P'];
-          } else {
-            d = siteSeg && siteSeg[seg];
-          }
-          if (!d) return;
-          const bsDev = tgt3p ? (d.bs - tgt3p.bs) : null;
-          rows += `<tr>
-            <td><b style="color:${SITE_COLORS[site]}">${site}</b></td>
-            <td>${INIT_LABELS['3P']}</td>
-            <td>${SEG_LABELS[seg]}</td>
-            <td class="${tgt3p?(d.bs>tgt3p.bs?'vr':'vg'):'vy'}">${pct(d.bs)}</td>
-            <td>${bsDev!==null?`<span style="color:${bsDev>0?'#ff4d6a':'#00c48c'};font-weight:700">${bsDev>0?'+':''}${bsDev.toFixed(2)}pp</span>`:'—'}</td>
-            <td>${pct(d.str)}</td>${devTd(d.str,tgt3p&&tgt3p.str)}
-            <td>${pct(d.sv)}</td>${devTd(d.sv,tgt3p&&tgt3p.sv)}
-            <td>${pct(d.ag)}</td>${devTd(d.ag,tgt3p&&tgt3p.ag)}
-            <td>${pct(d.exc)}</td>${devTd(d.exc,tgt3p&&tgt3p.exc)}
-          </tr>`;
-        });
-      } else {
-        const d = siteData[initKey];
-        if (!d) return;
-        const bsDev = tgt3p ? (d.bs - tgt3p.bs) : null;
-        rows += `<tr>
-          <td><b style="color:${SITE_COLORS[site]}">${site}</b></td>
-          <td>${INIT_LABELS[initKey]||initKey}</td>
-          <td><span class="b btot">Total</span></td>
-          <td class="${tgt3p?(d.bs>tgt3p.bs?'vr':'vg'):'vy'}">${pct(d.bs)}</td>
-          <td>${bsDev!==null?`<span style="color:${bsDev>0?'#ff4d6a':'#00c48c'};font-weight:700">${bsDev>0?'+':''}${bsDev.toFixed(2)}pp</span>`:'—'}</td>
-          <td>${pct(d.str)}</td>${devTd(d.str,tgt3p&&tgt3p.str)}
-          <td>${pct(d.sv)}</td>${devTd(d.sv,tgt3p&&tgt3p.sv)}
-          <td>${pct(d.ag)}</td>${devTd(d.ag,tgt3p&&tgt3p.ag)}
-          <td>${pct(d.exc)}</td>${devTd(d.exc,tgt3p&&tgt3p.exc)}
-        </tr>`;
-      }
-    });
-  });
-  tbody.innerHTML = rows || '<tr><td colspan="13" class="no-data">Sem dados disponíveis</td></tr>';
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER — VERTICAIS CHART & TABLE
-// ══════════════════════════════════════════════════════════════════════════════
-let vertChart = null;
-function renderVertChart() {
-  if (vertChart) { vertChart.destroy(); vertChart = null; }
-  const ctx = document.getElementById('vertChart');
-  if (!ctx) return;
-
-  const activeSites = state.countries.filter(s => VERT_DATA[s]);
-  const lblEl = document.getElementById('vert-country-lbl');
-
-  if (activeSites.length === 0) {
-    if (lblEl) lblEl.textContent = 'Sem dados para países selecionados';
-    return;
-  }
-  if (lblEl) lblEl.textContent = activeSites.join(' + ') + ' · W13 (25/03/2026) · Bad Stock %';
-
-  // Collect union of all verticals, sorted by avg BS desc
-  let vertSet = new Set();
-  activeSites.forEach(s => VERT_DATA[s].forEach(d => vertSet.add(d.v)));
-  let verticals = [...vertSet];
-  // Sort by first active site's BS order (already sorted desc by BigQuery)
-  const firstSite = activeSites[0];
-  const siteOrder = VERT_DATA[firstSite].map(d=>d.v);
-  verticals.sort((a,b) => {
-    const ia = siteOrder.indexOf(a), ib = siteOrder.indexOf(b);
-    if (ia===-1 && ib===-1) return 0;
-    if (ia===-1) return 1;
-    if (ib===-1) return -1;
-    return ia - ib;
-  });
-
-  const datasets = activeSites.map(s => ({
-    label: s + ' BS %',
-    data: verticals.map(v => { const r = VERT_DATA[s].find(d=>d.v===v); return r ? r.bs : null; }),
-    backgroundColor: SITE_COLORS[s]+'bb',
-    borderColor: SITE_COLORS[s],
-    borderWidth: 1,
-  }));
-
-  vertChart = new Chart(ctx, {
-    type:'bar',
-    data:{ labels:verticals, datasets },
-    options:{
-      indexAxis:'y', responsive:true,
-      plugins:{
-        legend:{labels:{color:'#8890a8',boxWidth:8,font:{size:10}}},
-        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x!=null?c.parsed.x.toFixed(2)+'%':'N/D'}`}}
-      },
-      scales:{
-        x:{grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v+'%'}},
-        y:{grid:{display:false},ticks:{color:'#8890a8',font:{size:10}}}
-      }
-    }
-  });
-}
-
-function renderVertTable() {
-  const tbody = document.getElementById('vert-unified-table');
-  if (!tbody) return;
-  const activeSites = state.countries.filter(s => VERT_DATA[s]);
-
-  if (activeSites.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="14" class="no-data">Sem dados para os países selecionados</td></tr>';
-    return;
-  }
-
-  function pct(v) { return v!=null ? v.toFixed(2)+'%' : '—'; }
-  function devTd(act, tgtVal) {
-    if (act==null || tgtVal==null) return '<td>—</td>';
-    const n = act - tgtVal;
-    return `<td><span style="color:${n>0?'#ff4d6a':'#00c48c'};font-weight:700">${n>0?'+':''}${n.toFixed(2)}pp</span></td>`;
-  }
-  function fmtUnits(u) {
-    if (u==null) return '—';
-    if (u>=1000000) return (u/1000000).toFixed(1)+'M';
-    if (u>=1000)    return Math.round(u/1000)+'K';
-    return u.toString();
-  }
-
-  let rows = '';
-  activeSites.forEach(s => {
-    const tgt = (TARGETS[3]||{})[s];
-    const initLabel = '<span class="b btot">TOTAL</span>';
-    VERT_DATA[s].forEach((d) => {
-      rows += `<tr>
-        <td><b style="color:${SITE_COLORS[s]}">${s}</b></td>
-        <td>${initLabel}</td>
-        <td>${d.v}</td>
-        <td class="${tgt?(d.bs>tgt.bs?'vr':'vg'):'vy'}">${pct(d.bs)}</td>${devTd(d.bs,tgt&&tgt.bs)}
-        <td style="color:var(--muted)">${fmtUnits(d.u)}</td>
-        <td>${pct(d.str)}</td>${devTd(d.str,tgt&&tgt.str)}
-        <td>${pct(d.sv)}</td>${devTd(d.sv,tgt&&tgt.sv)}
-        <td>${pct(d.ag)}</td>${devTd(d.ag,tgt&&tgt.ag)}
-        <td>${pct(d.exc)}</td>${devTd(d.exc,tgt&&tgt.exc)}
-      </tr>`;
-    });
-  });
-  tbody.innerHTML = rows;
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER ALL
-// ══════════════════════════════════════════════════════════════════════════════
-function renderAll() {
-  renderKPIs();
-  renderSummary();
-  renderTrendChart();
-  renderCompChart();
-  renderTargetDetail();
-  renderInitiativeTable();
-  renderVertChart();
-  renderVertTable();
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// TAB NAVIGATION
-// ══════════════════════════════════════════════════════════════════════════════
-function showTab(name, event) {
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
-  if (event && event.target) event.target.classList.add('active');
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  renderAll();
+  options: { responsive: true, plugins: { legend: { labels: { color: '#8890a8', boxWidth: 10, font: { size: 11 } } }, tooltip: { mode: 'index', intersect: false, callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%` } } }, scales: { x: { grid: { color: 'rgba(46,51,80,0.5)' }, ticks: { color: '#8890a8', font: { size: 10 } } }, y: { grid: { color: 'rgba(46,51,80,0.5)' }, ticks: { color: '#8890a8', callback: v => v + '%' }, min: 8 } } }
 });
+
+// ── COMP CHART ────────────────────────────────────────────────────────────────
+new Chart(document.getElementById('compChart'), {
+  type: 'bar',
+  data: {
+    labels: ['MLB', 'MLM', 'MLA', 'MLC', 'MCO'],
+    datasets: [
+      { label: 'Stranded',   data: [2.06, 1.27, 1.37, 0.99, 1.03], backgroundColor: '#ff4d6a' },
+      { label: 'Sin Venta',  data: [1.20, 1.98, 1.18, 1.77, 2.77], backgroundColor: '#ff8c42' },
+      { label: 'Aging',      data: [2.96, 4.15, 5.08, 4.66, 8.63], backgroundColor: '#a78bfa' },
+      { label: 'Aging+Exc.', data: [4.27, 7.94, 5.12, 5.73, 6.67], backgroundColor: '#4f8ef7' },
+    ]
+  },
+  options: { responsive: true, plugins: { legend: { labels: { color: '#8890a8', boxWidth: 8, font: { size: 10 } } }, tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%` } } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { color: '#8890a8' } }, y: { stacked: true, grid: { color: 'rgba(46,51,80,0.5)' }, ticks: { color: '#8890a8', callback: v => v + '%' } } } }
+});
+
+// ── INITIATIVE CHART ──────────────────────────────────────────────────────────
+new Chart(document.getElementById('initChart'), {
+  type: 'bar',
+  data: {
+    labels: ['TOTAL', '3P', '1P/PL'],
+    datasets: [
+      { label: 'Stranded',   data: [2.1, 1.7, 4.7], backgroundColor: '#ff4d6a' },
+      { label: 'Sin Venta',  data: [1.2, 1.0, 2.4], backgroundColor: '#ff8c42' },
+      { label: 'Aging',      data: [3.0, 2.8, 4.3], backgroundColor: '#a78bfa' },
+      { label: 'Aging+Exc.', data: [4.3, 4.3, 4.4], backgroundColor: '#4f8ef7' },
+    ]
+  },
+  options: { responsive: true, plugins: { legend: { labels: { color: '#8890a8', boxWidth: 8, font: { size: 10 } } } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { color: '#8890a8' } }, y: { stacked: true, grid: { color: 'rgba(46,51,80,0.5)' }, ticks: { color: '#8890a8', callback: v => v + '%' } } } }
+});
+
+// ── VERTICAL DATA ─────────────────────────────────────────────────────────────
+const vertMLB = [
+  { v: 'CPG',                    pct: 2.96, items: 1514756 },
+  { v: 'CONSTRUCTION & INDUSTRY',pct: 1.87, items: 955014  },
+  { v: 'FASHION',                pct: 1.71, items: 876743  },
+  { v: 'HEALTH',                 pct: 1.17, items: 597841  },
+  { v: 'TECHNOLOGY',             pct: 1.22, items: 622816  },
+  { v: 'BEAUTY',                 pct: 1.18, items: 601875  },
+  { v: 'FURNISHING & HOUSEWARE', pct: 1.11, items: 566717  },
+  { v: 'HOME ELECTRONICS',       pct: 0.87, items: 447361  },
+  { v: 'VEHICLE PARTS',          pct: 0.52, items: 267851  },
+  { v: 'SPORTS',                 pct: 0.49, items: 251803  },
+].sort((a,b) => b.pct - a.pct);
+
+const vertMLM = [
+  { v: 'FASHION',                pct: 4.07, items: 1803397 },
+  { v: 'CONSTRUCTION & INDUSTRY',pct: 3.00, items: 1326579 },
+  { v: 'BEAUTY',                 pct: 2.68, items: 1185068 },
+  { v: 'TECHNOLOGY',             pct: 2.22, items: 984695  },
+  { v: 'FURNISHING & HOUSEWARE', pct: 1.80, items: 797522  },
+  { v: 'VEHICLE PARTS',          pct: 1.56, items: 691595  },
+  { v: 'T & B',                  pct: 0.93, items: 411148  },
+  { v: 'HOME ELECTRONICS',       pct: 1.10, items: 486546  },
+  { v: 'SPORTS',                 pct: 0.77, items: 340681  },
+  { v: 'HEALTH',                 pct: 0.84, items: 372971  },
+].sort((a,b) => b.pct - a.pct);
+
+function buildVertChart(canvasId, data, color) {
+  new Chart(document.getElementById(canvasId), {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.v),
+      datasets: [{ label: '% Excedente', data: data.map(d => d.pct), backgroundColor: color }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.parsed.x.toFixed(2)}%` } } },
+      scales: { x: { grid: { color: 'rgba(46,51,80,0.5)' }, ticks: { color: '#8890a8', callback: v => v + '%' } }, y: { grid: { display: false }, ticks: { color: '#8890a8', font: { size: 10 } } } }
+    }
+  });
+}
+buildVertChart('vertMLBChart', vertMLB, 'rgba(79,142,247,0.7)');
+buildVertChart('vertMLMChart', vertMLM, 'rgba(255,140,66,0.7)');
+
+// Vertical tables
+const maxPct = vertMLB[0].pct;
+document.getElementById('vert-table').innerHTML = vertMLB.map((d,i) => `
+  <tr>
+    <td><span class="rk">${i+1}</span></td>
+    <td>${d.v}</td>
+    <td class="${i<3?'vr':i<6?'vy':'vw'}">${d.pct.toFixed(2)}%</td>
+    <td>${d.items.toLocaleString()}</td>
+    <td><div class="pbar-wrap"><div class="pbar" style="width:${(d.pct/maxPct*100).toFixed(0)}%;background:${i<3?'#ff4d6a':i<6?'#ff8c42':'#4f8ef7'}"></div></div></td>
+  </tr>`).join('');
+
+const maxPctM = vertMLM[0].pct;
+document.getElementById('vert-mlm-table').innerHTML = vertMLM.map((d,i) => `
+  <tr>
+    <td><span class="rk">${i+1}</span></td>
+    <td>${d.v}</td>
+    <td class="${i<3?'vr':i<6?'vy':'vw'}">${d.pct.toFixed(2)}%</td>
+    <td>${d.items.toLocaleString()}</td>
+  </tr>`).join('');
+
+// ── SELLERS CHART ─────────────────────────────────────────────────────────────
+new Chart(document.getElementById('sellersChart'), {
+  type: 'bar',
+  data: {
+    labels: ['CIA BRASILEIRA','NATURA_OFICIAL','BOA_SUPERMERCADOS','GRUPO_CARREFOUR','PERFUFLEX','ANGANG','GALANTELEDS','MORIXEHERMANOS'],
+    datasets: [{
+      label: 'Aging + Excedente (itens)',
+      data: [110658, 50259, 49236, 46564, 31994, 27074, 27028, 6708],
+      backgroundColor: ['#ff4d6a','#ff4d6a','#ff8c42','#ff8c42','#4f8ef7','#4f8ef7','#4f8ef7','#8890a8'],
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.parsed.x.toLocaleString()} itens` } } },
+    scales: { x: { grid: { color: 'rgba(46,51,80,0.5)' }, ticks: { color: '#8890a8', callback: v => (v/1000).toFixed(0)+'K' } }, y: { grid: { display: false }, ticks: { color: '#8890a8', font: { size: 10 } } } }
+  }
+});
+
+// ── TARGETS ───────────────────────────────────────────────────────────────────
+const actuals = { mlb: 10.50, mlm: 15.34, mla: 12.77, mlc: 13.16, mco: 19.13 };
+const actualComps = {
+  mlb: { stranded: 2.06, sinventa: 1.20, aging: 2.96, surplus: 4.27 },
+  mlm: { stranded: 1.27, sinventa: 1.98, aging: 4.15, surplus: 7.94 },
+  mla: { stranded: 1.37, sinventa: 1.18, aging: 5.08, surplus: 5.12 },
+  mlc: { stranded: 0.99, sinventa: 1.77, aging: 4.66, surplus: 5.73 },
+  mco: { stranded: 1.03, sinventa: 2.77, aging: 8.63, surplus: 6.67 },
+};
+const siteLabels = { mlb: 'MLB', mlm: 'MLM', mla: 'MLA', mlc: 'MLC', mco: 'MCO' };
+const siteColors = { mlb: 'var(--blue)', mlm: 'var(--orange)', mla: 'var(--green)', mlc: 'var(--purple)', mco: 'var(--red)' };
+const initiativeLabel = { mlb: '3P', mlm: '3P+CBT', mla: '3P', mlc: '3P+CBT', mco: '3P' };
+
+function devHtml(act, tgt) {
+  const d = (act - tgt).toFixed(2);
+  const n = parseFloat(d);
+  const color = n > 0 ? '#ff4d6a' : '#00c48c';
+  const sign = n > 0 ? '+' : '';
+  return `<span style="color:${color};font-weight:700">${sign}${d}pp</span>`;
+}
+
+function applyTargets() {
+  const sites = ['mlb','mlm','mla','mlc','mco'];
+  let rows = '';
+  sites.forEach(s => {
+    const tVal = parseFloat(document.getElementById('t-'+s).value);
+    if (isNaN(tVal)) return;
+    const act = actuals[s];
+    const dev = (act - tVal).toFixed(2);
+    const devNum = parseFloat(dev);
+    const color = devNum > 0 ? '#ff4d6a' : '#00c48c';
+    const sign = devNum > 0 ? '+' : '';
+    document.getElementById('tv-'+s).textContent = tVal.toFixed(1) + '%';
+    document.getElementById('td-'+s).innerHTML = `<span style="color:${color};font-weight:700">${sign}${dev}pp</span>`;
+
+    // build detail table row
+    const ts = parseFloat(document.getElementById('ts-'+s).value) || null;
+    const tn = parseFloat(document.getElementById('tn-'+s).value) || null;
+    const ta = parseFloat(document.getElementById('ta-'+s).value) || null;
+    const te = parseFloat(document.getElementById('te-'+s).value) || null;
+    const ac = actualComps[s];
+    rows += `<tr>
+      <td><b style="color:${siteColors[s]}">${siteLabels[s]}</b></td>
+      <td><span class="b ${s==='mlm'||s==='mlc'?'btot':'b3p'}">${initiativeLabel[s]}</span></td>
+      <td class="${devNum>0?'vr':'vg'}">${act.toFixed(2)}%</td>
+      <td>${tVal.toFixed(1)}%</td>
+      <td>${devHtml(act, tVal)}</td>
+      <td>${ts?devHtml(ac.stranded,ts)+` <span style="color:var(--muted);font-size:10px">(tgt ${ts.toFixed(1)}%)</span>`:'—'}</td>
+      <td>${tn?devHtml(ac.sinventa,tn)+` <span style="color:var(--muted);font-size:10px">(tgt ${tn.toFixed(1)}%)</span>`:'—'}</td>
+      <td>${ta?devHtml(ac.aging,ta)+` <span style="color:var(--muted);font-size:10px">(tgt ${ta.toFixed(1)}%)</span>`:'—'}</td>
+      <td>${te?devHtml(ac.surplus,te)+` <span style="color:var(--muted);font-size:10px">(tgt ${te.toFixed(1)}%)</span>`:'—'}</td>
+    </tr>`;
+  });
+  const tbl = document.getElementById('tgt-detail-table');
+  if (tbl) tbl.innerHTML = rows;
+  document.getElementById('targets-status').textContent = '✓ Targets Mar/2026 aplicados';
+  document.getElementById('targets-status').style.color = '#00c48c';
+}
+
+window.addEventListener('DOMContentLoaded', applyTargets);
 </script>
 </body>
 </html>
