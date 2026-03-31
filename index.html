@@ -174,8 +174,8 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     <span class="filter-label">Iniciativa</span>
     <span class="pill init active" id="init-all"  onclick="setInit('ALL',this)">Todos</span>
     <span class="pill init" id="init-3p"           onclick="setInit('3P',this)">3P</span>
-    <span class="pill init" id="init-3pe"          onclick="setInit('ESTRELLA',this)">3P Ases.</span>
-    <span class="pill init" id="init-3pne"         onclick="setInit('NO_ESTRELLA',this)">3P N.Ases.</span>
+    <span class="pill init" id="init-3pe"          onclick="setInit('MELI_PRO',this)">Meli Pro</span>
+    <span class="pill init" id="init-3pne"         onclick="setInit('SELLER_DEV',this)">Seller Dev</span>
     <span class="pill init" id="init-cbt"          onclick="setInit('CBT',this)">CBT</span>
     <span class="pill init" id="init-1p"           onclick="setInit('1P/PL',this)">1P/PL</span>
   </div>
@@ -350,7 +350,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
         <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code></td><td>KPIs por país/semana (KPI_INITIATIVE=TOTAL)</td><td>KPI_PERIOD=DAY, KPI_VERTICAL=TOTAL, DIM_ESTRELLA=TOTAL</td></tr>
         <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code></td><td>Breakdown por iniciativa (3P/CBT/1P/PL)</td><td>KPI_INITIATIVE IN (3P,CBT,3P+CBT,1P/PL), DIM_ESTRELLA=TOTAL</td></tr>
         <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code></td><td>Bad Stock % por vertical</td><td>KPI_VERTICAL != TOTAL, KPI_INITIATIVE=TOTAL, DIM_ESTRELLA=TOTAL</td></tr>
-        <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code></td><td>Segmentação 3P Asesorado vs Não Asesorado</td><td>KPI_INITIATIVE=3P, DIM_ESTRELLA IN (ESTRELLA, NO ESTRELLA, TOTAL)</td></tr>
+        <tr><td><code style="font-size:10px">meli-bi-data.WHOWNER.DM_DASH_SHP_STOCK_QUALITY_SUMMARY</code></td><td>Segmentação Meli Pro vs Seller Dev</td><td>CUS_INITIATIVE_MARKETPLACE IN (MELI PRO, SELLER DEV)</td></tr>
       </tbody>
     </table>
   </div>
@@ -943,93 +943,94 @@ const VERT_DATA = {
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SEG KPI — Segmentação DIM_ESTRELLA · 3P initiative · W2–W13 · BigQuery
+// SEG KPI — Segmentação CUS_INITIATIVE_MARKETPLACE · W2–W13 · BigQuery
 // Colunas: bs, str, sv, ag, exc (%), u = bad stock unidades
+// Fonte: DM_DASH_SHP_STOCK_QUALITY_SUMMARY (MELI PRO / SELLER DEV)
 // ══════════════════════════════════════════════════════════════════════════════
 const SEG_KPI = {
   W2: {
-    MLB: { ESTRELLA:{bs:1.23,str:1.22,sv:0.01,ag:0,exc:0,u:325198}, 'NO ESTRELLA':{bs:22.14,str:3.08,sv:2.79,ag:5.95,exc:10.32,u:7023695} },
-    MLM: { ESTRELLA:{bs:0.36,str:0.32,sv:0.03,ag:0,exc:0,u:36961}, 'NO ESTRELLA':{bs:15.17,str:1.25,sv:2.09,ag:4.12,exc:7.70,u:3652650} },
-    MLA: { ESTRELLA:{bs:0.70,str:0.68,sv:0.02,ag:0,exc:0,u:9065}, 'NO ESTRELLA':{bs:17.12,str:1.56,sv:1.72,ag:6.24,exc:7.59,u:741916} },
-    MLC: { ESTRELLA:{bs:0.96,str:0.95,sv:0.01,ag:0,exc:0,u:6975}, 'NO ESTRELLA':{bs:20.49,str:1.49,sv:2.27,ag:7.56,exc:9.15,u:583535} },
-    MCO: { ESTRELLA:{bs:1.03,str:1.00,sv:0.03,ag:0,exc:0,u:2335}, 'NO ESTRELLA':{bs:28.80,str:1.79,sv:4.68,ag:12.42,exc:9.88,u:174609} },
+    MLB: { 'MELI PRO':{bs:8.23,str:1.09,sv:0.97,ag:1.31,exc:4.86,u:1339813}, 'SELLER DEV':{bs:14.34,str:2.67,sv:1.74,ag:4.00,exc:5.92,u:6009578} },
+    MLM: { 'MELI PRO':{bs:9.65,str:0.85,sv:1.23,ag:2.59,exc:4.98,u:749874},  'SELLER DEV':{bs:11.03,str:1.01,sv:1.54,ag:2.97,exc:5.51,u:2938605} },
+    MLA: { 'MELI PRO':{bs:11.88,str:0.55,sv:1.06,ag:3.38,exc:6.88,u:241024}, 'SELLER DEV':{bs:14.20,str:1.81,sv:1.49,ag:5.62,exc:5.27,u:510112} },
+    MLC: { 'MELI PRO':{bs:15.92,str:0.99,sv:1.45,ag:4.76,exc:8.70,u:154703}, 'SELLER DEV':{bs:16.76,str:1.53,sv:1.95,ag:6.50,exc:6.77,u:435784} },
+    MCO: { 'MELI PRO':{bs:20.31,str:0.99,sv:4.99,ag:4.84,exc:9.48,u:55467},  'SELLER DEV':{bs:21.69,str:1.86,sv:2.64,ag:11.09,exc:6.07,u:121403} },
   },
   W3: {
-    MLB: { ESTRELLA:{bs:1.55,str:1.52,sv:0.03,ag:0,exc:0,u:401354}, 'NO ESTRELLA':{bs:23.45,str:3.03,sv:2.80,ag:6.35,exc:11.26,u:7363876} },
-    MLM: { ESTRELLA:{bs:0.55,str:0.50,sv:0.06,ag:0,exc:0,u:57088}, 'NO ESTRELLA':{bs:16.23,str:1.27,sv:2.23,ag:4.00,exc:8.73,u:4037624} },
-    MLA: { ESTRELLA:{bs:0.72,str:0.69,sv:0.03,ag:0,exc:0,u:9132}, 'NO ESTRELLA':{bs:19.00,str:1.31,sv:1.74,ag:7.07,exc:8.86,u:801503} },
-    MLC: { ESTRELLA:{bs:1.09,str:1.04,sv:0.05,ag:0,exc:0,u:8229}, 'NO ESTRELLA':{bs:20.66,str:1.35,sv:2.25,ag:8.06,exc:8.99,u:627729} },
-    MCO: { ESTRELLA:{bs:1.10,str:1.02,sv:0.07,ag:0,exc:0,u:2383}, 'NO ESTRELLA':{bs:31.77,str:1.69,sv:5.37,ag:13.37,exc:11.29,u:192035} },
+    MLB: { 'MELI PRO':{bs:10.40,str:2.05,sv:1.09,ag:1.50,exc:5.76,u:1688363}, 'SELLER DEV':{bs:14.80,str:2.47,sv:1.73,ag:4.26,exc:6.34,u:6075683} },
+    MLM: { 'MELI PRO':{bs:9.98,str:0.91,sv:1.26,ag:2.55,exc:5.25,u:782810},   'SELLER DEV':{bs:12.11,str:1.08,sv:1.69,ag:2.91,exc:6.43,u:3311488} },
+    MLA: { 'MELI PRO':{bs:12.60,str:0.55,sv:1.09,ag:4.12,exc:6.84,u:249696},  'SELLER DEV':{bs:16.02,str:1.53,sv:1.49,ag:6.19,exc:6.80,u:560891} },
+    MLC: { 'MELI PRO':{bs:16.44,str:0.89,sv:1.40,ag:5.16,exc:8.99,u:171621},  'SELLER DEV':{bs:16.88,str:1.44,sv:1.97,ag:6.94,exc:6.52,u:464309} },
+    MCO: { 'MELI PRO':{bs:26.34,str:1.49,sv:5.78,ag:6.28,exc:12.76,u:70941},  'SELLER DEV':{bs:22.35,str:1.52,sv:3.09,ag:11.56,exc:6.13,u:123500} },
   },
   W4: {
-    MLB: { ESTRELLA:{bs:1.12,str:1.07,sv:0.04,ag:0,exc:0,u:286553}, 'NO ESTRELLA':{bs:22.20,str:2.42,sv:2.75,ag:6.68,exc:10.34,u:6955351} },
-    MLM: { ESTRELLA:{bs:0.53,str:0.44,sv:0.09,ag:0,exc:0,u:54171}, 'NO ESTRELLA':{bs:16.26,str:1.12,sv:2.30,ag:4.13,exc:8.71,u:4109065} },
-    MLA: { ESTRELLA:{bs:0.71,str:0.66,sv:0.05,ag:0,exc:0,u:8994}, 'NO ESTRELLA':{bs:18.20,str:1.44,sv:1.67,ag:6.77,exc:8.30,u:787946} },
-    MLC: { ESTRELLA:{bs:0.67,str:0.56,sv:0.11,ag:0,exc:0,u:5218}, 'NO ESTRELLA':{bs:20.07,str:1.51,sv:2.54,ag:7.67,exc:8.34,u:630390} },
-    MCO: { ESTRELLA:{bs:0.61,str:0.54,sv:0.06,ag:0,exc:0,u:1340}, 'NO ESTRELLA':{bs:31.95,str:1.60,sv:5.73,ag:13.60,exc:10.94,u:188696} },
+    MLB: { 'MELI PRO':{bs:9.02,str:0.97,sv:1.05,ag:1.56,exc:5.44,u:1475553},  'SELLER DEV':{bs:14.17,str:2.15,sv:1.72,ag:4.52,exc:5.78,u:5770858} },
+    MLM: { 'MELI PRO':{bs:10.15,str:0.96,sv:1.48,ag:2.61,exc:5.10,u:800920},  'SELLER DEV':{bs:12.15,str:0.91,sv:1.71,ag:3.02,exc:6.49,u:3363748} },
+    MLA: { 'MELI PRO':{bs:12.09,str:0.69,sv:1.03,ag:4.21,exc:6.15,u:237620},  'SELLER DEV':{bs:15.36,str:1.59,sv:1.45,ag:5.77,exc:6.53,u:560239} },
+    MLC: { 'MELI PRO':{bs:15.79,str:0.99,sv:1.90,ag:4.59,exc:8.30,u:165847},  'SELLER DEV':{bs:16.34,str:1.44,sv:2.11,ag:6.70,exc:6.07,u:469859} },
+    MCO: { 'MELI PRO':{bs:25.18,str:1.75,sv:5.91,ag:5.78,exc:11.67,u:68843},  'SELLER DEV':{bs:22.57,str:1.10,sv:3.32,ag:12.01,exc:6.09,u:121206} },
   },
   W5: {
-    MLB: { ESTRELLA:{bs:0.86,str:0.85,sv:0.00,ag:0,exc:0,u:227392}, 'NO ESTRELLA':{bs:23.77,str:2.62,sv:2.54,ag:7.20,exc:11.39,u:7115940} },
-    MLM: { ESTRELLA:{bs:0.41,str:0.40,sv:0.00,ag:0,exc:0,u:45084}, 'NO ESTRELLA':{bs:17.72,str:1.22,sv:2.36,ag:4.49,exc:9.64,u:4481399} },
-    MLA: { ESTRELLA:{bs:0.57,str:0.56,sv:0.01,ag:0,exc:0,u:7897}, 'NO ESTRELLA':{bs:17.99,str:1.13,sv:1.65,ag:6.96,exc:8.23,u:754662} },
-    MLC: { ESTRELLA:{bs:0.48,str:0.47,sv:0.01,ag:0,exc:0,u:3681}, 'NO ESTRELLA':{bs:19.41,str:1.28,sv:2.39,ag:7.66,exc:8.07,u:616552} },
-    MCO: { ESTRELLA:{bs:0.39,str:0.36,sv:0.02,ag:0,exc:0,u:866}, 'NO ESTRELLA':{bs:31.75,str:1.27,sv:5.21,ag:13.73,exc:11.45,u:188228} },
+    MLB: { 'MELI PRO':{bs:9.29,str:1.01,sv:0.92,ag:1.69,exc:5.67,u:1497545},  'SELLER DEV':{bs:14.42,str:2.11,sv:1.51,ag:4.64,exc:6.15,u:5853233} },
+    MLM: { 'MELI PRO':{bs:10.68,str:1.17,sv:1.41,ag:2.71,exc:5.38,u:866456},  'SELLER DEV':{bs:12.91,str:0.91,sv:1.70,ag:3.23,exc:7.06,u:3661752} },
+    MLA: { 'MELI PRO':{bs:11.90,str:0.63,sv:0.97,ag:4.24,exc:6.06,u:233590},  'SELLER DEV':{bs:14.47,str:1.21,sv:1.37,ag:5.69,exc:6.17,u:530363} },
+    MLC: { 'MELI PRO':{bs:14.82,str:0.87,sv:1.62,ag:4.92,exc:7.41,u:153842},  'SELLER DEV':{bs:15.98,str:1.22,sv:2.03,ag:6.58,exc:6.14,u:466877} },
+    MCO: { 'MELI PRO':{bs:24.50,str:0.58,sv:5.46,ag:5.90,exc:12.48,u:66362},  'SELLER DEV':{bs:22.36,str:1.27,sv:2.94,ag:11.90,exc:6.21,u:122877} },
   },
   W6: {
-    MLB: { ESTRELLA:{bs:0.90,str:0.89,sv:0.02,ag:0,exc:0,u:231275}, 'NO ESTRELLA':{bs:24.36,str:2.50,sv:2.35,ag:7.18,exc:12.32,u:7136052} },
-    MLM: { ESTRELLA:{bs:0.45,str:0.43,sv:0.02,ag:0,exc:0,u:49303}, 'NO ESTRELLA':{bs:18.45,str:1.11,sv:2.37,ag:4.68,exc:10.29,u:4679046} },
-    MLA: { ESTRELLA:{bs:0.52,str:0.50,sv:0.02,ag:0,exc:0,u:6788}, 'NO ESTRELLA':{bs:17.65,str:1.05,sv:1.56,ag:6.91,exc:8.11,u:723628} },
-    MLC: { ESTRELLA:{bs:1.83,str:1.72,sv:0.10,ag:0,exc:0,u:13770}, 'NO ESTRELLA':{bs:19.26,str:1.25,sv:2.32,ag:7.64,exc:8.04,u:606670} },
-    MCO: { ESTRELLA:{bs:0.64,str:0.57,sv:0.07,ag:0,exc:0,u:1486}, 'NO ESTRELLA':{bs:31.22,str:1.36,sv:4.83,ag:13.64,exc:11.32,u:189607} },
+    MLB: { 'MELI PRO':{bs:10.12,str:1.04,sv:0.88,ag:1.74,exc:6.46,u:1586848}, 'SELLER DEV':{bs:14.64,str:2.04,sv:1.40,ag:4.62,exc:6.56,u:5795152} },
+    MLM: { 'MELI PRO':{bs:10.78,str:0.80,sv:1.40,ag:2.89,exc:5.68,u:869920},  'SELLER DEV':{bs:13.62,str:0.94,sv:1.73,ag:3.36,exc:7.59,u:3860538} },
+    MLA: { 'MELI PRO':{bs:12.01,str:0.54,sv:0.89,ag:4.45,exc:6.12,u:225825},  'SELLER DEV':{bs:14.09,str:1.14,sv:1.32,ag:5.55,exc:6.06,u:506193} },
+    MLC: { 'MELI PRO':{bs:14.02,str:0.66,sv:1.69,ag:4.56,exc:7.10,u:148118},  'SELLER DEV':{bs:16.51,str:1.59,sv:1.96,ag:6.72,exc:6.22,u:472686} },
+    MCO: { 'MELI PRO':{bs:23.19,str:0.87,sv:4.91,ag:5.67,exc:11.69,u:67487},  'SELLER DEV':{bs:22.33,str:1.31,sv:2.75,ag:11.97,exc:6.27,u:123756} },
   },
   W7: {
-    MLB: { ESTRELLA:{bs:1.04,str:1.01,sv:0.02,ag:0,exc:0,u:264933}, 'NO ESTRELLA':{bs:23.54,str:2.30,sv:2.29,ag:7.18,exc:11.75,u:6852959} },
-    MLM: { ESTRELLA:{bs:0.64,str:0.59,sv:0.05,ag:0,exc:0,u:71575}, 'NO ESTRELLA':{bs:18.87,str:1.26,sv:2.39,ag:4.73,exc:10.48,u:4787744} },
-    MLA: { ESTRELLA:{bs:0.75,str:0.72,sv:0.03,ag:0.01,exc:0,u:9642}, 'NO ESTRELLA':{bs:17.10,str:1.09,sv:1.57,ag:6.87,exc:7.55,u:698627} },
-    MLC: { ESTRELLA:{bs:1.80,str:1.74,sv:0.06,ag:0,exc:0,u:13562}, 'NO ESTRELLA':{bs:18.65,str:1.19,sv:2.44,ag:7.42,exc:7.59,u:609585} },
-    MCO: { ESTRELLA:{bs:0.66,str:0.53,sv:0.13,ag:0,exc:0,u:1625}, 'NO ESTRELLA':{bs:30.82,str:1.31,sv:4.46,ag:13.55,exc:11.46,u:192852} },
+    MLB: { 'MELI PRO':{bs:10.07,str:1.22,sv:0.85,ag:1.80,exc:6.20,u:1569994}, 'SELLER DEV':{bs:14.05,str:1.91,sv:1.36,ag:4.57,exc:6.19,u:5569025} },
+    MLM: { 'MELI PRO':{bs:10.38,str:0.78,sv:1.32,ag:2.73,exc:5.54,u:855943},  'SELLER DEV':{bs:14.08,str:1.14,sv:1.77,ag:3.43,exc:7.74,u:4006281} },
+    MLA: { 'MELI PRO':{bs:11.41,str:0.60,sv:0.84,ag:4.50,exc:5.46,u:211971},  'SELLER DEV':{bs:13.88,str:1.25,sv:1.36,ag:5.49,exc:5.76,u:498953} },
+    MLC: { 'MELI PRO':{bs:13.70,str:0.75,sv:1.70,ag:4.58,exc:6.67,u:146468},  'SELLER DEV':{bs:16.01,str:1.49,sv:2.09,ag:6.50,exc:5.93,u:476917} },
+    MCO: { 'MELI PRO':{bs:23.52,str:0.75,sv:4.54,ag:5.67,exc:12.49,u:68750},  'SELLER DEV':{bs:21.36,str:1.28,sv:2.53,ag:11.57,exc:5.96,u:126003} },
   },
   W8: {
-    MLB: { ESTRELLA:{bs:1.02,str:0.99,sv:0.03,ag:0,exc:0,u:263567}, 'NO ESTRELLA':{bs:22.78,str:2.32,sv:2.28,ag:6.93,exc:11.23,u:6672579} },
-    MLM: { ESTRELLA:{bs:0.69,str:0.57,sv:0.12,ag:0,exc:0,u:78998}, 'NO ESTRELLA':{bs:18.58,str:1.28,sv:2.53,ag:4.50,exc:10.26,u:4835190} },
-    MLA: { ESTRELLA:{bs:0.68,str:0.65,sv:0.03,ag:0,exc:0,u:8470}, 'NO ESTRELLA':{bs:18.00,str:1.09,sv:1.71,ag:7.02,exc:8.16,u:720593} },
-    MLC: { ESTRELLA:{bs:0.62,str:0.53,sv:0.10,ag:0,exc:0,u:4678}, 'NO ESTRELLA':{bs:17.85,str:1.03,sv:2.31,ag:7.14,exc:7.35,u:598985} },
-    MCO: { ESTRELLA:{bs:0.49,str:0.33,sv:0.16,ag:0,exc:0,u:1216}, 'NO ESTRELLA':{bs:28.96,str:1.28,sv:4.11,ag:13.04,exc:10.46,u:180180} },
+    MLB: { 'MELI PRO':{bs:9.84,str:1.04,sv:0.85,ag:1.84,exc:6.10,u:1525260},  'SELLER DEV':{bs:13.47,str:1.97,sv:1.35,ag:4.33,exc:5.81,u:5432852} },
+    MLM: { 'MELI PRO':{bs:9.42,str:0.64,sv:1.33,ag:2.48,exc:4.97,u:811371},   'SELLER DEV':{bs:14.14,str:1.21,sv:1.92,ag:3.29,exc:7.71,u:4112990} },
+    MLA: { 'MELI PRO':{bs:11.53,str:0.47,sv:0.96,ag:4.50,exc:5.59,u:202337},  'SELLER DEV':{bs:14.79,str:1.30,sv:1.46,ag:5.64,exc:6.38,u:530146} },
+    MLC: { 'MELI PRO':{bs:12.81,str:0.74,sv:1.55,ag:4.29,exc:6.22,u:146157},  'SELLER DEV':{bs:15.28,str:1.03,sv:2.03,ag:6.36,exc:5.86,u:458377} },
+    MCO: { 'MELI PRO':{bs:21.23,str:0.90,sv:4.10,ag:5.24,exc:10.96,u:60066},  'SELLER DEV':{bs:20.22,str:1.15,sv:2.39,ag:10.99,exc:5.65,u:122030} },
   },
   W9: {
-    MLB: { ESTRELLA:{bs:1.05,str:1.05,sv:0.00,ag:0,exc:0,u:287389}, 'NO ESTRELLA':{bs:22.91,str:2.52,sv:2.37,ag:6.61,exc:11.38,u:6409801} },
-    MLM: { ESTRELLA:{bs:0.45,str:0.45,sv:0.01,ag:0,exc:0,u:57104}, 'NO ESTRELLA':{bs:19.58,str:1.09,sv:2.80,ag:4.91,exc:10.76,u:4879510} },
-    MLA: { ESTRELLA:{bs:0.75,str:0.75,sv:0.01,ag:0,exc:0,u:10098}, 'NO ESTRELLA':{bs:17.65,str:1.45,sv:1.67,ag:6.70,exc:7.81,u:679013} },
-    MLC: { ESTRELLA:{bs:0.51,str:0.51,sv:0.00,ag:0,exc:0,u:3885}, 'NO ESTRELLA':{bs:17.79,str:1.04,sv:2.27,ag:7.08,exc:7.38,u:568865} },
-    MCO: { ESTRELLA:{bs:0.42,str:0.42,sv:0.00,ag:0,exc:0,u:1098}, 'NO ESTRELLA':{bs:28.13,str:1.21,sv:4.14,ag:12.79,exc:9.92,u:173270} },
+    MLB: { 'MELI PRO':{bs:10.27,str:0.96,sv:0.95,ag:1.89,exc:6.46,u:1587430}, 'SELLER DEV':{bs:12.65,str:2.14,sv:1.28,ag:3.84,exc:5.38,u:5136412} },
+    MLM: { 'MELI PRO':{bs:9.73,str:0.85,sv:1.40,ag:2.47,exc:5.00,u:863479},   'SELLER DEV':{bs:14.12,str:0.92,sv:2.00,ag:3.47,exc:7.72,u:4090585} },
+    MLA: { 'MELI PRO':{bs:10.44,str:0.57,sv:0.93,ag:3.61,exc:5.33,u:185827},  'SELLER DEV':{bs:14.42,str:1.67,sv:1.39,ag:5.50,exc:5.84,u:507342} },
+    MLC: { 'MELI PRO':{bs:11.94,str:0.98,sv:1.47,ag:3.68,exc:5.81,u:133117},  'SELLER DEV':{bs:15.28,str:0.95,sv:1.98,ag:6.41,exc:5.92,u:441965} },
+    MCO: { 'MELI PRO':{bs:18.84,str:0.93,sv:3.83,ag:4.67,exc:9.39,u:55020},   'SELLER DEV':{bs:19.87,str:1.06,sv:2.38,ag:10.80,exc:5.59,u:119887} },
   },
   W10: {
-    MLB: { ESTRELLA:{bs:1.11,str:1.10,sv:0.01,ag:0,exc:0,u:300434}, 'NO ESTRELLA':{bs:21.61,str:2.56,sv:2.23,ag:6.19,exc:10.59,u:5999484} },
-    MLM: { ESTRELLA:{bs:0.58,str:0.56,sv:0.03,ag:0,exc:0,u:71406}, 'NO ESTRELLA':{bs:20.79,str:1.14,sv:2.85,ag:5.16,exc:11.63,u:5225063} },
-    MLA: { ESTRELLA:{bs:0.82,str:0.77,sv:0.05,ag:0,exc:0,u:10645}, 'NO ESTRELLA':{bs:17.37,str:2.14,sv:1.63,ag:7.02,exc:6.56,u:671878} },
-    MLC: { ESTRELLA:{bs:0.84,str:0.83,sv:0.01,ag:0,exc:0,u:6204}, 'NO ESTRELLA':{bs:17.70,str:1.24,sv:2.23,ag:7.05,exc:7.17,u:552425} },
-    MCO: { ESTRELLA:{bs:0.57,str:0.53,sv:0.03,ag:0,exc:0,u:1418}, 'NO ESTRELLA':{bs:28.03,str:1.10,sv:4.34,ag:12.71,exc:9.82,u:169055} },
+    MLB: { 'MELI PRO':{bs:9.66,str:0.91,sv:0.85,ag:1.86,exc:6.03,u:1463777},  'SELLER DEV':{bs:11.99,str:2.23,sv:1.23,ag:3.53,exc:4.98,u:4882994} },
+    MLM: { 'MELI PRO':{bs:9.79,str:0.72,sv:1.50,ag:2.53,exc:5.04,u:864849},   'SELLER DEV':{bs:15.42,str:1.04,sv:2.06,ag:3.72,exc:8.59,u:4446335} },
+    MLA: { 'MELI PRO':{bs:9.79,str:0.86,sv:0.93,ag:3.38,exc:4.62,u:174999},   'SELLER DEV':{bs:14.60,str:2.36,sv:1.39,ag:5.97,exc:4.85,u:515810} },
+    MLC: { 'MELI PRO':{bs:11.09,str:0.87,sv:1.42,ag:3.48,exc:5.33,u:122761},  'SELLER DEV':{bs:15.64,str:1.30,sv:1.96,ag:6.48,exc:5.88,u:437982} },
+    MCO: { 'MELI PRO':{bs:18.90,str:0.99,sv:4.19,ag:4.50,exc:9.19,u:53384},   'SELLER DEV':{bs:19.96,str:0.97,sv:2.46,ag:10.84,exc:5.63,u:117673} },
   },
   W11: {
-    MLB: { ESTRELLA:{bs:1.22,str:1.18,sv:0.03,ag:0,exc:0,u:334168}, 'NO ESTRELLA':{bs:19.57,str:2.43,sv:2.11,ag:5.72,exc:9.29,u:5761660} },
-    MLM: { ESTRELLA:{bs:0.65,str:0.61,sv:0.04,ag:0,exc:0,u:78801}, 'NO ESTRELLA':{bs:20.72,str:1.26,sv:2.85,ag:5.37,exc:11.22,u:5331395} },
-    MLA: { ESTRELLA:{bs:0.70,str:0.66,sv:0.03,ag:0,exc:0,u:9312}, 'NO ESTRELLA':{bs:15.21,str:1.32,sv:1.57,ag:6.37,exc:5.92,u:629477} },
-    MLC: { ESTRELLA:{bs:0.66,str:0.61,sv:0.05,ag:0,exc:0,u:5124}, 'NO ESTRELLA':{bs:16.11,str:0.99,sv:2.18,ag:6.50,exc:6.43,u:552207} },
-    MCO: { ESTRELLA:{bs:0.32,str:0.28,sv:0.03,ag:0,exc:0,u:836}, 'NO ESTRELLA':{bs:26.29,str:1.30,sv:4.10,ag:11.80,exc:9.04,u:166910} },
+    MLB: { 'MELI PRO':{bs:9.41,str:1.07,sv:0.86,ag:1.86,exc:5.61,u:1422210},  'SELLER DEV':{bs:11.18,str:2.10,sv:1.19,ag:3.36,exc:4.51,u:4674661} },
+    MLM: { 'MELI PRO':{bs:9.18,str:0.63,sv:1.49,ag:2.57,exc:4.48,u:829023},   'SELLER DEV':{bs:15.87,str:1.19,sv:2.09,ag:3.98,exc:8.60,u:4583009} },
+    MLA: { 'MELI PRO':{bs:8.68,str:0.92,sv:0.83,ag:2.96,exc:3.97,u:164538},   'SELLER DEV':{bs:13.24,str:1.29,sv:1.39,ag:5.79,exc:4.74,u:474305} },
+    MLC: { 'MELI PRO':{bs:10.68,str:0.75,sv:1.50,ag:3.37,exc:5.06,u:125578},  'SELLER DEV':{bs:14.24,str:0.99,sv:1.90,ag:6.04,exc:5.31,u:431644} },
+    MCO: { 'MELI PRO':{bs:16.73,str:0.89,sv:3.76,ag:4.04,exc:8.03,u:50597},   'SELLER DEV':{bs:19.65,str:1.06,sv:2.47,ag:10.52,exc:5.55,u:117170} },
   },
   W12: {
-    MLB: { ESTRELLA:{bs:1.26,str:1.22,sv:0.04,ag:0,exc:0,u:355577}, 'NO ESTRELLA':{bs:18.56,str:2.33,sv:2.02,ag:5.68,exc:8.51,u:5649479} },
-    MLM: { ESTRELLA:{bs:0.69,str:0.62,sv:0.07,ag:0,exc:0,u:81594}, 'NO ESTRELLA':{bs:21.12,str:1.24,sv:2.83,ag:5.64,exc:11.41,u:5399306} },
-    MLA: { ESTRELLA:{bs:0.69,str:0.64,sv:0.05,ag:0,exc:0,u:9205}, 'NO ESTRELLA':{bs:13.95,str:1.15,sv:1.44,ag:5.84,exc:5.50,u:620331} },
-    MLC: { ESTRELLA:{bs:0.48,str:0.41,sv:0.07,ag:0,exc:0,u:4078}, 'NO ESTRELLA':{bs:15.22,str:0.93,sv:2.17,ag:6.06,exc:6.04,u:561852} },
-    MCO: { ESTRELLA:{bs:0.79,str:0.58,sv:0.21,ag:0,exc:0,u:2034}, 'NO ESTRELLA':{bs:25.56,str:1.31,sv:3.85,ag:11.31,exc:9.03,u:162339} },
+    MLB: { 'MELI PRO':{bs:8.73,str:0.91,sv:0.88,ag:1.98,exc:4.96,u:1347014},  'SELLER DEV':{bs:10.80,str:2.12,sv:1.14,ag:3.30,exc:4.23,u:4657513} },
+    MLM: { 'MELI PRO':{bs:9.17,str:0.64,sv:1.48,ag:2.60,exc:4.46,u:826831},   'SELLER DEV':{bs:16.38,str:1.17,sv:2.11,ag:4.25,exc:8.85,u:4651143} },
+    MLA: { 'MELI PRO':{bs:7.92,str:0.61,sv:0.75,ag:2.81,exc:3.76,u:155575},   'SELLER DEV':{bs:12.40,str:1.25,sv:1.31,ag:5.34,exc:4.47,u:473898} },
+    MLC: { 'MELI PRO':{bs:9.90,str:0.94,sv:1.61,ag:2.88,exc:4.47,u:131789},   'SELLER DEV':{bs:13.51,str:0.79,sv:1.85,ag:5.77,exc:5.09,u:434161} },
+    MCO: { 'MELI PRO':{bs:17.46,str:1.07,sv:3.55,ag:4.06,exc:8.75,u:50672},   'SELLER DEV':{bs:18.86,str:1.12,sv:2.44,ag:9.95,exc:5.30,u:113722} },
   },
   W13: {
-    MLB: { ESTRELLA:{bs:1.22,str:1.18,sv:0.04,ag:0,exc:0,u:337655}, 'NO ESTRELLA':{bs:18.43,str:2.38,sv:1.97,ag:5.66,exc:8.39,u:5555941} },
-    MLM: { ESTRELLA:{bs:0.63,str:0.58,sv:0.05,ag:0,exc:0,u:72742}, 'NO ESTRELLA':{bs:21.20,str:1.30,sv:2.77,ag:5.61,exc:11.52,u:5345563} },
-    MLA: { ESTRELLA:{bs:0.67,str:0.60,sv:0.07,ag:0,exc:0,u:8526}, 'NO ESTRELLA':{bs:14.44,str:1.09,sv:1.48,ag:6.03,exc:5.81,u:618562} },
-    MLC: { ESTRELLA:{bs:0.73,str:0.60,sv:0.13,ag:0,exc:0,u:6148}, 'NO ESTRELLA':{bs:15.38,str:1.10,sv:2.18,ag:6.02,exc:6.07,u:562311} },
-    MCO: { ESTRELLA:{bs:0.99,str:0.75,sv:0.24,ag:0,exc:0,u:2407}, 'NO ESTRELLA':{bs:26.60,str:1.38,sv:4.05,ag:11.83,exc:9.30,u:164105} },
+    MLB: { 'MELI PRO':{bs:8.55,str:0.89,sv:0.86,ag:1.94,exc:4.86,u:1368700},  'SELLER DEV':{bs:10.11,str:1.93,sv:1.08,ag:3.05,exc:4.04,u:4534645} },
+    MLM: { 'MELI PRO':{bs:9.02,str:0.55,sv:1.39,ag:2.56,exc:4.51,u:830940},   'SELLER DEV':{bs:16.30,str:1.22,sv:1.94,ag:4.43,exc:8.70,u:4599590} },
+    MLA: { 'MELI PRO':{bs:8.40,str:0.70,sv:0.84,ag:3.03,exc:3.83,u:163526},   'SELLER DEV':{bs:12.86,str:1.30,sv:1.32,ag:5.51,exc:4.70,u:477919} },
+    MLC: { 'MELI PRO':{bs:9.50,str:0.83,sv:1.50,ag:2.54,exc:4.61,u:132063},   'SELLER DEV':{bs:13.26,str:0.81,sv:1.66,ag:5.52,exc:5.27,u:440080} },
+    MCO: { 'MELI PRO':{bs:16.85,str:0.71,sv:3.26,ag:4.39,exc:8.47,u:47004},   'SELLER DEV':{bs:19.95,str:0.99,sv:2.57,ag:10.59,exc:5.76,u:117013} },
   },
 };
 
@@ -1056,13 +1057,13 @@ function renderInitiativeTable() {
   const ini = state.initiative;
   let initiatives;
   if (ini === 'ALL')                                initiatives = ['3P','CBT','3P+CBT','1P/PL'];
-  else if (ini === 'ESTRELLA' || ini === 'NO_ESTRELLA') initiatives = ['3P'];
+  else if (ini === 'MELI_PRO' || ini === 'SELLER_DEV') initiatives = ['3P'];
   else                                              initiatives = [ini];
 
   // Which segments to show for 3P rows
-  const segFilter = ini === 'ESTRELLA' ? ['ESTRELLA']
-                  : ini === 'NO_ESTRELLA' ? ['NO ESTRELLA']
-                  : ['TOTAL','ESTRELLA','NO ESTRELLA'];
+  const segFilter = ini === 'MELI_PRO'   ? ['MELI PRO']
+                  : ini === 'SELLER_DEV' ? ['SELLER DEV']
+                  : ['TOTAL','MELI PRO','SELLER DEV'];
 
   const INIT_LABELS = {
     '3P':      '<span class="b b3p">3P</span>',
@@ -1072,8 +1073,8 @@ function renderInitiativeTable() {
   };
   const SEG_LABELS = {
     'TOTAL':       '<span class="b btot">Total</span>',
-    'ESTRELLA':    '<span class="b b1p">Asesorado</span>',
-    'NO ESTRELLA': '<span class="b b3p">Não Ases.</span>',
+    'MELI PRO':    '<span class="b b1p">Meli Pro</span>',
+    'SELLER DEV':  '<span class="b b3p">Seller Dev</span>',
   };
 
   const wInitData = INIT_KPI[wid];
@@ -1113,7 +1114,7 @@ function renderInitiativeTable() {
       const siteSeg = wSegData && wSegData[site];
 
       if (is3P) {
-        // Show TOTAL (from INIT_KPI) + ESTRELLA/NO ESTRELLA (from SEG_KPI) sub-rows
+        // Show TOTAL (from INIT_KPI) + MELI PRO/SELLER DEV (from SEG_KPI) sub-rows
         const segsToShow = segFilter;
         segsToShow.forEach(seg => {
           let d;
