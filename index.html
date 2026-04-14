@@ -40,6 +40,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .pill.mlc.active{background:var(--purple);border-color:var(--purple);}
 .pill.mco.active{background:var(--red);border-color:var(--red);}
 .pill.init.active{background:var(--yellow);border-color:var(--yellow);}
+.pill.ctry.active{background:var(--yellow);border-color:var(--yellow);color:#0f1117;}
 .pill:hover:not(.active){border-color:var(--text);color:var(--text);}
 select.filter-sel{background:var(--card);border:1px solid var(--border);color:var(--text);padding:3px 8px;border-radius:5px;font-size:11px;cursor:pointer;}
 select.filter-sel:focus{outline:1px solid var(--yellow);}
@@ -163,21 +164,22 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 <div class="filterbar">
   <div class="filter-group">
     <span class="filter-label">País</span>
-    <span class="pill mlb active" onclick="toggleCountry('MLB',this)">MLB</span>
-    <span class="pill mlm active" onclick="toggleCountry('MLM',this)">MLM</span>
-    <span class="pill mla active" onclick="toggleCountry('MLA',this)">MLA</span>
-    <span class="pill mlc active" onclick="toggleCountry('MLC',this)">MLC</span>
-    <span class="pill mco active" onclick="toggleCountry('MCO',this)">MCO</span>
+    <span class="pill ctry active" id="ctry-all" onclick="selectCountry('ALL',this)">Todos</span>
+    <span class="pill mlb ctry" onclick="selectCountry('MLB',this)">MLB</span>
+    <span class="pill mlm ctry" onclick="selectCountry('MLM',this)">MLM</span>
+    <span class="pill mla ctry" onclick="selectCountry('MLA',this)">MLA</span>
+    <span class="pill mlc ctry" onclick="selectCountry('MLC',this)">MLC</span>
+    <span class="pill mco ctry" onclick="selectCountry('MCO',this)">MCO</span>
   </div>
   <div class="filter-divider"></div>
   <div class="filter-group">
     <span class="filter-label">Iniciativa</span>
-    <span class="pill init active" id="init-all"  onclick="setInit('ALL',this)">Todos</span>
-    <span class="pill init" id="init-3p"           onclick="setInit('3P',this)">3P</span>
-    <span class="pill init" id="init-3pe"          onclick="setInit('MELI_PRO',this)">Meli Pro</span>
-    <span class="pill init" id="init-3pne"         onclick="setInit('SELLER_DEV',this)">Seller Dev</span>
-    <span class="pill init" id="init-cbt"          onclick="setInit('CBT',this)">CBT</span>
-    <span class="pill init" id="init-1p"           onclick="setInit('1P/PL',this)">1P/PL</span>
+    <span class="pill init active" id="init-all"  onclick="toggleInit('ALL',this)">Todos</span>
+    <span class="pill init" id="init-3p"           onclick="toggleInit('3P',this)">3P</span>
+    <span class="pill init" id="init-3pe"          onclick="toggleInit('MELI_PRO',this)">Meli Pro</span>
+    <span class="pill init" id="init-3pne"         onclick="toggleInit('SELLER_DEV',this)">Seller Dev</span>
+    <span class="pill init" id="init-cbt"          onclick="toggleInit('CBT',this)">CBT</span>
+    <span class="pill init" id="init-1p"           onclick="toggleInit('1P/PL',this)">1P/PL</span>
   </div>
   <div class="filter-divider"></div>
   <div class="filter-group">
@@ -224,8 +226,18 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
       <canvas id="trendChart" height="160"></canvas>
     </div>
     <div class="card">
-      <div class="sec">Composição — <span id="comp-week-lbl">W12</span></div>
+      <div class="sec">Composição % — <span id="comp-week-lbl">W12</span></div>
       <canvas id="compChart" height="160"></canvas>
+    </div>
+  </div>
+  <div class="g21">
+    <div class="card">
+      <div class="sec">Stock Total e Bad Stock — unidades por país</div>
+      <canvas id="unitsChart" height="160"></canvas>
+    </div>
+    <div class="card">
+      <div class="sec">Composição Bad Stock — unidades</div>
+      <canvas id="unitsCompChart" height="160"></canvas>
     </div>
   </div>
   <div class="card">
@@ -239,6 +251,11 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 
 <!-- ═══════════════════ INICIATIVA ═══ -->
 <div id="panel-initiative" class="panel">
+  <div class="card">
+    <div class="sec">Stock Total e Bad Stock por Iniciativa — unidades · <span id="init-units-country-lbl">LATAM</span></div>
+    <canvas id="initUnitsChart" height="140"></canvas>
+    <div style="margin-top:6px;font-size:10px;color:var(--muted);">Linhas tracejadas = Stock Total · Linhas sólidas = Bad Stock · Filtro de País aplicado</div>
+  </div>
   <div class="card">
     <div class="sec">Bad Stock por País e Iniciativa — <span id="init-week-lbl">W13 (24/03)★</span></div>
     <div style="overflow-x:auto">
@@ -393,21 +410,21 @@ const WEEKS = [
 // Bad Stock data: bs=Bad Stock%, str=Stranded, sv=Sin Venta, ag=Aging, exc=Aging+Exc
 // Fonte: BigQuery meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT · TOTAL initiative/vertical/estrella
 const KPI = {
-  W1:  { MLB:{bs:14.52,str:2.23,sv:1.58,ag:3.44,exc:7.26}, MLM:{bs:15.75,str:1.35,sv:1.56,ag:3.68,exc:9.16}, MLA:{bs:17.38,str:1.18,sv:1.51,ag:5.24,exc:9.44}, MLC:{bs:17.68,str:1.04,sv:1.99,ag:5.48,exc:9.17}, MCO:{bs:23.63,str:3.48,sv:2.85,ag:8.51,exc:8.78} },
-  W2:  { MLB:{bs:14.16,str:2.74,sv:1.68,ag:3.53,exc:6.20}, MLM:{bs:13.05,str:1.23,sv:1.66,ag:3.39,exc:6.76}, MLA:{bs:15.87,str:1.55,sv:1.43,ag:5.18,exc:7.70}, MLC:{bs:16.88,str:1.46,sv:1.93,ag:5.56,exc:7.93}, MCO:{bs:22.07,str:1.58,sv:3.38,ag:8.95,exc:8.13} },
-  W3:  { MLB:{bs:15.10,str:2.58,sv:1.73,ag:3.72,exc:7.07}, MLM:{bs:14.25,str:1.26,sv:1.79,ag:3.43,exc:7.77}, MLA:{bs:17.29,str:1.28,sv:1.44,ag:5.92,exc:8.62}, MLC:{bs:17.29,str:1.37,sv:1.91,ag:6.04,exc:7.96}, MCO:{bs:24.51,str:1.53,sv:3.91,ag:9.78,exc:9.25} },
-  W4:  { MLB:{bs:14.33,str:2.31,sv:1.71,ag:3.80,exc:6.52}, MLM:{bs:14.50,str:1.20,sv:1.89,ag:3.72,exc:7.69}, MLA:{bs:16.51,str:1.36,sv:1.41,ag:5.62,exc:8.04}, MLC:{bs:17.01,str:1.37,sv:2.23,ag:5.80,exc:7.58}, MCO:{bs:24.19,str:1.31,sv:4.12,ag:9.69,exc:8.99} },
-  W5:  { MLB:{bs:14.68,str:2.35,sv:1.55,ag:4.00,exc:6.77}, MLM:{bs:14.71,str:1.22,sv:1.89,ag:3.71,exc:7.88}, MLA:{bs:15.92,str:1.23,sv:1.33,ag:5.49,exc:7.78}, MLC:{bs:16.61,str:1.26,sv:2.11,ag:5.74,exc:7.48}, MCO:{bs:23.54,str:1.09,sv:3.68,ag:9.60,exc:9.08} },
-  W6:  { MLB:{bs:14.68,str:2.14,sv:1.47,ag:3.95,exc:7.12}, MLM:{bs:15.03,str:1.17,sv:1.90,ag:3.78,exc:8.17}, MLA:{bs:15.58,str:1.07,sv:1.27,ag:5.38,exc:7.77}, MLC:{bs:16.68,str:1.40,sv:2.06,ag:5.78,exc:7.42}, MCO:{bs:23.01,str:1.18,sv:3.41,ag:9.55,exc:8.77} },
-  W7:  { MLB:{bs:14.11,str:2.09,sv:1.44,ag:3.94,exc:6.63}, MLM:{bs:15.06,str:1.25,sv:1.89,ag:3.68,exc:8.22}, MLA:{bs:15.17,str:1.22,sv:1.28,ag:5.27,exc:7.32}, MLC:{bs:16.48,str:1.43,sv:2.16,ag:5.74,exc:7.10}, MCO:{bs:22.42,str:1.14,sv:3.14,ag:9.50,exc:8.57} },
-  W8:  { MLB:{bs:13.62,str:1.97,sv:1.42,ag:3.73,exc:6.48}, MLM:{bs:14.96,str:1.32,sv:2.03,ag:3.49,exc:8.11}, MLA:{bs:15.66,str:1.22,sv:1.39,ag:5.41,exc:7.63}, MLC:{bs:15.83,str:1.08,sv:2.06,ag:5.68,exc:6.99}, MCO:{bs:20.84,str:1.11,sv:2.88,ag:9.03,exc:7.76} },
-  W9:  { MLB:{bs:12.93,str:2.22,sv:1.37,ag:3.70,exc:5.63}, MLM:{bs:14.93,str:1.12,sv:2.11,ag:4.01,exc:7.69}, MLA:{bs:14.81,str:1.49,sv:1.31,ag:5.41,exc:6.58}, MLC:{bs:15.42,str:1.14,sv:1.95,ag:5.62,exc:6.68}, MCO:{bs:19.73,str:1.08,sv:2.81,ag:8.86,exc:6.92} },
-  W10: { MLB:{bs:12.11,str:2.16,sv:1.30,ag:3.42,exc:5.21}, MLM:{bs:15.41,str:1.17,sv:2.15,ag:3.95,exc:8.15}, MLA:{bs:14.68,str:1.96,sv:1.30,ag:5.69,exc:5.70}, MLC:{bs:15.38,str:1.36,sv:1.94,ag:5.61,exc:6.44}, MCO:{bs:19.73,str:0.99,sv:2.97,ag:8.83,exc:6.89} },
-  W11: { MLB:{bs:11.22,str:1.97,sv:1.28,ag:3.19,exc:4.77}, MLM:{bs:15.33,str:1.21,sv:2.15,ag:3.99,exc:7.98}, MLA:{bs:13.34,str:1.26,sv:1.24,ag:5.44,exc:5.37}, MLC:{bs:14.31,str:1.02,sv:1.92,ag:5.35,exc:6.00}, MCO:{bs:18.72,str:1.04,sv:2.86,ag:8.30,exc:6.48} },
-  W12: { MLB:{bs:10.81,str:1.87,sv:1.25,ag:3.17,exc:4.52}, MLM:{bs:15.51,str:1.27,sv:2.13,ag:4.01,exc:8.09}, MLA:{bs:12.50,str:1.27,sv:1.13,ag:4.98,exc:5.09}, MLC:{bs:13.50,str:0.97,sv:1.91,ag:4.99,exc:5.62}, MCO:{bs:18.50,str:1.19,sv:2.75,ag:8.02,exc:6.50} },
-  W13: { MLB:{bs:10.50,str:2.06,sv:1.20,ag:2.96,exc:4.27}, MLM:{bs:15.34,str:1.27,sv:1.98,ag:4.15,exc:7.94}, MLA:{bs:12.77,str:1.37,sv:1.18,ag:5.08,exc:5.12}, MLC:{bs:13.16,str:0.99,sv:1.77,ag:4.66,exc:5.73}, MCO:{bs:19.13,str:1.03,sv:2.77,ag:8.63,exc:6.67} },
-  W14: { MLB:{bs:10.88,str:2.60,sv:1.21,ag:2.75,exc:4.32}, MLM:{bs:15.45,str:1.34,sv:1.96,ag:4.60,exc:7.56}, MLA:{bs:13.16,str:1.38,sv:1.27,ag:5.25,exc:5.25}, MLC:{bs:14.16,str:1.04,sv:1.94,ag:4.73,exc:6.44}, MCO:{bs:20.26,str:1.27,sv:2.92,ag:8.84,exc:7.16} },
-  W15: { MLB:{bs:9.95,str:1.83,sv:1.32,ag:2.69,exc:4.10}, MLM:{bs:15.62,str:1.19,sv:2.06,ag:4.70,exc:7.66}, MLA:{bs:13.23,str:1.21,sv:1.33,ag:5.24,exc:5.44}, MLC:{bs:14.09,str:0.87,sv:2.01,ag:4.71,exc:6.47}, MCO:{bs:22.21,str:1.42,sv:2.94,ag:9.26,exc:8.55} },
+  W1:  { MLB:{bs:14.52,str:2.23,sv:1.58,ag:3.44,exc:7.26,u:71806373,bu:9300974}, MLM:{bs:15.75,str:1.35,sv:1.56,ag:3.68,exc:9.16,u:50995024,bu:7049574}, MLA:{bs:17.38,str:1.18,sv:1.51,ag:5.24,exc:9.44,u:6467411,bu:1014076}, MLC:{bs:17.68,str:1.04,sv:1.99,ag:5.48,exc:9.17,u:4321145,bu:703573}, MCO:{bs:23.63,str:3.48,sv:2.85,ag:8.51,exc:8.78,u:928784,bu:208622} },
+  W2:  { MLB:{bs:14.16,str:2.74,sv:1.68,ag:3.53,exc:6.20,u:66889337,bu:9470731}, MLM:{bs:13.05,str:1.23,sv:1.66,ag:3.39,exc:6.76,u:51941290,bu:6779114}, MLA:{bs:15.87,str:1.55,sv:1.43,ag:5.18,exc:7.70,u:6287135,bu:997662}, MLC:{bs:16.88,str:1.46,sv:1.93,ag:5.56,exc:7.93,u:4223603,bu:712793}, MCO:{bs:22.07,str:1.58,sv:3.38,ag:8.95,exc:8.13,u:873048,bu:192651} },
+  W3:  { MLB:{bs:15.10,str:2.58,sv:1.73,ag:3.72,exc:7.07,u:65697575,bu:9918121}, MLM:{bs:14.25,str:1.26,sv:1.79,ag:3.43,exc:7.77,u:52848759,bu:7533188}, MLA:{bs:17.29,str:1.28,sv:1.44,ag:5.92,exc:8.62,u:6147184,bu:1062772}, MLC:{bs:17.29,str:1.37,sv:1.91,ag:6.04,exc:7.96,u:4519629,bu:781636}, MCO:{bs:24.51,str:1.53,sv:3.91,ag:9.78,exc:9.25,u:864918,bu:212018} },
+  W4:  { MLB:{bs:14.33,str:2.31,sv:1.71,ag:3.80,exc:6.52,u:65483638,bu:9386169}, MLM:{bs:14.50,str:1.20,sv:1.89,ag:3.72,exc:7.69,u:53490586,bu:7754100}, MLA:{bs:16.51,str:1.36,sv:1.41,ag:5.62,exc:8.04,u:6290794,bu:1038888}, MLC:{bs:17.01,str:1.37,sv:2.23,ag:5.80,exc:7.58,u:4641213,bu:789278}, MCO:{bs:24.19,str:1.31,sv:4.12,ag:9.69,exc:8.99,u:863543,bu:208886} },
+  W5:  { MLB:{bs:14.68,str:2.35,sv:1.55,ag:4.00,exc:6.77,u:65392755,bu:9598995}, MLM:{bs:14.71,str:1.22,sv:1.89,ag:3.71,exc:7.88,u:55159509,bu:8111537}, MLA:{bs:15.92,str:1.23,sv:1.33,ag:5.49,exc:7.78,u:6338522,bu:1009163}, MLC:{bs:16.61,str:1.26,sv:2.11,ag:5.74,exc:7.48,u:4702996,bu:781285}, MCO:{bs:23.54,str:1.09,sv:3.68,ag:9.60,exc:9.08,u:879160,bu:206945} },
+  W6:  { MLB:{bs:14.68,str:2.14,sv:1.47,ag:3.95,exc:7.12,u:63723798,bu:9356206}, MLM:{bs:15.03,str:1.17,sv:1.90,ag:3.78,exc:8.17,u:55262575,bu:8306708}, MLA:{bs:15.58,str:1.07,sv:1.27,ag:5.38,exc:7.77,u:6192125,bu:964531}, MLC:{bs:16.68,str:1.40,sv:2.06,ag:5.78,exc:7.42,u:4653778,bu:776455}, MCO:{bs:23.01,str:1.18,sv:3.41,ag:9.55,exc:8.77,u:903035,bu:207757} },
+  W7:  { MLB:{bs:14.11,str:2.09,sv:1.44,ag:3.94,exc:6.63,u:63777191,bu:8998196}, MLM:{bs:15.06,str:1.25,sv:1.89,ag:3.68,exc:8.22,u:55513275,bu:8359050}, MLA:{bs:15.17,str:1.22,sv:1.28,ag:5.27,exc:7.32,u:6201077,bu:940417}, MLC:{bs:16.48,str:1.43,sv:2.16,ag:5.74,exc:7.10,u:4764025,bu:784924}, MCO:{bs:22.42,str:1.14,sv:3.14,ag:9.50,exc:8.57,u:939137,bu:210598} },
+  W8:  { MLB:{bs:13.62,str:1.97,sv:1.42,ag:3.73,exc:6.48,u:64628409,bu:8799412}, MLM:{bs:14.96,str:1.32,sv:2.03,ag:3.49,exc:8.11,u:56673201,bu:8480222}, MLA:{bs:15.66,str:1.22,sv:1.39,ag:5.41,exc:7.63,u:6080648,bu:952333}, MLC:{bs:15.83,str:1.08,sv:2.06,ag:5.68,exc:6.99,u:4835425,bu:765286}, MCO:{bs:20.84,str:1.11,sv:2.88,ag:9.03,exc:7.76,u:946341,bu:197223} },
+  W9:  { MLB:{bs:12.93,str:2.22,sv:1.37,ag:3.70,exc:5.63,u:65182226,bu:8427716}, MLM:{bs:14.93,str:1.12,sv:2.11,ag:4.01,exc:7.69,u:57447175,bu:8577786}, MLA:{bs:14.81,str:1.49,sv:1.31,ag:5.41,exc:6.58,u:6057998,bu:896939}, MLC:{bs:15.42,str:1.14,sv:1.95,ag:5.62,exc:6.68,u:4722190,bu:728035}, MCO:{bs:19.73,str:1.08,sv:2.81,ag:8.86,exc:6.92,u:958767,bu:189152} },
+  W10: { MLB:{bs:12.11,str:2.16,sv:1.30,ag:3.42,exc:5.21,u:65244107,bu:7902823}, MLM:{bs:15.41,str:1.17,sv:2.15,ag:3.95,exc:8.15,u:57284940,bu:8828688}, MLA:{bs:14.68,str:1.96,sv:1.30,ag:5.69,exc:5.70,u:6028479,bu:884707}, MLC:{bs:15.38,str:1.36,sv:1.94,ag:5.61,exc:6.44,u:4634302,bu:712785}, MCO:{bs:19.73,str:0.99,sv:2.97,ag:8.83,exc:6.89,u:934615,bu:184388} },
+  W11: { MLB:{bs:11.22,str:1.97,sv:1.28,ag:3.19,exc:4.77,u:66077273,bu:7412841}, MLM:{bs:15.33,str:1.21,sv:2.15,ag:3.99,exc:7.98,u:58020975,bu:8895851}, MLA:{bs:13.34,str:1.26,sv:1.24,ag:5.44,exc:5.37,u:6172719,bu:823300}, MLC:{bs:14.31,str:1.02,sv:1.92,ag:5.35,exc:6.00,u:4962762,bu:710049}, MCO:{bs:18.72,str:1.04,sv:2.86,ag:8.30,exc:6.48,u:966711,bu:180975} },
+  W12: { MLB:{bs:10.81,str:1.87,sv:1.25,ag:3.17,exc:4.52,u:67723603,bu:7323595}, MLM:{bs:15.51,str:1.27,sv:2.13,ag:4.01,exc:8.09,u:58311556,bu:9043784}, MLA:{bs:12.50,str:1.27,sv:1.13,ag:4.98,exc:5.09,u:6519322,bu:814785}, MLC:{bs:13.50,str:0.97,sv:1.91,ag:4.99,exc:5.62,u:5356275,bu:723277}, MCO:{bs:18.50,str:1.19,sv:2.75,ag:8.02,exc:6.50,u:958064,bu:177248} },
+  W13: { MLB:{bs:10.50,str:2.06,sv:1.20,ag:2.96,exc:4.27,u:70088078,bu:7360343}, MLM:{bs:15.34,str:1.27,sv:1.98,ag:4.15,exc:7.94,u:59202090,bu:9081255}, MLA:{bs:12.77,str:1.37,sv:1.18,ag:5.08,exc:5.12,u:6429808,bu:820943}, MLC:{bs:13.16,str:0.99,sv:1.77,ag:4.66,exc:5.73,u:5563542,bu:732067}, MCO:{bs:19.13,str:1.03,sv:2.77,ag:8.63,exc:6.67,u:930077,bu:177898} },
+  W14: { MLB:{bs:10.88,str:2.60,sv:1.21,ag:2.75,exc:4.32,u:71383182,bu:7769299}, MLM:{bs:15.45,str:1.34,sv:1.96,ag:4.60,exc:7.56,u:59436379,bu:9185165}, MLA:{bs:13.16,str:1.38,sv:1.27,ag:5.25,exc:5.25,u:6459148,bu:849995}, MLC:{bs:14.16,str:1.04,sv:1.94,ag:4.73,exc:6.44,u:5027426,bu:711796}, MCO:{bs:20.26,str:1.27,sv:2.92,ag:8.84,exc:7.16,u:911970,bu:184774} },
+  W15: { MLB:{bs:9.95,str:1.83,sv:1.32,ag:2.69,exc:4.10,u:70538661,bu:7015572}, MLM:{bs:15.62,str:1.19,sv:2.06,ag:4.70,exc:7.66,u:58719128,bu:9169529}, MLA:{bs:13.23,str:1.21,sv:1.33,ag:5.24,exc:5.44,u:6359624,bu:841606}, MLC:{bs:14.09,str:0.87,sv:2.01,ag:4.71,exc:6.47,u:5056388,bu:712208}, MCO:{bs:22.21,str:1.42,sv:2.94,ag:9.26,exc:8.55,u:884183,bu:196414} },
 };
 
 // Monthly targets (by month number)
@@ -421,14 +438,36 @@ const TARGETS = {
 const SITE_COLORS = {MLB:'#4f8ef7',MLM:'#ff8c42',MLA:'#00c48c',MLC:'#a78bfa',MCO:'#ff4d6a'};
 const SITE_NAMES  = {MLB:'MLB · Brasil',MLM:'MLM · México',MLA:'MLA · Argentina',MLC:'MLC · Chile',MCO:'MCO · Colombia'};
 const ALL_SITES   = ['MLB','MLM','MLA','MLC','MCO'];
+const INI_SHORT   = {ALL:'Todos',MELI_PRO:'Meli Pro',SELLER_DEV:'Seller Dev','3P':'3P',CBT:'CBT','3P+CBT':'3P+CBT','1P/PL':'1P/PL'};
+const INI_COLORS  = {'3P':'#ff8c42',CBT:'#a78bfa','1P/PL':'#00c48c'};
 
-// Returns the right KPI data object for a given week/site based on initiative filter
-function getInitData(wid, site) {
-  const ini = state.initiative;
-  if (ini === 'ALL')        return (KPI[wid]||{})[site] || null;
+// Get KPI data for a specific initiative (explicit ini parameter)
+function getDataFor(wid, site, ini) {
+  if (!ini || ini === 'ALL') return (KPI[wid]||{})[site] || null;
   if (ini === 'MELI_PRO')   return ((SEG_KPI[wid]||{})[site]||{})['MELI PRO'] || null;
   if (ini === 'SELLER_DEV') return ((SEG_KPI[wid]||{})[site]||{})['SELLER DEV'] || null;
   return ((INIT_KPI[wid]||{})[site]||{})[ini] || null;
+}
+
+// Get total/bad units for a specific initiative
+function getUnitsData(wid, site, ini) {
+  if (!ini || ini === 'ALL') {
+    const k = (KPI[wid]||{})[site];
+    return (k && k.u) ? {u: k.u, bu: k.bu||0} : null;
+  }
+  if (ini === 'MELI_PRO' || ini === 'SELLER_DEV') return null;
+  if (ini === '3P+CBT') {
+    const d3p = ((INIT_UNITS[wid]||{})[site]||{})['3P'];
+    const cbt = ((INIT_UNITS[wid]||{})[site]||{}).CBT;
+    if (!d3p) return null;
+    return { u: d3p.u + (cbt ? cbt.u : 0), bu: d3p.bu + (cbt ? cbt.bu : 0) };
+  }
+  return ((INIT_UNITS[wid]||{})[site]||{})[ini] || null;
+}
+
+// Convenience: get KPI data based on first selected initiative
+function getInitData(wid, site) {
+  return getDataFor(wid, site, state.initiatives[0]);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -436,7 +475,7 @@ function getInitData(wid, site) {
 // ══════════════════════════════════════════════════════════════════════════════
 let state = {
   countries: [...ALL_SITES],
-  initiative: 'ALL',
+  initiatives: ['ALL'],
   selectedWeek: 'W15',
   filterMonth: 'ALL',
 };
@@ -444,17 +483,40 @@ let state = {
 // ══════════════════════════════════════════════════════════════════════════════
 // FILTER CONTROLS
 // ══════════════════════════════════════════════════════════════════════════════
-function toggleCountry(site, el) {
-  const idx = state.countries.indexOf(site);
-  if (idx === -1) { state.countries.push(site); el.classList.add('active'); }
-  else if (state.countries.length > 1) { state.countries.splice(idx,1); el.classList.remove('active'); }
+function selectCountry(site, el) {
+  if (site === 'ALL') {
+    state.countries = [...ALL_SITES];
+    document.querySelectorAll('.pill.ctry').forEach(p => p.classList.remove('active'));
+    document.getElementById('ctry-all').classList.add('active');
+  } else {
+    state.countries = [site];
+    document.querySelectorAll('.pill.ctry').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
   renderAll();
 }
 
-function setInit(val, el) {
-  state.initiative = val;
-  document.querySelectorAll('.pill.init').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
+function toggleInit(val, el) {
+  if (val === 'ALL') {
+    state.initiatives = ['ALL'];
+    document.querySelectorAll('.pill.init').forEach(p => p.classList.remove('active'));
+    document.getElementById('init-all').classList.add('active');
+  } else {
+    state.initiatives = state.initiatives.filter(i => i !== 'ALL');
+    document.getElementById('init-all').classList.remove('active');
+    const idx = state.initiatives.indexOf(val);
+    if (idx === -1) {
+      state.initiatives.push(val);
+      el.classList.add('active');
+    } else {
+      state.initiatives.splice(idx, 1);
+      el.classList.remove('active');
+      if (state.initiatives.length === 0) {
+        state.initiatives = ['ALL'];
+        document.getElementById('init-all').classList.add('active');
+      }
+    }
+  }
   renderAll();
 }
 
@@ -499,8 +561,8 @@ function renderKPIs() {
   const wObj  = WEEKS.find(w => w.id === wid);
   const wLabel = wObj ? wObj.label : wid;
 
-  const ini = state.initiative;
-  const iniLabel = {ALL:'',MELI_PRO:' · Meli Pro',SELLER_DEV:' · Seller Dev','3P':' · 3P',CBT:' · CBT','3P+CBT':' · 3P+CBT','1P/PL':' · 1P/PL'}[ini]||'';
+  const inis = state.initiatives;
+  const iniLabel = inis.includes('ALL') ? '' : ' · ' + inis.map(i => INI_SHORT[i]||i).join('+');
   document.getElementById('ov-week-lbl').textContent = wLabel + iniLabel;
   document.getElementById('comp-week-lbl').textContent = wid + iniLabel;
   document.getElementById('sum-week-lbl').textContent = wLabel + iniLabel;
@@ -623,30 +685,53 @@ function renderTrendChart() {
     weeks.length > 1 ? `${weeks[0].id} a ${weeks[weeks.length-1].id}` : (weeks[0]||{}).id||'';
 
   const labels = weeks.map(w => w.label);
-  const datasets = state.countries.map(site => ({
-    label: site,
-    data: weeks.map(w => getInitData(w.id, site)?.bs ?? null),
-    borderColor: SITE_COLORS[site],
-    backgroundColor: SITE_COLORS[site]+'15',
-    tension: 0.35,
-    pointRadius: 4,
-    spanGaps: true,
-  }));
+  const inis = state.initiatives;
+  const isMultiIni = !inis.includes('ALL') && inis.length > 1;
 
-  // Add target line for selected week's month
-  const wObj = WEEKS.find(w => w.id === state.selectedWeek);
-  if (wObj && state.countries.length === 1) {
-    const tgt = (TARGETS[wObj.month]||{})[state.countries[0]];
-    if (tgt) {
-      datasets.push({
-        label: `Target ${state.countries[0]}`,
-        data: weeks.map(() => tgt.bs),
-        borderColor: '#ffe600',
-        borderDash: [4,4],
-        borderWidth: 1,
-        pointRadius: 0,
-        fill: false,
+  let datasets;
+  if (isMultiIni) {
+    datasets = [];
+    state.countries.forEach(site => {
+      inis.forEach((ini, j) => {
+        datasets.push({
+          label: `${site} ${INI_SHORT[ini]||ini}`,
+          data: weeks.map(w => getDataFor(w.id, site, ini)?.bs ?? null),
+          borderColor: SITE_COLORS[site],
+          borderDash: j === 0 ? [] : [6,3],
+          backgroundColor: SITE_COLORS[site]+'15',
+          tension: 0.35,
+          pointRadius: 4,
+          spanGaps: true,
+          fill: false,
+        });
       });
+    });
+  } else {
+    datasets = state.countries.map(site => ({
+      label: site,
+      data: weeks.map(w => getDataFor(w.id, site, inis[0])?.bs ?? null),
+      borderColor: SITE_COLORS[site],
+      backgroundColor: SITE_COLORS[site]+'15',
+      tension: 0.35,
+      pointRadius: 4,
+      spanGaps: true,
+    }));
+
+    // Add target line for selected week's month (single country only)
+    const wObj = WEEKS.find(w => w.id === state.selectedWeek);
+    if (wObj && state.countries.length === 1) {
+      const tgt = (TARGETS[wObj.month]||{})[state.countries[0]];
+      if (tgt) {
+        datasets.push({
+          label: `Target ${state.countries[0]}`,
+          data: weeks.map(() => tgt.bs),
+          borderColor: '#ffe600',
+          borderDash: [4,4],
+          borderWidth: 1,
+          pointRadius: 0,
+          fill: false,
+        });
+      }
     }
   }
 
@@ -755,13 +840,12 @@ function renderCompChart() {
 // ══════════════════════════════════════════════════════════════════════════════
 function renderTargetDetail() {
   const wid = state.selectedWeek;
-  const wData = KPI[wid] || {};
   const tbody = document.getElementById('tgt-detail-table');
   if (!tbody) return;
 
   let rows = '';
   ALL_SITES.forEach(s => {
-    const d = wData[s];
+    const d = getInitData(wid, s);
     const tgt = targetForWeek(wid, s);
     if (!d || !tgt) return;
     const dev = d.bs - tgt.bs;
@@ -775,7 +859,8 @@ function renderTargetDetail() {
       return `<span style="color:${cl};font-weight:700">${n>0?'+':''}${n.toFixed(2)}pp</span> <span style="color:var(--muted);font-size:10px">(tgt ${t.toFixed(1)}%)</span>`;
     }
 
-    const initLabel = (s==='MLM'||s==='MLC') ? '<span class="b btot">3P+CBT</span>' : '<span class="b b3p">3P</span>';
+    const _ini = state.initiatives[0];
+    const initLabel = _ini === 'ALL' ? ((s==='MLM'||s==='MLC') ? '<span class="b btot">3P+CBT</span>' : '<span class="b b3p">3P</span>') : `<span class="b btot">${INI_SHORT[_ini]||_ini}</span>`;
     rows += `<tr>
       <td><b style="color:${SITE_COLORS[s]}">${s}</b></td>
       <td>${initLabel}</td>
@@ -893,6 +978,111 @@ const INIT_KPI = {
     MLA:{ '3P':{bs:11.48,str:0.81,sv:1.26,ag:4.80,exc:4.61}, CBT:null, '3P+CBT':{bs:11.48,str:0.81,sv:1.26,ag:4.80,exc:4.61}, '1P/PL':{bs:24.56,str:3.85,sv:1.84,ag:8.07,exc:10.79} },
     MLC:{ '3P':{bs:13.06,str:0.65,sv:1.77,ag:4.73,exc:5.90}, CBT:{bs:22.96,str:1.21,sv:4.72,ag:2.98,exc:14.04}, '3P+CBT':{bs:13.73,str:0.69,sv:1.97,ag:4.61,exc:6.45}, '1P/PL':{bs:17.46,str:2.63,sv:2.42,ag:5.65,exc:6.73} },
     MCO:{ '3P':{bs:22.20,str:1.37,sv:2.96,ag:9.43,exc:8.39}, CBT:null, '3P+CBT':{bs:22.20,str:1.37,sv:2.96,ag:9.43,exc:8.39}, '1P/PL':{bs:22.37,str:2.00,sv:2.63,ag:7.29,exc:10.45} },
+  },
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INIT UNITS — Stock Total e Bad Stock (unidades) por iniciativa · W2–W15
+// Fonte: BigQuery · DM_DASH_SHP_STOCK_QUALITY_SUMMARY · 1P+PL combinados
+// ══════════════════════════════════════════════════════════════════════════════
+const INIT_UNITS = {
+  W2:  {
+    MLB: { '3P':{u:58181686,bu:7348894}, '1P/PL':{u:8707651,bu:2121837} },
+    MLM: { '3P':{u:34414556,bu:3689611}, CBT:{u:13917729,bu:1640656}, '1P/PL':{u:3609005,bu:1448847} },
+    MLA: { '3P':{u:5620491,bu:750981}, '1P/PL':{u:666644,bu:246681} },
+    MLC: { '3P':{u:3571946,bu:590510}, CBT:{u:305125,bu:50948}, '1P/PL':{u:346532,bu:71335} },
+    MCO: { '3P':{u:833100,bu:176944}, '1P/PL':{u:39948,bu:15707} },
+  },
+  W3:  {
+    MLB: { '3P':{u:57286171,bu:7766077}, '1P/PL':{u:8411404,bu:2152044} },
+    MLM: { '3P':{u:35189684,bu:4094841}, CBT:{u:14319520,bu:1900083}, '1P/PL':{u:3339555,bu:1538264} },
+    MLA: { '3P':{u:5479803,bu:810635}, '1P/PL':{u:664276,bu:251975} },
+    MLC: { '3P':{u:3794570,bu:635963}, CBT:{u:299467,bu:61116}, '1P/PL':{u:425592,bu:84557} },
+    MCO: { '3P':{u:821779,bu:194418}, '1P/PL':{u:43007,bu:17600} },
+  },
+  W4:  {
+    MLB: { '3P':{u:57080699,bu:7244091}, '1P/PL':{u:8402939,bu:2142078} },
+    MLM: { '3P':{u:35576006,bu:4163423}, CBT:{u:14610802,bu:1933556}, '1P/PL':{u:3303778,bu:1657121} },
+    MLA: { '3P':{u:5596433,bu:796940}, '1P/PL':{u:678016,bu:241003} },
+    MLC: { '3P':{u:3927128,bu:635895}, CBT:{u:298456,bu:61554}, '1P/PL':{u:415629,bu:91829} },
+    MCO: { '3P':{u:809916,bu:190036}, '1P/PL':{u:53036,bu:18800} },
+  },
+  W5:  {
+    MLB: { '3P':{u:56711053,bu:7351939}, '1P/PL':{u:8681702,bu:2247056} },
+    MLM: { '3P':{u:36476471,bu:4528043}, CBT:{u:15096212,bu:1976329}, '1P/PL':{u:3586826,bu:1607165} },
+    MLA: { '3P':{u:5581946,bu:762559}, '1P/PL':{u:709150,bu:245280} },
+    MLC: { '3P':{u:3959626,bu:620606}, CBT:{u:301478,bu:62724}, '1P/PL':{u:441892,bu:97955} },
+    MCO: { '3P':{u:817520,bu:189094}, '1P/PL':{u:58756,bu:17693} },
+  },
+  W6:  {
+    MLB: { '3P':{u:55264692,bu:7380823}, '1P/PL':{u:8459106,bu:1975383} },
+    MLM: { '3P':{u:36414542,bu:4730848}, CBT:{u:15287676,bu:2022224}, '1P/PL':{u:3560357,bu:1553636} },
+    MLA: { '3P':{u:5407244,bu:730416}, '1P/PL':{u:719611,bu:232553} },
+    MLC: { '3P':{u:3918379,bu:620581}, CBT:{u:312511,bu:63966}, '1P/PL':{u:422888,bu:91908} },
+    MCO: { '3P':{u:838492,bu:191093}, '1P/PL':{u:57771,bu:16475} },
+  },
+  W7:  {
+    MLB: { '3P':{u:55218056,bu:7136599}, '1P/PL':{u:8559135,bu:1861597} },
+    MLM: { '3P':{u:36699777,bu:4862912}, CBT:{u:15461496,bu:2099499}, '1P/PL':{u:3352002,bu:1396639} },
+    MLA: { '3P':{u:5368724,bu:708269}, '1P/PL':{u:750691,bu:229711} },
+    MLC: { '3P':{u:4048611,bu:623533}, CBT:{u:305604,bu:69079}, '1P/PL':{u:409810,bu:92312} },
+    MCO: { '3P':{u:870749,bu:194477}, '1P/PL':{u:56934,bu:15833} },
+  },
+  W8:  {
+    MLB: { '3P':{u:55833640,bu:6958675}, '1P/PL':{u:8794769,bu:1840737} },
+    MLM: { '3P':{u:37695255,bu:4923223}, CBT:{u:15673240,bu:2273953}, '1P/PL':{u:3304706,bu:1283046} },
+    MLA: { '3P':{u:5240841,bu:729063}, '1P/PL':{u:742314,bu:219865} },
+    MLC: { '3P':{u:4140809,bu:604580}, CBT:{u:279226,bu:68207}, '1P/PL':{u:415390,bu:92499} },
+    MCO: { '3P':{u:871587,bu:181396}, '1P/PL':{u:59912,bu:15130} },
+  },
+  W9:  {
+    MLB: { '3P':{u:56061007,bu:6724259}, '1P/PL':{u:9121219,bu:1703457} },
+    MLM: { '3P':{u:37843623,bu:4954566}, CBT:{u:15769976,bu:2374705}, '1P/PL':{u:3833576,bu:1248515} },
+    MLA: { '3P':{u:5187727,bu:689111}, '1P/PL':{u:758102,bu:203582} },
+    MLC: { '3P':{u:4007487,bu:574996}, CBT:{u:280416,bu:65564}, '1P/PL':{u:434287,bu:87475} },
+    MCO: { '3P':{u:879224,bu:174368}, '1P/PL':{u:63330,bu:14216} },
+  },
+  W10: {
+    MLB: { '3P':{u:55878521,bu:6344804}, '1P/PL':{u:9365586,bu:1558019} },
+    MLM: { '3P':{u:37669122,bu:5310418}, CBT:{u:15619906,bu:2397329}, '1P/PL':{u:3995912,bu:1120941} },
+    MLA: { '3P':{u:5320476,bu:690856}, '1P/PL':{u:708003,bu:193851} },
+    MLC: { '3P':{u:3907099,bu:560755}, CBT:{u:297342,bu:69492}, '1P/PL':{u:429861,bu:82538} },
+    MCO: { '3P':{u:872405,bu:171161}, '1P/PL':{u:62210,bu:13227} },
+  },
+  W11: {
+    MLB: { '3P':{u:56926525,bu:6095828}, '1P/PL':{u:9150748,bu:1317013} },
+    MLM: { '3P':{u:37903709,bu:5410196}, CBT:{u:16377438,bu:2453049}, '1P/PL':{u:3739828,bu:1032606} },
+    MLA: { '3P':{u:5477968,bu:638789}, '1P/PL':{u:694751,bu:184511} },
+    MLC: { '3P':{u:4207032,bu:557331}, CBT:{u:305929,bu:71507}, '1P/PL':{u:449801,bu:81211} },
+    MCO: { '3P':{u:898565,bu:167746}, '1P/PL':{u:68146,bu:13229} },
+  },
+  W12: {
+    MLB: { '3P':{u:58554829,bu:6005056}, '1P/PL':{u:9168774,bu:1318539} },
+    MLM: { '3P':{u:37422945,bu:5480900}, CBT:{u:16974070,bu:2574602}, '1P/PL':{u:3914541,bu:988282} },
+    MLA: { '3P':{u:5786086,bu:629536}, '1P/PL':{u:733236,bu:185249} },
+    MLC: { '3P':{u:4545125,bu:565930}, CBT:{u:309489,bu:71684}, '1P/PL':{u:501661,bu:85663} },
+    MCO: { '3P':{u:893087,bu:164373}, '1P/PL':{u:64977,bu:12875} },
+  },
+  W13: {
+    MLB: { '3P':{u:60861445,bu:5905741}, '1P/PL':{u:9226633,bu:1454602} },
+    MLM: { '3P':{u:37430521,bu:5430260}, CBT:{u:17422005,bu:2666979}, '1P/PL':{u:4349564,bu:984016} },
+    MLA: { '3P':{u:5661501,bu:640968}, '1P/PL':{u:768307,bu:179975} },
+    MLC: { '3P':{u:4708996,bu:572223}, CBT:{u:309134,bu:71071}, '1P/PL':{u:545412,bu:88773} },
+    MCO: { '3P':{u:865426,bu:163993}, '1P/PL':{u:64651,bu:13905} },
+  },
+  W14: {
+    MLB: { '3P':{u:61761240,bu:6461412}, '1P/PL':{u:9621942,bu:1307887} },
+    MLM: { '3P':{u:36817002,bu:5459287}, CBT:{u:17663620,bu:2779574}, '1P/PL':{u:4955757,bu:946304} },
+    MLA: { '3P':{u:5644486,bu:655845}, '1P/PL':{u:814662,bu:194150} },
+    MLC: { '3P':{u:4239787,bu:556881}, CBT:{u:298570,bu:73441}, '1P/PL':{u:489069,bu:81474} },
+    MCO: { '3P':{u:839473,bu:171849}, '1P/PL':{u:72497,bu:12925} },
+  },
+  W15: {
+    MLB: { '3P':{u:61228932,bu:5660579}, '1P/PL':{u:9309729,bu:1354993} },
+    MLM: { '3P':{u:36391066,bu:5450804}, CBT:{u:17698173,bu:2815207}, '1P/PL':{u:4629889,bu:903518} },
+    MLA: { '3P':{u:5509052,bu:632675}, '1P/PL':{u:850572,bu:208931} },
+    MLC: { '3P':{u:4264399,bu:556964}, CBT:{u:308794,bu:70889}, '1P/PL':{u:483195,bu:84355} },
+    MCO: { '3P':{u:814169,bu:180751}, '1P/PL':{u:70014,bu:15663} },
   },
 };
 
@@ -1103,15 +1293,21 @@ function renderInitiativeTable() {
   }
 
   // Determine which initiatives to show based on filter
-  const ini = state.initiative;
+  // When multiple initiatives selected, show all selected ones; otherwise show all (ALL) or selected one
+  const selInis = state.initiatives;
+  const ini = selInis.includes('ALL') ? 'ALL' : selInis[0];
   let initiatives;
   if (ini === 'ALL')                                initiatives = ['3P','CBT','3P+CBT','1P/PL'];
   else if (ini === 'MELI_PRO' || ini === 'SELLER_DEV') initiatives = ['3P'];
-  else                                              initiatives = [ini];
+  else                                              initiatives = selInis.filter(i => !['ALL','MELI_PRO','SELLER_DEV'].includes(i));
+  if (initiatives.length === 0) initiatives = ['3P'];
 
   // Which segments to show for 3P rows
-  const segFilter = ini === 'MELI_PRO'   ? ['MELI PRO']
-                  : ini === 'SELLER_DEV' ? ['SELLER DEV']
+  const hasMeliPro   = selInis.includes('MELI_PRO');
+  const hasSellerDev = selInis.includes('SELLER_DEV');
+  const segFilter = (hasMeliPro && !hasSellerDev) ? ['MELI PRO']
+                  : (!hasMeliPro && hasSellerDev) ? ['SELLER DEV']
+                  : (hasMeliPro && hasSellerDev)  ? ['MELI PRO','SELLER DEV']
                   : ['TOTAL','MELI PRO','SELLER DEV'];
 
   const INIT_LABELS = {
@@ -1213,7 +1409,7 @@ function renderInitiativeTable() {
 let vertChart = null;
 function renderVertChart() {
   const notice = document.getElementById('vert-init-notice');
-  if (notice) notice.style.display = state.initiative !== 'ALL' ? 'block' : 'none';
+  if (notice) notice.style.display = !state.initiatives.includes('ALL') ? 'block' : 'none';
 
   if (vertChart) { vertChart.destroy(); vertChart = null; }
   const ctx = document.getElementById('vertChart');
@@ -1314,6 +1510,160 @@ function renderVertTable() {
 
 
 // ══════════════════════════════════════════════════════════════════════════════
+// RENDER — UNITS TREND CHART (Stock Total + Bad Stock em unidades por país)
+// ══════════════════════════════════════════════════════════════════════════════
+let unitsChart = null;
+function renderUnitsChart() {
+  const weeks = filteredWeeks();
+  if (unitsChart) { unitsChart.destroy(); unitsChart = null; }
+  const ctx = document.getElementById('unitsChart');
+  if (!ctx) return;
+
+  const ini = state.initiatives[0];
+  const labels = weeks.map(w => w.label);
+  const fmtK = v => v==null?'N/D':v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v;
+  const datasets = [];
+
+  state.countries.forEach(site => {
+    const color = SITE_COLORS[site];
+    datasets.push({
+      label: `${site} Stock Total`,
+      data: weeks.map(w => { const d=getUnitsData(w.id,site,ini); return d?d.u:null; }),
+      borderColor: color, borderDash:[5,5], borderWidth:1.5, pointRadius:3,
+      tension:0.35, spanGaps:true, fill:false,
+    });
+    datasets.push({
+      label: `${site} Bad Stock`,
+      data: weeks.map(w => { const d=getUnitsData(w.id,site,ini); return d?d.bu:null; }),
+      borderColor: color, borderWidth:2.5, pointRadius:4,
+      tension:0.35, spanGaps:true, fill:false,
+    });
+  });
+
+  unitsChart = new Chart(ctx, {
+    type:'line', data:{labels,datasets},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{labels:{color:'#8890a8',boxWidth:10,font:{size:10}}},
+        tooltip:{mode:'index',intersect:false,callbacks:{label:c=>` ${c.dataset.label}: ${fmtK(c.parsed.y)}`}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',font:{size:10}}},
+        y:{grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v},min:0}
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDER — UNITS COMP CHART (composição Bad Stock em unidades)
+// ══════════════════════════════════════════════════════════════════════════════
+let unitsCompChart = null;
+function renderUnitsCompChart() {
+  const weeks = filteredWeeks();
+  if (unitsCompChart) { unitsCompChart.destroy(); unitsCompChart = null; }
+  const ctx = document.getElementById('unitsCompChart');
+  if (!ctx) return;
+
+  const ini = state.initiatives[0];
+  const labels = weeks.map(w => w.label);
+  const sites = state.countries;
+  const fmtK = v => v==null?'N/D':v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v;
+
+  function compUnitsAvg(field) {
+    return weeks.map(w => {
+      const vals = sites.map(s => {
+        const ud = getUnitsData(w.id,s,ini);
+        const kd = getDataFor(w.id,s,ini);
+        return (ud && kd && kd[field]!=null) ? Math.round(ud.u*kd[field]/100) : null;
+      }).filter(v=>v!==null);
+      return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+    });
+  }
+
+  unitsCompChart = new Chart(ctx, {
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'Stranded',   data:compUnitsAvg('str'),backgroundColor:'#ff4d6a'},
+      {label:'Sin Venta',  data:compUnitsAvg('sv'), backgroundColor:'#ff8c42'},
+      {label:'Aging',      data:compUnitsAvg('ag'), backgroundColor:'#a78bfa'},
+      {label:'Aging+Exc.', data:compUnitsAvg('exc'),backgroundColor:'#4f8ef7'},
+    ]},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{labels:{color:'#8890a8',boxWidth:8,font:{size:10}}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmtK(c.parsed.y)}`}}
+      },
+      scales:{
+        x:{stacked:true,grid:{display:false},ticks:{color:'#8890a8',font:{size:10}}},
+        y:{stacked:true,grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v},min:0}
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDER — INITIATIVE UNITS CHART (Stock Total + Bad Stock por iniciativa)
+// ══════════════════════════════════════════════════════════════════════════════
+let initUnitsChart = null;
+function renderInitiativeUnitsChart() {
+  const weeks = filteredWeeks();
+  if (initUnitsChart) { initUnitsChart.destroy(); initUnitsChart = null; }
+  const ctx = document.getElementById('initUnitsChart');
+  if (!ctx) return;
+
+  const labels = weeks.map(w => w.label);
+  const sites = state.countries;
+  const fmtK = v => v==null?'N/D':v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v;
+  const INI_LIST = ['3P','CBT','1P/PL'];
+  const datasets = [];
+
+  INI_LIST.forEach(ini => {
+    const totalData = weeks.map(w => {
+      const vals = sites.map(s => { const d=((INIT_UNITS[w.id]||{})[s]||{})[ini]; return d?d.u:null; }).filter(v=>v!==null);
+      return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+    });
+    const badData = weeks.map(w => {
+      const vals = sites.map(s => { const d=((INIT_UNITS[w.id]||{})[s]||{})[ini]; return d?d.bu:null; }).filter(v=>v!==null);
+      return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+    });
+    if (!totalData.some(v=>v!==null)) return;
+    const color = INI_COLORS[ini]||'#8890a8';
+    datasets.push({
+      label:`${ini} Stock Total`,
+      data:totalData, borderColor:color, borderDash:[5,5], borderWidth:1.5,
+      pointRadius:3, tension:0.35, spanGaps:true, fill:false,
+    });
+    datasets.push({
+      label:`${ini} Bad Stock`,
+      data:badData, borderColor:color, borderWidth:2.5,
+      pointRadius:4, tension:0.35, spanGaps:true, fill:false,
+    });
+  });
+
+  const countryLbl = sites.length===ALL_SITES.length?'LATAM':sites.join('+');
+  const lblEl2 = document.getElementById('init-units-country-lbl');
+  if (lblEl2) lblEl2.textContent = countryLbl;
+
+  initUnitsChart = new Chart(ctx, {
+    type:'line', data:{labels,datasets},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{labels:{color:'#8890a8',boxWidth:10,font:{size:10}}},
+        tooltip:{mode:'index',intersect:false,callbacks:{label:c=>` ${c.dataset.label}: ${fmtK(c.parsed.y)}`}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',font:{size:10}}},
+        y:{grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v},min:0}
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 // RENDER ALL
 // ══════════════════════════════════════════════════════════════════════════════
 function renderAll() {
@@ -1321,8 +1671,11 @@ function renderAll() {
   renderSummary();
   renderTrendChart();
   renderCompChart();
+  renderUnitsChart();
+  renderUnitsCompChart();
   renderTargetDetail();
   renderInitiativeTable();
+  renderInitiativeUnitsChart();
   renderVertChart();
   renderVertTable();
 }
