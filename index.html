@@ -154,7 +154,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 <!-- TABS -->
 <div class="tabs">
   <div class="tab active" onclick="showTab('overview',event)">Visão Geral</div>
-  <div class="tab" onclick="showTab('initiative',event)">Iniciativa</div>
+  <div class="tab" onclick="showTab('initiative',event)">Segmento</div>
   <div class="tab" onclick="showTab('vertical',event)">Verticais</div>
   <div class="tab" onclick="showTab('targets',event)">⚙ Targets</div>
   <div class="tab" onclick="showTab('refresh',event)">↺ Atualizar</div>
@@ -173,7 +173,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
   </div>
   <div class="filter-divider"></div>
   <div class="filter-group">
-    <span class="filter-label">Iniciativa</span>
+    <span class="filter-label">Segmento</span>
     <span class="pill init active" id="init-all"  onclick="toggleInit('ALL',this)">Todos</span>
     <span class="pill init" id="init-3p"           onclick="toggleInit('3P',this)">3P</span>
     <span class="pill init" id="init-3pe"          onclick="toggleInit('MELI_PRO',this)">Meli Pro</span>
@@ -252,19 +252,19 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 <!-- ═══════════════════ INICIATIVA ═══ -->
 <div id="panel-initiative" class="panel">
   <div class="card">
-    <div class="sec">Stock Total e Bad Stock por Iniciativa — unidades · <span id="init-units-country-lbl">LATAM</span></div>
+    <div class="sec">Stock Total e Bad Stock por Segmento — unidades · <span id="init-units-country-lbl">LATAM</span></div>
     <canvas id="initUnitsChart" height="140"></canvas>
     <div style="margin-top:6px;font-size:10px;color:var(--muted);">Linhas tracejadas = Stock Total · Linhas sólidas = Bad Stock · Filtro de País aplicado</div>
   </div>
   <div class="card">
-    <div class="sec">Bad Stock por País e Iniciativa — <span id="init-week-lbl">W13 (24/03)★</span></div>
+    <div class="sec">Bad Stock por País e Segmento — <span id="init-week-lbl">W13 (24/03)★</span></div>
     <div style="overflow-x:auto">
     <table>
       <thead><tr><th>País</th><th>Iniciativa</th><th>Segmento</th><th>Bad Stock %</th><th>vs Target</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
       <tbody id="init-summary-table"></tbody>
     </table>
     </div>
-    <div style="margin-top:8px;font-size:10px;color:var(--muted);">Fonte: BigQuery · meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT · CBT disponível somente para MLM e MLC. Filtre por iniciativa no topo.</div>
+    <div style="margin-top:8px;font-size:10px;color:var(--muted);">Fonte: BigQuery · meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT · CBT disponível somente para MLM e MLC. Filtre por segmento no topo.</div>
   </div>
 </div>
 
@@ -1338,7 +1338,7 @@ function renderInitiativeTable() {
   const selInis = state.initiatives;
   const ini = selInis.includes('ALL') ? 'ALL' : selInis[0];
   let initiatives;
-  if (ini === 'ALL')                                initiatives = ['3P','CBT','3P+CBT','1P/PL'];
+  if (ini === 'ALL')                                initiatives = ['3P','CBT','1P/PL'];
   else if (ini === 'MELI_PRO' || ini === 'SELLER_DEV') initiatives = ['3P'];
   else                                              initiatives = selInis.filter(i => !['ALL','MELI_PRO','SELLER_DEV'].includes(i));
   if (initiatives.length === 0) initiatives = ['3P'];
@@ -1669,9 +1669,15 @@ function renderInitiativeUnitsChart() {
     // Mapeia filtros para chaves do INIT_UNITS
     iniToShow = [];
     selInis.forEach(i => {
-      if (i === '3P+CBT') { if (!iniToShow.includes('3P')) iniToShow.push('3P'); if (!iniToShow.includes('CBT')) iniToShow.push('CBT'); }
-      else if (i === 'MELI_PRO' || i === 'SELLER_DEV') { /* sem dados de unidades por segmento */ }
-      else if (['3P','CBT','1P/PL'].includes(i)) { if (!iniToShow.includes(i)) iniToShow.push(i); }
+      if (i === '3P+CBT') {
+        if (!iniToShow.includes('3P')) iniToShow.push('3P');
+        if (!iniToShow.includes('CBT')) iniToShow.push('CBT');
+      } else if (i === 'MELI_PRO' || i === 'SELLER_DEV') {
+        // Meli Pro e Seller Dev são sub-segmentos de 3P — mostrar linha 3P
+        if (!iniToShow.includes('3P')) iniToShow.push('3P');
+      } else if (['3P','CBT','1P/PL'].includes(i)) {
+        if (!iniToShow.includes(i)) iniToShow.push(i);
+      }
     });
     if (iniToShow.length === 0) iniToShow = ['3P','CBT','1P/PL']; // fallback
   }
