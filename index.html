@@ -1617,10 +1617,26 @@ function renderInitiativeUnitsChart() {
   const labels = weeks.map(w => w.label);
   const sites = state.countries;
   const fmtK = v => v==null?'N/D':v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v;
-  const INI_LIST = ['3P','CBT','1P/PL'];
+
+  // Determina quais iniciativas exibir com base no filtro
+  const selInis = state.initiatives;
+  let iniToShow;
+  if (selInis.includes('ALL')) {
+    iniToShow = ['3P','CBT','1P/PL'];
+  } else {
+    // Mapeia filtros para chaves do INIT_UNITS
+    iniToShow = [];
+    selInis.forEach(i => {
+      if (i === '3P+CBT') { if (!iniToShow.includes('3P')) iniToShow.push('3P'); if (!iniToShow.includes('CBT')) iniToShow.push('CBT'); }
+      else if (i === 'MELI_PRO' || i === 'SELLER_DEV') { /* sem dados de unidades por segmento */ }
+      else if (['3P','CBT','1P/PL'].includes(i)) { if (!iniToShow.includes(i)) iniToShow.push(i); }
+    });
+    if (iniToShow.length === 0) iniToShow = ['3P','CBT','1P/PL']; // fallback
+  }
+
   const datasets = [];
 
-  INI_LIST.forEach(ini => {
+  iniToShow.forEach(ini => {
     const totalData = weeks.map(w => {
       const vals = sites.map(s => { const d=((INIT_UNITS[w.id]||{})[s]||{})[ini]; return d?d.u:null; }).filter(v=>v!==null);
       return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
