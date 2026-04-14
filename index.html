@@ -753,19 +753,24 @@ function renderTrendChart() {
       spanGaps: true,
     }));
 
-    // Add target line for selected week's month (single country only)
-    const wObj = WEEKS.find(w => w.id === state.selectedWeek);
-    if (wObj && state.countries.length === 1) {
-      const tgt = (TARGETS[wObj.month]||{})[state.countries[0]];
-      if (tgt) {
+    // Add target line — per-week (respects initiative filter)
+    if (state.countries.length === 1) {
+      const site = state.countries[0];
+      const ini = state.initiatives[0];
+      const tgtData = weeks.map(w => {
+        const t = getTargetForIni(w.id, site, ini);
+        return t ? t.bs : null;
+      });
+      if (tgtData.some(v => v !== null)) {
         datasets.push({
-          label: `Target ${state.countries[0]}`,
-          data: weeks.map(() => tgt.bs),
+          label: `Target ${site}`,
+          data: tgtData,
           borderColor: '#ffe600',
           borderDash: [4,4],
           borderWidth: 1,
           pointRadius: 0,
           fill: false,
+          spanGaps: true,
         });
       }
     }
