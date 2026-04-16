@@ -47,15 +47,15 @@ select.filter-sel:focus{outline:1px solid var(--yellow);}
 .filter-divider{width:1px;height:20px;background:var(--border);}
 
 /* PANELS */
-.panel{display:none;padding:16px 24px;flex-direction:column;gap:16px;}
+.panel{display:none;padding:10px 24px;flex-direction:column;gap:10px;}
 .panel.active{display:flex;}
 
 /* SECTION */
-.sec{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.sec{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
 
 /* KPI GRID */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;}
-.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;transition:opacity .2s;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 12px;position:relative;overflow:hidden;transition:opacity .2s;}
 .kpi-card.hidden{display:none;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .kpi-card.MLB::before{background:var(--blue);}
@@ -69,8 +69,8 @@ select.filter-sel:focus{outline:1px solid var(--yellow);}
 .kpi-card.MLA .site-lbl{color:var(--green);}
 .kpi-card.MLC .site-lbl{color:var(--purple);}
 .kpi-card.MCO .site-lbl{color:var(--red);}
-.big-pct{font-size:24px;font-weight:800;line-height:1;}
-.sub{font-size:10px;color:var(--muted);margin:2px 0 6px;}
+.big-pct{font-size:20px;font-weight:800;line-height:1;}
+.sub{font-size:9px;color:var(--muted);margin:1px 0 4px;}
 .comps{display:grid;grid-template-columns:1fr 1fr;gap:4px;border-top:1px solid var(--border);padding-top:6px;}
 .comp-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;}
 .comp-val{font-size:11px;font-weight:600;}
@@ -81,16 +81,16 @@ select.filter-sel:focus{outline:1px solid var(--yellow);}
 .dlt.dn{color:var(--green);}
 
 /* CARD */
-.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
 
 /* GRIDS */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.g21{display:grid;grid-template-columns:2fr 1fr;gap:14px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:10px;}
 
 /* TABLE */
 table{width:100%;border-collapse:collapse;}
-thead th{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:5px 8px;text-align:left;border-bottom:1px solid var(--border);}
-tbody td{padding:6px 8px;border-bottom:1px solid rgba(46,51,80,.4);font-size:11px;}
+thead th{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:4px 8px;text-align:left;border-bottom:1px solid var(--border);}
+tbody td{padding:4px 8px;border-bottom:1px solid rgba(46,51,80,.4);font-size:11px;}
 tbody tr:last-child td{border-bottom:none;}
 tbody tr:hover{background:rgba(79,142,247,.04);}
 
@@ -223,21 +223,21 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
   <div class="g21">
     <div class="card">
       <div class="sec">Evolução Bad Stock % — <span id="trend-period-lbl">W9 a W12</span></div>
-      <canvas id="trendChart" height="160"></canvas>
+      <canvas id="trendChart" height="115"></canvas>
     </div>
     <div class="card">
       <div class="sec">Composição % — <span id="comp-week-lbl">W12</span></div>
-      <canvas id="compChart" height="160"></canvas>
+      <canvas id="compChart" height="115"></canvas>
     </div>
   </div>
   <div class="g21">
     <div class="card">
       <div class="sec">Stock Total e Bad Stock — unidades por país</div>
-      <canvas id="unitsChart" height="160"></canvas>
+      <canvas id="unitsChart" height="115"></canvas>
     </div>
     <div class="card">
       <div class="sec">Composição Bad Stock — unidades</div>
-      <canvas id="unitsCompChart" height="160"></canvas>
+      <canvas id="unitsCompChart" height="115"></canvas>
     </div>
   </div>
   <div class="card">
@@ -253,14 +253,14 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 <div id="panel-initiative" class="panel">
   <div class="card">
     <div class="sec">Stock Total e Bad Stock por Segmento — unidades · <span id="init-units-country-lbl">LATAM</span></div>
-    <canvas id="initUnitsChart" height="140"></canvas>
+    <canvas id="initUnitsChart" height="110"></canvas>
     <div style="margin-top:6px;font-size:10px;color:var(--muted);">Linhas tracejadas = Stock Total · Linhas sólidas = Bad Stock · Filtro de País aplicado</div>
   </div>
   <div class="card">
     <div class="sec">Bad Stock por País e Segmento — <span id="init-week-lbl">W13 (24/03)★</span></div>
-    <div style="overflow-x:auto">
+    <div style="overflow-x:auto;overflow-y:auto;max-height:260px;">
     <table>
-      <thead><tr><th>País</th><th>Iniciativa</th><th>Segmento</th><th>Bad Stock %</th><th>vs Target</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
+      <thead style="position:sticky;top:0;background:var(--card);z-index:1;"><tr><th>País</th><th>Iniciativa</th><th>Segmento</th><th>Bad Stock %</th><th>vs Target</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
       <tbody id="init-summary-table"></tbody>
     </table>
     </div>
@@ -275,14 +275,14 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
   </div>
   <div class="card">
     <div class="sec">Bad Stock % por Vertical — <span id="vert-country-lbl">MLB + MLM · W30/2025</span></div>
-    <canvas id="vertChart" height="220"></canvas>
+    <canvas id="vertChart" height="160"></canvas>
   </div>
   <div class="card">
     <div class="sec">Detalhamento por Vertical</div>
     <div style="font-size:10px;color:var(--muted);margin-bottom:8px;">Fonte: BigQuery · W13 (28/03/2026) · TOTAL initiative · todos os KPIs disponíveis. Target = Mar/2026.</div>
-    <div style="overflow-x:auto">
+    <div style="overflow-x:auto;overflow-y:auto;max-height:360px;">
     <table>
-      <thead><tr><th>País</th><th>Iniciativa</th><th>Vertical</th><th>Bad Stock %</th><th>vs Target</th><th>BS (un.)</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
+      <thead style="position:sticky;top:0;background:var(--card);z-index:1;"><tr><th>País</th><th>Iniciativa</th><th>Vertical</th><th>Bad Stock %</th><th>vs Target</th><th>BS (un.)</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
       <tbody id="vert-unified-table"></tbody>
     </table>
     </div>
