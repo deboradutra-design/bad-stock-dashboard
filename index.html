@@ -178,7 +178,6 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     <span class="pill init" id="init-3pe"          onclick="toggleInit('MELI_PRO',this)">Meli Pro</span>
     <span class="pill init" id="init-3pne"         onclick="toggleInit('SELLER_DEV',this)">Seller Dev</span>
     <span class="pill init" id="init-cbt"          onclick="toggleInit('CBT',this)">CBT</span>
-    <span class="pill init" id="init-1p"           onclick="toggleInit('1P/PL',this)">1P/PL</span>
   </div>
   <div class="filter-divider"></div>
   <div class="filter-group">
@@ -456,8 +455,8 @@ const INIT_TARGETS = {
 const SITE_COLORS = {MLB:'#4f8ef7',MLM:'#ff8c42',MLA:'#00c48c',MLC:'#a78bfa',MCO:'#ff4d6a'};
 const SITE_NAMES  = {MLB:'MLB · Brasil',MLM:'MLM · México',MLA:'MLA · Argentina',MLC:'MLC · Chile',MCO:'MCO · Colombia'};
 const ALL_SITES   = ['MLB','MLM','MLA','MLC','MCO'];
-const INI_SHORT   = {ALL:'Todos',MELI_PRO:'Meli Pro',SELLER_DEV:'Seller Dev','3P':'3P',CBT:'CBT','3P+CBT':'3P+CBT','1P/PL':'1P/PL'};
-const INI_COLORS  = {'3P':'#ff8c42','CBT':'#a78bfa','1P/PL':'#00c48c','MELI PRO':'#4f8ef7','SELLER DEV':'#ffe600'};
+const INI_SHORT   = {ALL:'Todos',MELI_PRO:'Meli Pro',SELLER_DEV:'Seller Dev','3P':'3P',CBT:'CBT','3P+CBT':'3P+CBT'};
+const INI_COLORS  = {'3P':'#ff8c42','CBT':'#a78bfa','MELI PRO':'#4f8ef7','SELLER DEV':'#ffe600'};
 
 // Get KPI data for a specific initiative (explicit ini parameter)
 function getDataFor(wid, site, ini) {
@@ -1443,7 +1442,7 @@ function renderInitiativeTable() {
   const selInis = state.initiatives;
   const ini = selInis.includes('ALL') ? 'ALL' : selInis[0];
   let initiatives;
-  if (ini === 'ALL')                                initiatives = ['3P','CBT','1P/PL'];
+  if (ini === 'ALL')                                initiatives = ['3P','CBT'];
   else if (ini === 'MELI_PRO' || ini === 'SELLER_DEV') initiatives = ['3P'];
   else                                              initiatives = selInis.filter(i => !['ALL','MELI_PRO','SELLER_DEV'].includes(i));
   if (initiatives.length === 0) initiatives = ['3P'];
@@ -1769,7 +1768,6 @@ function renderInitiativeUnitsChart() {
   const INI_TO_SEG = {
     '3P':        {label:'3P',         key:'3P'},
     'CBT':       {label:'CBT',        key:'CBT'},
-    '1P/PL':     {label:'1P/PL',      key:'1P/PL'},
     'MELI_PRO':  {label:'Meli Pro',   key:'MELI PRO'},
     'SELLER_DEV':{label:'Seller Dev', key:'SELLER DEV'},
     '3P+CBT':    {label:'3P+CBT',     key:'3P+CBT'},
@@ -1779,7 +1777,7 @@ function renderInitiativeUnitsChart() {
   const selInis = state.initiatives;
   let segsToShow; // array de {label, key}
   if (selInis.includes('ALL')) {
-    segsToShow = ['3P','CBT','1P/PL'].map(k => INI_TO_SEG[k]);
+    segsToShow = ['3P','CBT'].map(k => INI_TO_SEG[k]);
   } else {
     const seen = new Set();
     segsToShow = [];
@@ -1787,7 +1785,7 @@ function renderInitiativeUnitsChart() {
       const seg = INI_TO_SEG[i];
       if (seg && !seen.has(seg.key)) { seen.add(seg.key); segsToShow.push(seg); }
     });
-    if (segsToShow.length === 0) segsToShow = ['3P','CBT','1P/PL'].map(k => INI_TO_SEG[k]);
+    if (segsToShow.length === 0) segsToShow = ['3P','CBT'].map(k => INI_TO_SEG[k]);
   }
 
   // Busca dados de SEG_UNITS (média entre países selecionados)
