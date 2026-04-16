@@ -223,17 +223,11 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
   <div class="g21">
     <div class="card">
       <div class="sec">Evolução Bad Stock % — <span id="trend-period-lbl">W9 a W12</span></div>
-      <canvas id="trendChart" height="158"></canvas>
+      <canvas id="trendChart" height="115"></canvas>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div class="card">
-        <div class="sec">Composição % — <span id="comp-week-lbl">W12</span></div>
-        <canvas id="compChart" height="58"></canvas>
-      </div>
-      <div class="card">
-        <div class="sec">Composição — unidades · <span id="comp-units-lbl">LATAM</span></div>
-        <canvas id="compUnitsLineChart" height="58"></canvas>
-      </div>
+    <div class="card">
+      <div class="sec">Composição % — <span id="comp-week-lbl">W12</span></div>
+      <canvas id="compChart" height="115"></canvas>
     </div>
   </div>
   <div class="g21">
@@ -1737,74 +1731,22 @@ function renderUnitsCompChart() {
   }
 
   unitsCompChart = new Chart(ctx, {
-    type:'bar',
+    type:'line',
     data:{labels,datasets:[
-      {label:'Stranded',   data:compUnitsAvg('str'),backgroundColor:'#ff4d6a'},
-      {label:'Sin Venta',  data:compUnitsAvg('sv'), backgroundColor:'#ff8c42'},
-      {label:'Aging',      data:compUnitsAvg('ag'), backgroundColor:'#a78bfa'},
-      {label:'Aging+Exc.', data:compUnitsAvg('exc'),backgroundColor:'#4f8ef7'},
+      {label:'Stranded',   data:compUnitsAvg('str'), borderColor:'#ff4d6a', pointRadius:3, borderWidth:2, tension:0.35, spanGaps:true, fill:false},
+      {label:'Sin Venta',  data:compUnitsAvg('sv'),  borderColor:'#ff8c42', pointRadius:3, borderWidth:2, tension:0.35, spanGaps:true, fill:false},
+      {label:'Aging',      data:compUnitsAvg('ag'),  borderColor:'#a78bfa', pointRadius:3, borderWidth:2, tension:0.35, spanGaps:true, fill:false},
+      {label:'Aging+Exc.', data:compUnitsAvg('exc'), borderColor:'#4f8ef7', pointRadius:3, borderWidth:2, tension:0.35, spanGaps:true, fill:false},
     ]},
     options:{
       responsive:true,
       plugins:{
         legend:{labels:{color:'#8890a8',boxWidth:8,font:{size:10}}},
-        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmtK(c.parsed.y)}`}}
+        tooltip:{mode:'index',intersect:false,callbacks:{label:c=>` ${c.dataset.label}: ${fmtK(c.parsed.y)}`}}
       },
       scales:{
-        x:{stacked:true,grid:{display:false},ticks:{color:'#8890a8',font:{size:10}}},
-        y:{stacked:true,grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v},min:0}
-      }
-    }
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// RENDER — COMP UNITS LINE CHART (composição bad stock em unidades — linhas)
-// ══════════════════════════════════════════════════════════════════════════════
-let compUnitsLineChart = null;
-function renderCompUnitsLineChart() {
-  const weeks = filteredWeeks();
-  if (compUnitsLineChart) { compUnitsLineChart.destroy(); compUnitsLineChart = null; }
-  const ctx = document.getElementById('compUnitsLineChart');
-  if (!ctx) return;
-
-  const ini = state.initiatives[0];
-  const labels = weeks.map(w => w.label);
-  const sites = state.countries;
-  const fmtK = v => v==null?'N/D':v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v;
-
-  // Atualiza label do país
-  const lbl = document.getElementById('comp-units-lbl');
-  if (lbl) lbl.textContent = sites.length===ALL_SITES.length?'LATAM':sites.join('+');
-
-  function avg(field) {
-    return weeks.map(w => {
-      const vals = sites.map(s => {
-        const ud = getUnitsData(w.id, s, ini);
-        const kd = getDataFor(w.id, s, ini);
-        return (ud && kd && kd[field] != null) ? Math.round(ud.u * kd[field] / 100) : null;
-      }).filter(v => v !== null);
-      return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
-    });
-  }
-
-  compUnitsLineChart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets: [
-      {label:'Stranded',   data:avg('str'), borderColor:'#ff4d6a', pointRadius:3, borderWidth:2, tension:0.35, spanGaps:true, fill:false},
-      {label:'Sin Venta',  data:avg('sv'),  borderColor:'#ff8c42', pointRadius:3, borderWidth:2, tension:0.35, spanGaps:true, fill:false},
-      {label:'Aging',      data:avg('ag'),  borderColor:'#a78bfa', pointRadius:3, borderWidth:2, tension:0.35, spanGaps:true, fill:false},
-      {label:'Aging+Exc.', data:avg('exc'), borderColor:'#4f8ef7', pointRadius:3, borderWidth:2, tension:0.35, spanGaps:true, fill:false},
-    ]},
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {labels:{color:'#8890a8',boxWidth:8,font:{size:10}}},
-        tooltip: {mode:'index',intersect:false,callbacks:{label:c=>` ${c.dataset.label}: ${fmtK(c.parsed.y)}`}}
-      },
-      scales: {
-        x: {grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',font:{size:10}}},
-        y: {grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v},min:0}
+        x:{grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',font:{size:10}}},
+        y:{grid:{color:'rgba(46,51,80,.5)'},ticks:{color:'#8890a8',callback:v=>v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v},min:0}
       }
     }
   });
@@ -1905,7 +1847,6 @@ function renderAll() {
   renderCompChart();
   renderUnitsChart();
   renderUnitsCompChart();
-  renderCompUnitsLineChart();
   renderTargetDetail();
   renderInitiativeTable();
   renderInitiativeUnitsChart();
