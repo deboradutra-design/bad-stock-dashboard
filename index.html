@@ -460,7 +460,8 @@ const INI_COLORS  = {'3P':'#ff8c42','CBT':'#a78bfa','MELI PRO':'#4f8ef7','SELLER
 
 // Get KPI data for a specific initiative (explicit ini parameter)
 function getDataFor(wid, site, ini) {
-  if (!ini || ini === 'ALL') return (KPI[wid]||{})[site] || null;
+  // ALL = 3P+CBT (1P/PL excluído)
+  if (!ini || ini === 'ALL') return ((INIT_KPI[wid]||{})[site]||{})['3P+CBT'] || (KPI[wid]||{})[site] || null;
   if (ini === 'MELI_PRO')   return ((SEG_KPI[wid]||{})[site]||{})['MELI PRO'] || null;
   if (ini === 'SELLER_DEV') return ((SEG_KPI[wid]||{})[site]||{})['SELLER DEV'] || null;
   return ((INIT_KPI[wid]||{})[site]||{})[ini] || null;
@@ -469,6 +470,13 @@ function getDataFor(wid, site, ini) {
 // Get total/bad units for a specific initiative
 function getUnitsData(wid, site, ini) {
   if (!ini || ini === 'ALL') {
+    // ALL = 3P+CBT (1P/PL excluído)
+    const d = ((SEG_UNITS[wid]||{})[site]||{})['3P+CBT'];
+    if (d) return d;
+    // fallback: soma 3P + CBT
+    const p = ((SEG_UNITS[wid]||{})[site]||{})['3P'];
+    const c = ((SEG_UNITS[wid]||{})[site]||{})['CBT'];
+    if (p) return { u: p.u + (c ? c.u : 0), bu: p.bu + (c ? c.bu : 0) };
     const k = (KPI[wid]||{})[site];
     return (k && k.u) ? {u: k.u, bu: k.bu||0} : null;
   }
@@ -575,8 +583,10 @@ function filteredWeeks() {
 function getTargetForIni(weekId, site, ini) {
   const w = WEEKS.find(x => x.id === weekId);
   if (!w) return null;
-  if (ini && ini !== 'ALL' && ini !== 'MELI_PRO' && ini !== 'SELLER_DEV') {
-    const t = ((INIT_TARGETS[site]||{})[ini]||{})[w.month];
+  // ALL = 3P+CBT (1P/PL excluído)
+  const key = (!ini || ini === 'ALL') ? '3P+CBT' : ini;
+  if (key !== 'MELI_PRO' && key !== 'SELLER_DEV') {
+    const t = ((INIT_TARGETS[site]||{})[key]||{})[w.month];
     if (t) return t;
   }
   return (TARGETS[w.month]||{})[site] || null;
