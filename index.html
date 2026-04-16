@@ -473,14 +473,22 @@ function getUnitsData(wid, site, ini) {
     const k = (KPI[wid]||{})[site];
     return (k && k.u) ? {u: k.u, bu: k.bu||0} : null;
   }
-  if (ini === 'MELI_PRO' || ini === 'SELLER_DEV') return null;
+  // Meli Pro / Seller Dev — usar SEG_UNITS (sub-segmentos de 3P)
+  if (ini === 'MELI_PRO') return ((SEG_UNITS[wid]||{})[site]||{})['MELI PRO'] || null;
+  if (ini === 'SELLER_DEV') return ((SEG_UNITS[wid]||{})[site]||{})['SELLER DEV'] || null;
   if (ini === '3P+CBT') {
-    const d3p = ((INIT_UNITS[wid]||{})[site]||{})['3P'];
-    const cbt = ((INIT_UNITS[wid]||{})[site]||{}).CBT;
-    if (!d3p) return null;
-    return { u: d3p.u + (cbt ? cbt.u : 0), bu: d3p.bu + (cbt ? cbt.bu : 0) };
+    const d3p = ((SEG_UNITS[wid]||{})[site]||{})['3P+CBT'];
+    if (d3p) return d3p;
+    // fallback: soma 3P + CBT
+    const p = ((SEG_UNITS[wid]||{})[site]||{})['3P'];
+    const c = ((SEG_UNITS[wid]||{})[site]||{})['CBT'];
+    if (!p) return null;
+    return { u: p.u + (c ? c.u : 0), bu: p.bu + (c ? c.bu : 0) };
   }
-  return ((INIT_UNITS[wid]||{})[site]||{})[ini] || null;
+  // 3P, CBT, 1P/PL — tentar SEG_UNITS primeiro, fallback INIT_UNITS
+  return ((SEG_UNITS[wid]||{})[site]||{})[ini]
+      || ((INIT_UNITS[wid]||{})[site]||{})[ini]
+      || null;
 }
 
 // Convenience: get KPI data based on first selected initiative
