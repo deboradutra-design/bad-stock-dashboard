@@ -1,0 +1,41 @@
+name: Weekly Dashboard Update
+
+on:
+  schedule:
+    - cron: '0 12 * * 1'   # Segunda-feira 12:00 UTC = 09:00 BRT (UTC-3)
+  workflow_dispatch:         # Disparo manual para testes
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # Necessário para git push
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Autenticar no GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Configurar git
+        run: |
+          git config user.name  "bad-stock-bot"
+          git config user.email "bad-stock-bot@users.noreply.github.com"
+
+      - name: Executar script de atualização
+        env:
+          GOOGLE_CHAT_WEBHOOK: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+        run: python scripts/update_dashboard.py
