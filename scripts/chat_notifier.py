@@ -110,6 +110,8 @@ def build_message(
             p_s = prev_kpi.get(site, {}).get(initiative)
             if c_s and p_s:
                 delta = round(c_s["bs"] - p_s["bs"], 2)
+                if delta <= 0:
+                    continue  # só mostra desvios positivos (piora)
                 icon = _delta_icon(delta, threshold_red=1.0)
                 parts.append(f"{site} {c_s['bs']:.1f}% ({_fmt_delta(delta)} {icon})")
         if parts:
@@ -128,13 +130,11 @@ def build_message(
             p_b = (prev_bd.get(site, {}).get("3P+CBT") or prev_bd.get(site, {}).get("3P") or {})
             if field in c_b and field in p_b:
                 delta = round(c_b[field] - p_b[field], 2)
-                if abs(delta) >= 0.1:
+                if delta >= 0.1:  # só mostra desvios positivos (piora)
                     icon = _delta_icon(delta, threshold_red=0.5)
                     movers.append(f"{site} {_fmt_delta(delta)} {icon}")
         if movers:
             lines.append(f"*{label}:* " + " | ".join(movers))
-        else:
-            lines.append(f"*{label}:* todos estáveis (< 0.1pp)")
 
     # ── Top variações por vertical ────────────────────────────────────────────
     lines.append("")
@@ -147,9 +147,10 @@ def build_message(
         for vert in cv:
             if vert in pv:
                 delta = round(cv[vert] - pv[vert], 2)
-                movers.append((abs(delta), delta, site, vert, cv[vert]))
+                if delta > 0:  # só mostra desvios positivos (piora)
+                    movers.append((delta, site, vert, cv[vert]))
     movers.sort(reverse=True)
-    for i, (_, delta, site, vert, val) in enumerate(movers[:5]):
+    for delta, site, vert, val in movers[:5]:
         icon = _delta_icon(delta, threshold_red=1.0)
         lines.append(f"{icon} {site} · {vert}: {val:.1f}% ({_fmt_delta(delta)})")
 
