@@ -198,7 +198,8 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
       <option value="W13">W13 — 28/03/2026</option>
       <option value="W14">W14 — 04/04/2026</option>
       <option value="W15">W15 — 11/04/2026</option>
-      <option value="W16" selected>W16 — 18/04/2026 ★ atual</option>
+      <option value="W16">W16 — 18/04/2026</option>
+      <option value="W17" selected>W17 — 25/04/2026 ★ atual</option>
     </select>
   </div>
   <div class="filter-group">
@@ -208,7 +209,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
       <option value="1">Janeiro 2026 (W1–W5)</option>
       <option value="2">Fevereiro 2026 (W6–W9)</option>
       <option value="3">Março 2026 (W10–W13)</option>
-      <option value="4">Abril 2026 (W14–W16)</option>
+      <option value="4">Abril 2026 (W14–W17)</option>
     </select>
   </div>
 </div>
@@ -334,7 +335,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     <b>Como atualizar os dados do dashboard</b><br><br>
     Os dados são extraídos via <b>BigQuery</b> — tabela <code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code>.<br>
     Semanas MeLi: referência no <b>sábado</b> — W14 = 04/04/2026, W15 = 11/04/2026, etc.<br><br>
-    <b>Dados atuais:</b> W16 completo (18/04/2026) · W1–W16 completo para todos os países<br><br>
+    <b>Dados atuais:</b> W17 completo (25/04/2026) · W1–W17 completo para todos os países<br><br>
     Para atualizar com nova semana, peça ao Claude Code:<br>
     <code style="background:var(--card2);padding:3px 8px;border-radius:4px;font-size:11px;">
       "Atualize o dashboard de bad stock com os dados do BigQuery para W16 (18/04/2026)"
@@ -345,7 +346,8 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     <table>
       <thead><tr><th>Semana MeLi</th><th>Data de Referência</th><th>Data Atualização</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>W16 ★</td><td>18/04/2026 (completo)</td><td>20/04/2026</td><td><span style="color:var(--green)">✓ Atual via BigQuery</span></td></tr>
+        <tr><td>W17 ★</td><td>25/04/2026 (completo)</td><td>27/04/2026</td><td><span style="color:var(--green)">✓ Atual via BigQuery</span></td></tr>
+        <tr><td>W16</td><td>18/04/2026 (completo)</td><td>20/04/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W15</td><td>11/04/2026 (completo)</td><td>13/04/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W14</td><td>04/04/2026 (Sáb)</td><td>06/04/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W13</td><td>28/03/2026 (Sáb)</td><td>30/03/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
@@ -373,7 +375,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 
 <div class="footer">
   <span>Stock Quality · Stock Management · MeLi Shipping</span>
-  <span id="footer-date">BigQuery · DM_DASH_SHP_STOCK_QUALITY_SUMMARY · W16 (18/04/2026)★ atual · Atualizado: 20/04/2026</span>
+  <span id="footer-date">BigQuery · DM_DASH_SHP_STOCK_QUALITY_SUMMARY · W17 (25/04/2026)★ atual · Atualizado: 27/04/2026</span>
 </div>
 
 <script>
@@ -396,7 +398,8 @@ const WEEKS = [
   { id:'W13', date:'28/03/2026', month:3, label:'W13 (28/03)' },
   { id:'W14', date:'04/04/2026', month:4, label:'W14 (04/04)' },
   { id:'W15', date:'11/04/2026', month:4, label:'W15 (11/04)' },
-  { id:'W16', date:'18/04/2026', month:4, label:'W16 (18/04)★', current:true },
+  { id:'W16', date:'18/04/2026', month:4, label:'W16 (18/04)' },
+  { id:'W17', date:'25/04/2026', month:4, label:'W17 (25/04)★', current:true },
 ];
 
 // Bad Stock data: bs=Bad Stock%, str=Stranded, sv=Sin Venta, ag=Aging, exc=Aging+Exc
@@ -418,6 +421,7 @@ const KPI = {
   W14: { MLB:{bs:10.88,str:2.60,sv:1.21,ag:2.75,exc:4.32,u:71383182,bu:7769299}, MLM:{bs:15.45,str:1.34,sv:1.96,ag:4.60,exc:7.56,u:59436379,bu:9185165}, MLA:{bs:13.16,str:1.38,sv:1.27,ag:5.25,exc:5.25,u:6459148,bu:849995}, MLC:{bs:14.16,str:1.04,sv:1.94,ag:4.73,exc:6.44,u:5027426,bu:711796}, MCO:{bs:20.26,str:1.27,sv:2.92,ag:8.84,exc:7.16,u:911970,bu:184774} },
   W15: { MLB:{bs:9.95,str:1.83,sv:1.32,ag:2.69,exc:4.10,u:70538661,bu:7015572}, MLM:{bs:15.62,str:1.19,sv:2.06,ag:4.70,exc:7.66,u:58719128,bu:9169529}, MLA:{bs:13.23,str:1.21,sv:1.33,ag:5.24,exc:5.44,u:6359624,bu:841606}, MLC:{bs:14.09,str:0.87,sv:2.01,ag:4.71,exc:6.47,u:5056388,bu:712208}, MCO:{bs:22.21,str:1.42,sv:2.94,ag:9.26,exc:8.55,u:884183,bu:196414} },
   W16: { MLB:{bs:9.81,str:1.81,sv:1.36,ag:2.66,exc:3.97,u:71896177,bu:7053034}, MLM:{bs:15.32,str:1.19,sv:2.02,ag:4.67,exc:7.43,u:59100983,bu:9054468}, MLA:{bs:12.48,str:1.38,sv:1.34,ag:4.86,exc:4.89,u:6666097,bu:832253}, MLC:{bs:14.1,str:0.87,sv:1.99,ag:4.84,exc:6.38,u:5154944,bu:726774}, MCO:{bs:21.91,str:1.14,sv:3.0,ag:9.33,exc:8.4,u:882671,bu:193421} },
+  W17: { MLB:{bs:9.96,str:2.0,sv:1.38,ag:2.68,exc:3.89,u:72207911,bu:7189011}, MLM:{bs:14.99,str:1.12,sv:1.96,ag:4.83,exc:7.09,u:59380614,bu:8903740}, MLA:{bs:11.47,str:1.4,sv:1.24,ag:4.35,exc:4.46,u:7490464,bu:859234}, MLC:{bs:13.95,str:0.77,sv:2.02,ag:4.91,exc:6.23,u:5350939,bu:746463}, MCO:{bs:20.55,str:1.06,sv:2.7,ag:8.97,exc:7.78,u:916238,bu:188276} },
 };
 
 // Monthly targets — TOTAL / 3P+CBT (by month number)
@@ -512,7 +516,7 @@ function getInitData(wid, site) {
 let state = {
   countries: [...ALL_SITES],
   initiatives: ['ALL'],
-  selectedWeek: 'W16',
+  selectedWeek: 'W17',
   filterMonth: 'ALL',
 };
 
@@ -1038,6 +1042,13 @@ const INIT_KPI = {
     MLC:{ '3P':{bs:13.11,str:0.68,sv:1.77,ag:4.85,exc:5.8}, CBT:{bs:22.98,str:1.09,sv:4.7,ag:2.89,exc:14.29}, '3P+CBT':{bs:13.75,str:0.71,sv:1.96,ag:4.72,exc:6.35}, '1P/PL':{bs:17.11,str:2.35,sv:2.31,ag:5.86,exc:6.74} },
     MCO:{ '3P':{bs:21.64,str:1.07,sv:2.97,ag:9.4,exc:8.16}, CBT:null, '3P+CBT':{bs:21.64,str:1.07,sv:2.97,ag:9.4,exc:8.16}, '1P/PL':{bs:25.17,str:1.94,sv:3.41,ag:8.67,exc:11.47} },
   },
+  W17: {
+    MLB:{ '3P':{bs:9.07,str:1.67,sv:1.03,ag:2.5,exc:3.86}, CBT:null, '3P+CBT':{bs:9.07,str:1.67,sv:1.03,ag:2.5,exc:3.86}, '1P/PL':{bs:15.86,str:0,sv:0,ag:0,exc:0} },
+    MLM:{ '3P':{bs:14.36,str:0.95,sv:1.8,ag:4.84,exc:6.76}, CBT:{bs:15.88,str:1.04,sv:2.46,ag:4.11,exc:8.26}, '3P+CBT':{bs:14.86,str:0.98,sv:2.02,ag:4.6,exc:7.25}, '1P/PL':{bs:16.36,str:0,sv:0,ag:0,exc:0} },
+    MLA:{ '3P':{bs:10.17,str:0.91,sv:1.11,ag:4.22,exc:3.92}, CBT:null, '3P+CBT':{bs:10.17,str:0.91,sv:1.11,ag:4.22,exc:3.92}, '1P/PL':{bs:18.56,str:0,sv:0,ag:0,exc:0} },
+    MLC:{ '3P':{bs:12.95,str:0.57,sv:1.79,ag:4.86,exc:5.7}, CBT:{bs:22.61,str:0.77,sv:4.65,ag:3.18,exc:14.01}, '3P+CBT':{bs:13.55,str:0.59,sv:1.97,ag:4.76,exc:6.22}, '1P/PL':{bs:17.3,str:0,sv:0,ag:0,exc:0} },
+    MCO:{ '3P':{bs:20.27,str:1.02,sv:2.58,ag:9.08,exc:7.55}, CBT:null, '3P+CBT':{bs:20.27,str:1.02,sv:2.58,ag:9.08,exc:7.55}, '1P/PL':{bs:23.96,str:0,sv:0,ag:0,exc:0} },
+  },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1256,6 +1267,13 @@ const SEG_UNITS = {
     MLC: { '3P':{u:4325743,bu:567255},'MELI PRO':{u:1250439,bu:137887},'SELLER DEV':{u:3075304,bu:429368},'CBT':{u:300192,bu:68986},'1P/PL':{u:529009,bu:90533},'3P+CBT':{u:4625935,bu:636241} },
     MCO: { '3P':{u:814453,bu:176250},'MELI PRO':{u:256711,bu:50103},'SELLER DEV':{u:557742,bu:126145},'1P/PL':{u:68218,bu:17171},'3P+CBT':{u:814453,bu:176250} },
   },
+  W17: {
+    MLB: { '3P':{u:62751200,bu:5689451},'MELI PRO':{u:16377012,bu:1179194},'SELLER DEV':{u:46374188,bu:4510257},'1P/PL':{u:9456711,bu:1499560},'3P+CBT':{u:62751200,bu:5689451} },
+    MLM: { '3P':{u:36205275,bu:5198094},'MELI PRO':{u:9414106,bu:881377},'SELLER DEV':{u:26791169,bu:4316717},'CBT':{u:17733222,bu:2815334},'1P/PL':{u:5442117,bu:890312},'3P+CBT':{u:53938497,bu:8013428} },
+    MLA: { '3P':{u:6329147,bu:643660},'MELI PRO':{u:2328105,bu:184661},'SELLER DEV':{u:4001042,bu:458999},'1P/PL':{u:1161317,bu:215574},'3P+CBT':{u:6329147,bu:643660} },
+    MLC: { '3P':{u:4482657,bu:580503},'MELI PRO':{u:1297133,bu:151927},'SELLER DEV':{u:3185524,bu:428576},'CBT':{u:296305,bu:66981},'1P/PL':{u:571977,bu:98979},'3P+CBT':{u:4778962,bu:647484} },
+    MCO: { '3P':{u:847373,bu:171773},'MELI PRO':{u:270898,bu:46595},'SELLER DEV':{u:576475,bu:125178},'1P/PL':{u:68865,bu:16503},'3P+CBT':{u:847373,bu:171773} },
+  },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1449,6 +1467,13 @@ const SEG_KPI = {
     MLA: { 'MELI PRO':{bs:8.51,str:0.58,sv:0.98,ag:2.73,exc:4.21,u:2066759},  'SELLER DEV':{bs:12.16,str:1.08,sv:1.38,ag:5.39,exc:4.29,u:3757258} },
     MLC: { 'MELI PRO':{bs:11.03,str:0.69,sv:1.81,ag:3.18,exc:5.35,u:1250439}, 'SELLER DEV':{bs:13.96,str:0.68,sv:1.76,ag:5.53,exc:5.98,u:3075304} },
     MCO: { 'MELI PRO':{bs:19.52,str:1.02,sv:3.59,ag:5.4,exc:9.48,u:256711},   'SELLER DEV':{bs:22.62,str:1.09,sv:2.68,ag:11.24,exc:7.55,u:557742} },
+  },
+  W17: {
+    MLB: { 'MELI PRO':{bs:7.2,str:0.95,sv:0.76,ag:1.65,exc:3.83,u:16377012},  'SELLER DEV':{bs:9.73,str:1.93,sv:1.12,ag:2.79,exc:3.87,u:46374188} },
+    MLM: { 'MELI PRO':{bs:9.36,str:0.64,sv:1.33,ag:3.01,exc:4.38,u:9414106},  'SELLER DEV':{bs:16.11,str:1.06,sv:1.97,ag:5.49,exc:7.59,u:26791169} },
+    MLA: { 'MELI PRO':{bs:7.93,str:0.66,sv:0.87,ag:2.53,exc:3.86,u:2328105},  'SELLER DEV':{bs:11.47,str:1.05,sv:1.25,ag:5.2,exc:3.95,u:4001042} },
+    MLC: { 'MELI PRO':{bs:11.71,str:0.56,sv:1.94,ag:3.52,exc:5.68,u:1297133}, 'SELLER DEV':{bs:13.45,str:0.58,sv:1.73,ag:5.41,exc:5.72,u:3185524} },
+    MCO: { 'MELI PRO':{bs:17.2,str:0.89,sv:2.87,ag:5.11,exc:8.32,u:270898},   'SELLER DEV':{bs:21.71,str:1.07,sv:2.45,ag:10.95,exc:7.19,u:576475} },
   },
 };
 
