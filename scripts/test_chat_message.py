@@ -1,5 +1,5 @@
 """
-Envio da mensagem W19 ao Google Chat com dados reais do BigQuery.
+Envio da mensagem W20 ao Google Chat com dados reais do BigQuery.
 Execução: python scripts/test_chat_message.py <WEBHOOK_URL>
 """
 
@@ -11,9 +11,95 @@ sys.path.insert(0, str(Path(__file__).parent))
 from chat_notifier import build_message, send_to_chat
 
 
-# ── W19 (09/05/2026) ─────────────────────────────────────────────────────────
+# ── W20 (16/05/2026) ─────────────────────────────────────────────────────────
 
 curr_kpi = {
+    "MLB": {
+        "3P":        {"bs": 9.48,  "u": 63819868, "bu": 6048072},
+        "3P+CBT":    {"bs": 9.48,  "u": 63819868, "bu": 6048072},
+        "MELI PRO":  {"bs": 7.73,  "u": 16323017, "bu": 1262439},
+        "SELLER DEV":{"bs": 10.08, "u": 47496851, "bu": 4785633},
+        "TOTAL":     {"bs": 9.95,  "u": 73437012, "bu": 7306506},
+    },
+    "MLM": {
+        "3P":        {"bs": 13.23, "u": 38808889, "bu": 5134426},
+        "CBT":       {"bs": 14.36, "u": 18264580, "bu": 2623111},
+        "3P+CBT":    {"bs": 13.59, "u": 57073469, "bu": 7757537},
+        "MELI PRO":  {"bs": 9.58,  "u": 10595734, "bu": 1014562},
+        "SELLER DEV":{"bs": 14.60, "u": 28213155, "bu": 4119864},
+        "TOTAL":     {"bs": 13.53, "u": 65502435, "bu": 8865494},
+    },
+    "MLA": {
+        "3P":        {"bs": 11.19, "u": 6546931,  "bu": 732325},
+        "3P+CBT":    {"bs": 11.19, "u": 6546931,  "bu": 732325},
+        "MELI PRO":  {"bs": 8.92,  "u": 2450050,  "bu": 218452},
+        "SELLER DEV":{"bs": 12.54, "u": 4096881,  "bu": 513873},
+        "TOTAL":     {"bs": 11.90, "u": 7733150,  "bu": 919869},
+    },
+    "MLC": {
+        "3P":        {"bs": 13.99, "u": 4660946,  "bu": 652130},
+        "CBT":       {"bs": 22.94, "u": 274221,   "bu": 62910},
+        "3P+CBT":    {"bs": 14.49, "u": 4935167,  "bu": 715040},
+        "MELI PRO":  {"bs": 12.75, "u": 1477418,  "bu": 188304},
+        "SELLER DEV":{"bs": 14.57, "u": 3183528,  "bu": 463826},
+        "TOTAL":     {"bs": 14.81, "u": 5607369,  "bu": 830480},
+    },
+    "MCO": {
+        "3P":        {"bs": 19.47, "u": 845541,   "bu": 164639},
+        "3P+CBT":    {"bs": 19.47, "u": 845541,   "bu": 164639},
+        "MELI PRO":  {"bs": 16.39, "u": 271779,   "bu": 44534},
+        "SELLER DEV":{"bs": 20.93, "u": 573762,   "bu": 120105},
+        "TOTAL":     {"bs": 19.80, "u": 924696,   "bu": 183068},
+    },
+}
+
+curr_bd = {
+    "MLB": {
+        "3P":        {"str": 1.95, "sv": 1.01, "ag": 2.55, "exc": 3.96},
+        "3P+CBT":    {"str": 1.95, "sv": 1.01, "ag": 2.55, "exc": 3.96},
+        "MELI PRO":  {"str": 1.53, "sv": 0.75, "ag": 1.66, "exc": 3.80},
+        "SELLER DEV":{"str": 2.10, "sv": 1.10, "ag": 2.85, "exc": 4.02},
+    },
+    "MLM": {
+        "3P":        {"str": 1.11, "sv": 1.67, "ag": 4.33, "exc": 6.10},
+        "CBT":       {"str": 1.00, "sv": 2.24, "ag": 3.80, "exc": 7.32},
+        "3P+CBT":    {"str": 1.08, "sv": 1.85, "ag": 4.16, "exc": 6.49},
+        "MELI PRO":  {"str": 1.21, "sv": 1.25, "ag": 2.80, "exc": 4.30},
+        "SELLER DEV":{"str": 1.08, "sv": 1.83, "ag": 4.91, "exc": 6.78},
+    },
+    "MLA": {
+        "3P":        {"str": 1.04, "sv": 1.07, "ag": 4.41, "exc": 4.64},
+        "3P+CBT":    {"str": 1.04, "sv": 1.07, "ag": 4.41, "exc": 4.64},
+        "MELI PRO":  {"str": 0.59, "sv": 0.76, "ag": 2.58, "exc": 4.98},
+        "SELLER DEV":{"str": 1.31, "sv": 1.26, "ag": 5.51, "exc": 4.44},
+    },
+    "MLC": {
+        "3P":        {"str": 0.67, "sv": 1.93, "ag": 5.26, "exc": 6.11},
+        "CBT":       {"str": 1.11, "sv": 4.68, "ag": 3.01, "exc": 14.15},
+        "3P+CBT":    {"str": 0.69, "sv": 2.08, "ag": 5.14, "exc": 6.56},
+        "MELI PRO":  {"str": 0.73, "sv": 2.21, "ag": 3.95, "exc": 5.84},
+        "SELLER DEV":{"str": 0.64, "sv": 1.80, "ag": 5.87, "exc": 6.24},
+    },
+    "MCO": {
+        "3P":        {"str": 0.98, "sv": 2.22, "ag": 8.87, "exc": 7.34},
+        "3P+CBT":    {"str": 0.98, "sv": 2.22, "ag": 8.87, "exc": 7.34},
+        "MELI PRO":  {"str": 0.96, "sv": 2.13, "ag": 5.41, "exc": 7.85},
+        "SELLER DEV":{"str": 0.99, "sv": 2.27, "ag": 10.51, "exc": 7.10},
+    },
+}
+
+curr_vert = {
+    "MLB": {"BEAUTY":8.54,"CONSTRUCTION & INDUSTRY":10.53,"CPG":7.78,"ENTERTAINMENT":10.41,"FASHION":10.26,"FURNISHING & HOUSEWARE":8.75,"HEALTH":6.43,"HOME ELECTRONICS":9.96,"OTHERS":9.44,"SPORTS":10.48,"T & B":14.11,"TECHNOLOGY":9.95,"VEHICLE PARTS & ACCESSORIES":9.51},
+    "MLM": {"BEAUTY":10.49,"CONSTRUCTION & INDUSTRY":11.96,"CPG":7.92,"ENTERTAINMENT":18.25,"FASHION":15.98,"FURNISHING & HOUSEWARE":12.80,"HEALTH":10.14,"HOME ELECTRONICS":10.16,"OTHERS":12.43,"SPORTS":13.40,"T & B":18.53,"TECHNOLOGY":17.51,"VEHICLE PARTS & ACCESSORIES":14.14},
+    "MLA": {"BEAUTY":10.27,"CONSTRUCTION & INDUSTRY":10.83,"CPG":10.80,"ENTERTAINMENT":23.09,"FASHION":14.16,"FURNISHING & HOUSEWARE":10.49,"HEALTH":6.66,"HOME ELECTRONICS":10.32,"OTHERS":30.68,"SPORTS":12.21,"T & B":17.26,"TECHNOLOGY":10.89,"VEHICLE PARTS & ACCESSORIES":11.06},
+    "MLC": {"BEAUTY":11.57,"CONSTRUCTION & INDUSTRY":15.43,"CPG":10.33,"ENTERTAINMENT":23.18,"FASHION":18.95,"FURNISHING & HOUSEWARE":12.73,"HEALTH":15.91,"HOME ELECTRONICS":10.45,"OTHERS":12.79,"SPORTS":19.15,"T & B":23.10,"TECHNOLOGY":15.72,"VEHICLE PARTS & ACCESSORIES":16.90},
+    "MCO": {"BEAUTY":15.58,"CONSTRUCTION & INDUSTRY":18.77,"CPG":19.85,"ENTERTAINMENT":32.77,"FASHION":26.26,"FURNISHING & HOUSEWARE":19.51,"HEALTH":18.72,"HOME ELECTRONICS":13.86,"OTHERS":24.95,"SPORTS":18.55,"T & B":28.02,"TECHNOLOGY":19.95,"VEHICLE PARTS & ACCESSORIES":18.17},
+}
+
+
+# ── W19 (09/05/2026) ─────────────────────────────────────────────────────────
+
+prev_kpi = {
     "MLB": {
         "3P":        {"bs": 9.43,  "u": 62263407, "bu": 5873556},
         "3P+CBT":    {"bs": 9.43,  "u": 62263407, "bu": 5873556},
@@ -53,7 +139,7 @@ curr_kpi = {
     },
 }
 
-curr_bd = {
+prev_bd = {
     "MLB": {
         "3P":        {"str": 1.80, "sv": 1.01, "ag": 2.54, "exc": 4.08},
         "3P+CBT":    {"str": 1.80, "sv": 1.01, "ag": 2.54, "exc": 4.08},
@@ -88,98 +174,12 @@ curr_bd = {
     },
 }
 
-curr_vert = {
+prev_vert = {
     "MLB": {"BEAUTY":8.80,"CONSTRUCTION & INDUSTRY":10.38,"CPG":7.60,"ENTERTAINMENT":10.28,"FASHION":9.92,"FURNISHING & HOUSEWARE":8.70,"HEALTH":6.57,"HOME ELECTRONICS":9.72,"OTHERS":10.35,"SPORTS":10.22,"T & B":13.88,"TECHNOLOGY":10.37,"VEHICLE PARTS & ACCESSORIES":9.87},
     "MLM": {"BEAUTY":11.24,"CONSTRUCTION & INDUSTRY":12.85,"CPG":9.17,"ENTERTAINMENT":19.36,"FASHION":16.85,"FURNISHING & HOUSEWARE":13.88,"HEALTH":11.20,"HOME ELECTRONICS":11.14,"OTHERS":13.04,"SPORTS":14.56,"T & B":19.85,"TECHNOLOGY":19.00,"VEHICLE PARTS & ACCESSORIES":14.94},
     "MLA": {"BEAUTY":9.08,"CONSTRUCTION & INDUSTRY":10.22,"CPG":11.18,"ENTERTAINMENT":12.44,"FASHION":13.46,"FURNISHING & HOUSEWARE":9.52,"HEALTH":6.96,"HOME ELECTRONICS":9.41,"OTHERS":30.84,"SPORTS":10.86,"T & B":17.14,"TECHNOLOGY":10.04,"VEHICLE PARTS & ACCESSORIES":11.09},
     "MLC": {"BEAUTY":11.95,"CONSTRUCTION & INDUSTRY":15.42,"CPG":10.47,"ENTERTAINMENT":24.57,"FASHION":20.75,"FURNISHING & HOUSEWARE":13.15,"HEALTH":16.30,"HOME ELECTRONICS":10.14,"OTHERS":15.21,"SPORTS":19.06,"T & B":24.60,"TECHNOLOGY":16.20,"VEHICLE PARTS & ACCESSORIES":17.86},
     "MCO": {"BEAUTY":17.61,"CONSTRUCTION & INDUSTRY":19.38,"CPG":19.76,"ENTERTAINMENT":29.87,"FASHION":27.60,"FURNISHING & HOUSEWARE":19.37,"HEALTH":19.84,"HOME ELECTRONICS":12.94,"OTHERS":24.58,"SPORTS":18.48,"T & B":32.43,"TECHNOLOGY":19.82,"VEHICLE PARTS & ACCESSORIES":20.08},
-}
-
-
-# ── W18 (02/05/2026) ─────────────────────────────────────────────────────────
-
-prev_kpi = {
-    "MLB": {
-        "3P":        {"bs": 9.42,  "u": 62668807, "bu": 5900697},
-        "3P+CBT":    {"bs": 9.42,  "u": 62668807, "bu": 5900697},
-        "MELI PRO":  {"bs": 6.92,  "u": 16461890, "bu": 1138901},
-        "SELLER DEV":{"bs": 10.31, "u": 46206917, "bu": 4761796},
-        "TOTAL":     {"bs": 10.36, "u": 72380824, "bu": 7496359},
-    },
-    "MLM": {
-        "3P":        {"bs": 14.41, "u": 36198390, "bu": 5217463},
-        "CBT":       {"bs": 15.83, "u": 17586081, "bu": 2783436},
-        "3P+CBT":    {"bs": 14.88, "u": 53784471, "bu": 8000899},
-        "MELI PRO":  {"bs": 9.66,  "u": 8966887,  "bu": 865878},
-        "SELLER DEV":{"bs": 15.98, "u": 27231503, "bu": 4351585},
-        "TOTAL":     {"bs": 14.57, "u": 61070118, "bu": 8896410},
-    },
-    "MLA": {
-        "3P":        {"bs": 10.81, "u": 6457891,  "bu": 698160},
-        "3P+CBT":    {"bs": 10.81, "u": 6457891,  "bu": 698160},
-        "MELI PRO":  {"bs": 9.18,  "u": 2273694,  "bu": 208677},
-        "SELLER DEV":{"bs": 11.70, "u": 4184197,  "bu": 489483},
-        "TOTAL":     {"bs": 11.86, "u": 7919036,  "bu": 938979},
-    },
-    "MLC": {
-        "3P":        {"bs": 14.05, "u": 4244226,  "bu": 596388},
-        "CBT":       {"bs": 22.43, "u": 297624,   "bu": 66743},
-        "3P+CBT":    {"bs": 14.60, "u": 4541850,  "bu": 663131},
-        "MELI PRO":  {"bs": 13.05, "u": 1178544,  "bu": 153767},
-        "SELLER DEV":{"bs": 14.44, "u": 3065682,  "bu": 442621},
-        "TOTAL":     {"bs": 15.08, "u": 5104045,  "bu": 769934},
-    },
-    "MCO": {
-        "3P":        {"bs": 20.08, "u": 862062,   "bu": 173130},
-        "3P+CBT":    {"bs": 20.08, "u": 862062,   "bu": 173130},
-        "MELI PRO":  {"bs": 17.09, "u": 279927,   "bu": 47851},
-        "SELLER DEV":{"bs": 21.52, "u": 582135,   "bu": 125279},
-        "TOTAL":     {"bs": 20.35, "u": 937604,   "bu": 190757},
-    },
-}
-
-prev_bd = {
-    "MLB": {
-        "3P":        {"str": 1.74, "sv": 1.03, "ag": 2.59, "exc": 4.05},
-        "3P+CBT":    {"str": 1.74, "sv": 1.03, "ag": 2.59, "exc": 4.05},
-        "MELI PRO":  {"str": 0.81, "sv": 0.76, "ag": 1.64, "exc": 3.71},
-        "SELLER DEV":{"str": 2.07, "sv": 1.13, "ag": 2.93, "exc": 4.17},
-    },
-    "MLM": {
-        "3P":        {"str": 1.04, "sv": 1.81, "ag": 4.87, "exc": 6.69},
-        "CBT":       {"str": 1.10, "sv": 2.42, "ag": 4.25, "exc": 8.05},
-        "3P+CBT":    {"str": 1.06, "sv": 2.01, "ag": 4.66, "exc": 7.13},
-        "MELI PRO":  {"str": 0.61, "sv": 1.38, "ag": 3.21, "exc": 4.45},
-        "SELLER DEV":{"str": 1.18, "sv": 1.96, "ag": 5.41, "exc": 7.42},
-    },
-    "MLA": {
-        "3P":        {"str": 0.79, "sv": 1.24, "ag": 4.44, "exc": 4.33},
-        "3P+CBT":    {"str": 0.79, "sv": 1.24, "ag": 4.44, "exc": 4.33},
-        "MELI PRO":  {"str": 0.61, "sv": 1.00, "ag": 2.81, "exc": 4.75},
-        "SELLER DEV":{"str": 0.89, "sv": 1.37, "ag": 5.33, "exc": 4.10},
-    },
-    "MLC": {
-        "3P":        {"str": 0.67, "sv": 2.03, "ag": 5.20, "exc": 6.13},
-        "CBT":       {"str": 1.39, "sv": 4.46, "ag": 3.38, "exc": 13.20},
-        "3P+CBT":    {"str": 0.72, "sv": 2.19, "ag": 5.08, "exc": 6.59},
-        "MELI PRO":  {"str": 0.68, "sv": 2.32, "ag": 3.78, "exc": 6.25},
-        "SELLER DEV":{"str": 0.67, "sv": 1.92, "ag": 5.74, "exc": 6.08},
-    },
-    "MCO": {
-        "3P":        {"str": 0.99, "sv": 2.55, "ag": 8.92, "exc": 7.58},
-        "3P+CBT":    {"str": 0.99, "sv": 2.55, "ag": 8.92, "exc": 7.58},
-        "MELI PRO":  {"str": 0.86, "sv": 2.77, "ag": 4.97, "exc": 8.48},
-        "SELLER DEV":{"str": 1.05, "sv": 2.44, "ag": 10.82, "exc": 7.15},
-    },
-}
-
-prev_vert = {
-    "MLB": {"BEAUTY":8.57,"CONSTRUCTION & INDUSTRY":10.58,"CPG":7.12,"ENTERTAINMENT":10.84,"FASHION":9.99,"FURNISHING & HOUSEWARE":8.87,"HEALTH":6.61,"HOME ELECTRONICS":9.84,"OTHERS":10.53,"SPORTS":10.25,"T & B":14.23,"TECHNOLOGY":9.79,"VEHICLE PARTS & ACCESSORIES":10.03},
-    "MLM": {"BEAUTY":11.61,"CONSTRUCTION & INDUSTRY":13.02,"CPG":8.69,"ENTERTAINMENT":19.69,"FASHION":16.50,"FURNISHING & HOUSEWARE":14.23,"HEALTH":11.77,"HOME ELECTRONICS":11.79,"OTHERS":13.29,"SPORTS":14.90,"T & B":20.98,"TECHNOLOGY":19.20,"VEHICLE PARTS & ACCESSORIES":15.39},
-    "MLA": {"BEAUTY":9.99,"CONSTRUCTION & INDUSTRY":10.21,"CPG":10.44,"ENTERTAINMENT":14.85,"FASHION":14.16,"FURNISHING & HOUSEWARE":10.13,"HEALTH":6.36,"HOME ELECTRONICS":10.04,"OTHERS":31.73,"SPORTS":11.08,"T & B":17.98,"TECHNOLOGY":11.03,"VEHICLE PARTS & ACCESSORIES":12.27},
-    "MLC": {"BEAUTY":12.19,"CONSTRUCTION & INDUSTRY":14.73,"CPG":10.26,"ENTERTAINMENT":26.38,"FASHION":19.62,"FURNISHING & HOUSEWARE":12.88,"HEALTH":16.34,"HOME ELECTRONICS":10.58,"OTHERS":16.42,"SPORTS":18.75,"T & B":24.43,"TECHNOLOGY":15.11,"VEHICLE PARTS & ACCESSORIES":16.80},
-    "MCO": {"BEAUTY":17.31,"CONSTRUCTION & INDUSTRY":19.21,"CPG":22.53,"ENTERTAINMENT":30.67,"FASHION":26.71,"FURNISHING & HOUSEWARE":19.47,"HEALTH":19.61,"HOME ELECTRONICS":13.53,"OTHERS":19.13,"SPORTS":18.23,"T & B":29.56,"TECHNOLOGY":19.25,"VEHICLE PARTS & ACCESSORIES":19.13},
 }
 
 
@@ -193,8 +193,8 @@ if __name__ == "__main__":
     webhook_url = sys.argv[1]
 
     msg = build_message(
-        week_id="W19",
-        week_date=date(2026, 5, 9),
+        week_id="W20",
+        week_date=date(2026, 5, 16),
         curr_kpi=curr_kpi,
         prev_kpi=prev_kpi,
         curr_bd=curr_bd,
@@ -204,9 +204,11 @@ if __name__ == "__main__":
         month=5,
     )
 
-    print("─── Prévia da mensagem ───────────────────────────────────")
+    import io, sys as _sys
+    _sys.stdout = io.TextIOWrapper(_sys.stdout.buffer, encoding="utf-8", errors="replace")
+    print("--- Previa da mensagem ---")
     print(msg)
-    print("─────────────────────────────────────────────────────────")
+    print("-" * 57)
     print()
 
     send_to_chat(webhook_url, msg)
