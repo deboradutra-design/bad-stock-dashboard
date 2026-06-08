@@ -1,5 +1,5 @@
 """
-Envio da mensagem W20 ao Google Chat com dados reais do BigQuery.
+Envio da mensagem W23 ao Google Chat com dados reais do BigQuery.
 Execução: python scripts/test_chat_message.py <WEBHOOK_URL>
 """
 
@@ -11,45 +11,45 @@ sys.path.insert(0, str(Path(__file__).parent))
 from chat_notifier import build_message, send_to_chat
 
 
-# ── W20 (16/05/2026) ─────────────────────────────────────────────────────────
+# ── W23 (06/06/2026) — primeiro week de Junho ─────────────────────────────────
 
 curr_kpi = {
     "MLB": {
-        "3P":        {"bs": 9.48,  "u": 63819868, "bu": 6048072},
-        "3P+CBT":    {"bs": 9.48,  "u": 63819868, "bu": 6048072},
-        "MELI PRO":  {"bs": 7.73,  "u": 16323017, "bu": 1262439},
-        "SELLER DEV":{"bs": 10.08, "u": 47496851, "bu": 4785633},
-        "TOTAL":     {"bs": 9.95,  "u": 73437012, "bu": 7306506},
+        "3P":        {"bs": 9.52,  "u": 67203409, "bu": 6399515},
+        "3P+CBT":    {"bs": 9.52,  "u": 67203409, "bu": 6399515},
+        "MELI PRO":  {"bs": 7.17,  "u": 17173797, "bu": 1231809},
+        "SELLER DEV":{"bs": 10.33, "u": 50029612, "bu": 5167706},
+        "TOTAL":     {"bs": 9.89,  "u": 78022169, "bu": 7720193},
     },
     "MLM": {
-        "3P":        {"bs": 13.23, "u": 38808889, "bu": 5134426},
-        "CBT":       {"bs": 14.36, "u": 18264580, "bu": 2623111},
-        "3P+CBT":    {"bs": 13.59, "u": 57073469, "bu": 7757537},
-        "MELI PRO":  {"bs": 9.58,  "u": 10595734, "bu": 1014562},
-        "SELLER DEV":{"bs": 14.60, "u": 28213155, "bu": 4119864},
-        "TOTAL":     {"bs": 13.53, "u": 65502435, "bu": 8865494},
+        "3P":        {"bs": 12.72, "u": 37156038, "bu": 4724620},
+        "CBT":       {"bs": 13.90, "u": 18057867, "bu": 2509573},
+        "3P+CBT":    {"bs": 13.10, "u": 55213905, "bu": 7234193},
+        "MELI PRO":  {"bs": 9.31,  "u": 9849412,  "bu": 916987},
+        "SELLER DEV":{"bs": 13.94, "u": 27306626, "bu": 3807633},
+        "TOTAL":     {"bs": 13.39, "u": 60513535, "bu": 8105217},
     },
     "MLA": {
-        "3P":        {"bs": 11.19, "u": 6546931,  "bu": 732325},
-        "3P+CBT":    {"bs": 11.19, "u": 6546931,  "bu": 732325},
-        "MELI PRO":  {"bs": 8.92,  "u": 2450050,  "bu": 218452},
-        "SELLER DEV":{"bs": 12.54, "u": 4096881,  "bu": 513873},
-        "TOTAL":     {"bs": 11.90, "u": 7733150,  "bu": 919869},
+        "3P":        {"bs": 11.40, "u": 6373644,  "bu": 726901},
+        "3P+CBT":    {"bs": 11.40, "u": 6373644,  "bu": 726901},
+        "MELI PRO":  {"bs": 9.83,  "u": 2258298,  "bu": 222012},
+        "SELLER DEV":{"bs": 12.27, "u": 4115346,  "bu": 504889},
+        "TOTAL":     {"bs": 13.11, "u": 7369102,  "bu": 965990},
     },
     "MLC": {
-        "3P":        {"bs": 13.99, "u": 4660946,  "bu": 652130},
-        "CBT":       {"bs": 22.94, "u": 274221,   "bu": 62910},
-        "3P+CBT":    {"bs": 14.49, "u": 4935167,  "bu": 715040},
-        "MELI PRO":  {"bs": 12.75, "u": 1477418,  "bu": 188304},
-        "SELLER DEV":{"bs": 14.57, "u": 3183528,  "bu": 463826},
-        "TOTAL":     {"bs": 14.81, "u": 5607369,  "bu": 830480},
+        "3P":        {"bs": 13.30, "u": 4581202,  "bu": 609124},
+        "CBT":       {"bs": 27.15, "u": 279336,   "bu": 75834},
+        "3P+CBT":    {"bs": 14.09, "u": 4860538,  "bu": 684958},
+        "MELI PRO":  {"bs": 12.71, "u": 1421766,  "bu": 180682},
+        "SELLER DEV":{"bs": 13.56, "u": 3159436,  "bu": 428442},
+        "TOTAL":     {"bs": 14.59, "u": 5429637,  "bu": 792377},
     },
     "MCO": {
-        "3P":        {"bs": 19.47, "u": 845541,   "bu": 164639},
-        "3P+CBT":    {"bs": 19.47, "u": 845541,   "bu": 164639},
-        "MELI PRO":  {"bs": 16.39, "u": 271779,   "bu": 44534},
-        "SELLER DEV":{"bs": 20.93, "u": 573762,   "bu": 120105},
-        "TOTAL":     {"bs": 19.80, "u": 924696,   "bu": 183068},
+        "3P":        {"bs": 18.03, "u": 882345,   "bu": 159129},
+        "3P+CBT":    {"bs": 18.03, "u": 882345,   "bu": 159129},
+        "MELI PRO":  {"bs": 14.23, "u": 267449,   "bu": 38063},
+        "SELLER DEV":{"bs": 19.69, "u": 614896,   "bu": 121066},
+        "TOTAL":     {"bs": 18.53, "u": 956246,   "bu": 177226},
     },
 }
 
@@ -61,7 +61,7 @@ curr_bd = {
         "SELLER DEV":{"str": 2.10, "sv": 1.10, "ag": 2.85, "exc": 4.02},
     },
     "MLM": {
-        "3P":        {"str": 1.11, "sv": 1.67, "ag": 4.33, "exc": 6.10},
+        "3P":        {"str": 1.08, "sv": 1.85, "ag": 4.16, "exc": 6.49},
         "CBT":       {"str": 1.00, "sv": 2.24, "ag": 3.80, "exc": 7.32},
         "3P+CBT":    {"str": 1.08, "sv": 1.85, "ag": 4.16, "exc": 6.49},
         "MELI PRO":  {"str": 1.21, "sv": 1.25, "ag": 2.80, "exc": 4.30},
@@ -74,7 +74,7 @@ curr_bd = {
         "SELLER DEV":{"str": 1.31, "sv": 1.26, "ag": 5.51, "exc": 4.44},
     },
     "MLC": {
-        "3P":        {"str": 0.67, "sv": 1.93, "ag": 5.26, "exc": 6.11},
+        "3P":        {"str": 0.69, "sv": 2.08, "ag": 5.14, "exc": 6.56},
         "CBT":       {"str": 1.11, "sv": 4.68, "ag": 3.01, "exc": 14.15},
         "3P+CBT":    {"str": 0.69, "sv": 2.08, "ag": 5.14, "exc": 6.56},
         "MELI PRO":  {"str": 0.73, "sv": 2.21, "ag": 3.95, "exc": 5.84},
@@ -89,97 +89,97 @@ curr_bd = {
 }
 
 curr_vert = {
-    "MLB": {"BEAUTY":8.54,"CONSTRUCTION & INDUSTRY":10.53,"CPG":7.78,"ENTERTAINMENT":10.41,"FASHION":10.26,"FURNISHING & HOUSEWARE":8.75,"HEALTH":6.43,"HOME ELECTRONICS":9.96,"OTHERS":9.44,"SPORTS":10.48,"T & B":14.11,"TECHNOLOGY":9.95,"VEHICLE PARTS & ACCESSORIES":9.51},
-    "MLM": {"BEAUTY":10.49,"CONSTRUCTION & INDUSTRY":11.96,"CPG":7.92,"ENTERTAINMENT":18.25,"FASHION":15.98,"FURNISHING & HOUSEWARE":12.80,"HEALTH":10.14,"HOME ELECTRONICS":10.16,"OTHERS":12.43,"SPORTS":13.40,"T & B":18.53,"TECHNOLOGY":17.51,"VEHICLE PARTS & ACCESSORIES":14.14},
-    "MLA": {"BEAUTY":10.27,"CONSTRUCTION & INDUSTRY":10.83,"CPG":10.80,"ENTERTAINMENT":23.09,"FASHION":14.16,"FURNISHING & HOUSEWARE":10.49,"HEALTH":6.66,"HOME ELECTRONICS":10.32,"OTHERS":30.68,"SPORTS":12.21,"T & B":17.26,"TECHNOLOGY":10.89,"VEHICLE PARTS & ACCESSORIES":11.06},
-    "MLC": {"BEAUTY":11.57,"CONSTRUCTION & INDUSTRY":15.43,"CPG":10.33,"ENTERTAINMENT":23.18,"FASHION":18.95,"FURNISHING & HOUSEWARE":12.73,"HEALTH":15.91,"HOME ELECTRONICS":10.45,"OTHERS":12.79,"SPORTS":19.15,"T & B":23.10,"TECHNOLOGY":15.72,"VEHICLE PARTS & ACCESSORIES":16.90},
-    "MCO": {"BEAUTY":15.58,"CONSTRUCTION & INDUSTRY":18.77,"CPG":19.85,"ENTERTAINMENT":32.77,"FASHION":26.26,"FURNISHING & HOUSEWARE":19.51,"HEALTH":18.72,"HOME ELECTRONICS":13.86,"OTHERS":24.95,"SPORTS":18.55,"T & B":28.02,"TECHNOLOGY":19.95,"VEHICLE PARTS & ACCESSORIES":18.17},
+    "MLB": {"BEAUTY":8.42,"CONSTRUCTION & INDUSTRY":10.18,"CPG":7.72,"ENTERTAINMENT":11.08,"FASHION":9.16,"FURNISHING & HOUSEWARE":8.94,"HEALTH":7.23,"HOME ELECTRONICS":11.11,"OTHERS":10.55,"SPORTS":11.03,"T & B":14.78,"TECHNOLOGY":10.55,"VEHICLE PARTS & ACCESSORIES":10.01},
+    "MLM": {"BEAUTY":10.69,"CONSTRUCTION & INDUSTRY":11.36,"CPG":8.54,"ENTERTAINMENT":18.31,"FASHION":14.32,"FURNISHING & HOUSEWARE":12.08,"HEALTH":10.43,"HOME ELECTRONICS":10.01,"OTHERS":13.56,"SPORTS":12.83,"T & B":18.90,"TECHNOLOGY":17.25,"VEHICLE PARTS & ACCESSORIES":13.85},
+    "MLA": {"BEAUTY":11.32,"CONSTRUCTION & INDUSTRY":10.52,"CPG":12.52,"ENTERTAINMENT":12.76,"FASHION":15.31,"FURNISHING & HOUSEWARE":10.43,"HEALTH":6.69,"HOME ELECTRONICS":8.57,"OTHERS":18.84,"SPORTS":11.76,"T & B":16.66,"TECHNOLOGY":11.18,"VEHICLE PARTS & ACCESSORIES":11.44},
+    "MLC": {"BEAUTY":10.66,"CONSTRUCTION & INDUSTRY":15.22,"CPG":8.84,"ENTERTAINMENT":20.57,"FASHION":19.86,"FURNISHING & HOUSEWARE":12.76,"HEALTH":14.84,"HOME ELECTRONICS":10.74,"OTHERS":13.60,"SPORTS":18.98,"T & B":21.72,"TECHNOLOGY":15.95,"VEHICLE PARTS & ACCESSORIES":16.81},
+    "MCO": {"BEAUTY":15.38,"CONSTRUCTION & INDUSTRY":15.74,"CPG":15.86,"ENTERTAINMENT":24.94,"FASHION":21.98,"FURNISHING & HOUSEWARE":23.15,"HEALTH":17.28,"HOME ELECTRONICS":12.52,"OTHERS":24.13,"SPORTS":18.73,"T & B":22.29,"TECHNOLOGY":19.41,"VEHICLE PARTS & ACCESSORIES":17.56},
 }
 
 
-# ── W19 (09/05/2026) ─────────────────────────────────────────────────────────
+# ── W22 (30/05/2026) ─────────────────────────────────────────────────────────
 
 prev_kpi = {
     "MLB": {
-        "3P":        {"bs": 9.43,  "u": 62263407, "bu": 5873556},
-        "3P+CBT":    {"bs": 9.43,  "u": 62263407, "bu": 5873556},
-        "MELI PRO":  {"bs": 7.06,  "u": 16045239, "bu": 1133189},
-        "SELLER DEV":{"bs": 10.26, "u": 46218168, "bu": 4740367},
-        "TOTAL":     {"bs": 10.33, "u": 71696672, "bu": 7407129},
+        "3P":        {"bs": 9.36,  "u": 67930656, "bu": 6359923},
+        "3P+CBT":    {"bs": 9.36,  "u": 67930656, "bu": 6359923},
+        "MELI PRO":  {"bs": 7.32,  "u": 17720918, "bu": 1297534},
+        "SELLER DEV":{"bs": 10.08, "u": 50209738, "bu": 5062389},
+        "TOTAL":     {"bs": 9.59,  "u": 78619431, "bu": 7539076},
     },
     "MLM": {
-        "3P":        {"bs": 14.24, "u": 36854115, "bu": 5248527},
-        "CBT":       {"bs": 15.48, "u": 17621224, "bu": 2728181},
-        "3P+CBT":    {"bs": 14.64, "u": 54475339, "bu": 7976708},
-        "MELI PRO":  {"bs": 9.99,  "u": 9863558,  "bu": 985793},
-        "SELLER DEV":{"bs": 15.79, "u": 26990557, "bu": 4262734},
-        "TOTAL":     {"bs": 14.41, "u": 62381898, "bu": 8986333},
+        "3P":        {"bs": 12.72, "u": 37929909, "bu": 4826409},
+        "CBT":       {"bs": 13.70, "u": 18779624, "bu": 2571899},
+        "3P+CBT":    {"bs": 13.05, "u": 56709533, "bu": 7398308},
+        "MELI PRO":  {"bs": 8.99,  "u": 10601722, "bu": 953237},
+        "SELLER DEV":{"bs": 14.17, "u": 27328187, "bu": 3873172},
+        "TOTAL":     {"bs": 13.20, "u": 63226185, "bu": 8347198},
     },
     "MLA": {
-        "3P":        {"bs": 10.55, "u": 7082854,  "bu": 747248},
-        "3P+CBT":    {"bs": 10.55, "u": 7082854,  "bu": 747248},
-        "MELI PRO":  {"bs": 8.39,  "u": 2833787,  "bu": 237651},
-        "SELLER DEV":{"bs": 11.99, "u": 4249067,  "bu": 509597},
-        "TOTAL":     {"bs": 11.68, "u": 8634483,  "bu": 1008728},
+        "3P":        {"bs": 11.59, "u": 6571635,  "bu": 761557},
+        "3P+CBT":    {"bs": 11.59, "u": 6571635,  "bu": 761557},
+        "MELI PRO":  {"bs": 9.23,  "u": 2374989,  "bu": 219214},
+        "SELLER DEV":{"bs": 12.92, "u": 4196646,  "bu": 542343},
+        "TOTAL":     {"bs": 13.11, "u": 7630010,  "bu": 1000212},
     },
     "MLC": {
-        "3P":        {"bs": 14.45, "u": 4226302,  "bu": 610646},
-        "CBT":       {"bs": 23.13, "u": 276306,   "bu": 63918},
-        "3P+CBT":    {"bs": 14.98, "u": 4502608,  "bu": 674564},
-        "MELI PRO":  {"bs": 12.76, "u": 1307294,  "bu": 166855},
-        "SELLER DEV":{"bs": 15.20, "u": 2919008,  "bu": 443791},
-        "TOTAL":     {"bs": 15.24, "u": 5108131,  "bu": 778695},
+        "3P":        {"bs": 12.25, "u": 5603060,  "bu": 686366},
+        "CBT":       {"bs": 23.89, "u": 288027,   "bu": 68801},
+        "3P+CBT":    {"bs": 12.82, "u": 5891087,  "bu": 755167},
+        "MELI PRO":  {"bs": 11.25, "u": 1963521,  "bu": 220917},
+        "SELLER DEV":{"bs": 12.79, "u": 3639539,  "bu": 465449},
+        "TOTAL":     {"bs": 13.45, "u": 6774362,  "bu": 910956},
     },
     "MCO": {
-        "3P":        {"bs": 20.12, "u": 819980,   "bu": 164987},
-        "3P+CBT":    {"bs": 20.12, "u": 819980,   "bu": 164987},
-        "MELI PRO":  {"bs": 16.76, "u": 266062,   "bu": 44597},
-        "SELLER DEV":{"bs": 21.73, "u": 553918,   "bu": 120390},
-        "TOTAL":     {"bs": 20.37, "u": 893470,   "bu": 182036},
+        "3P":        {"bs": 18.21, "u": 902420,   "bu": 164341},
+        "3P+CBT":    {"bs": 18.21, "u": 902420,   "bu": 164341},
+        "MELI PRO":  {"bs": 15.86, "u": 273469,   "bu": 43376},
+        "SELLER DEV":{"bs": 19.23, "u": 628951,   "bu": 120965},
+        "TOTAL":     {"bs": 18.81, "u": 976013,   "bu": 183619},
     },
 }
 
 prev_bd = {
     "MLB": {
-        "3P":        {"str": 1.80, "sv": 1.01, "ag": 2.54, "exc": 4.08},
-        "3P+CBT":    {"str": 1.80, "sv": 1.01, "ag": 2.54, "exc": 4.08},
-        "MELI PRO":  {"str": 0.90, "sv": 0.71, "ag": 1.58, "exc": 3.87},
-        "SELLER DEV":{"str": 2.10, "sv": 1.12, "ag": 2.87, "exc": 4.15},
+        "3P":        {"str": 1.95, "sv": 1.01, "ag": 2.55, "exc": 3.96},
+        "3P+CBT":    {"str": 1.95, "sv": 1.01, "ag": 2.55, "exc": 3.96},
+        "MELI PRO":  {"str": 1.53, "sv": 0.75, "ag": 1.66, "exc": 3.80},
+        "SELLER DEV":{"str": 2.10, "sv": 1.10, "ag": 2.85, "exc": 4.02},
     },
     "MLM": {
-        "3P":        {"str": 1.08, "sv": 1.74, "ag": 4.71, "exc": 6.70},
-        "CBT":       {"str": 1.02, "sv": 2.38, "ag": 4.09, "exc": 7.99},
-        "3P+CBT":    {"str": 1.06, "sv": 1.95, "ag": 4.51, "exc": 7.11},
-        "MELI PRO":  {"str": 0.94, "sv": 1.32, "ag": 3.00, "exc": 4.73},
-        "SELLER DEV":{"str": 1.14, "sv": 1.90, "ag": 5.34, "exc": 7.41},
+        "3P":        {"str": 1.08, "sv": 1.85, "ag": 4.16, "exc": 6.49},
+        "CBT":       {"str": 1.00, "sv": 2.24, "ag": 3.80, "exc": 7.32},
+        "3P+CBT":    {"str": 1.08, "sv": 1.85, "ag": 4.16, "exc": 6.49},
+        "MELI PRO":  {"str": 1.21, "sv": 1.25, "ag": 2.80, "exc": 4.30},
+        "SELLER DEV":{"str": 1.08, "sv": 1.83, "ag": 4.91, "exc": 6.78},
     },
     "MLA": {
-        "3P":        {"str": 0.84, "sv": 1.09, "ag": 4.21, "exc": 4.40},
-        "3P+CBT":    {"str": 0.84, "sv": 1.09, "ag": 4.21, "exc": 4.40},
-        "MELI PRO":  {"str": 0.57, "sv": 0.82, "ag": 2.37, "exc": 4.63},
-        "SELLER DEV":{"str": 1.01, "sv": 1.27, "ag": 5.43, "exc": 4.25},
+        "3P":        {"str": 1.04, "sv": 1.07, "ag": 4.41, "exc": 4.64},
+        "3P+CBT":    {"str": 1.04, "sv": 1.07, "ag": 4.41, "exc": 4.64},
+        "MELI PRO":  {"str": 0.59, "sv": 0.76, "ag": 2.58, "exc": 4.98},
+        "SELLER DEV":{"str": 1.31, "sv": 1.26, "ag": 5.51, "exc": 4.44},
     },
     "MLC": {
-        "3P":        {"str": 0.65, "sv": 2.03, "ag": 5.42, "exc": 6.32},
-        "CBT":       {"str": 0.66, "sv": 4.69, "ag": 3.14, "exc": 14.64},
-        "3P+CBT":    {"str": 0.65, "sv": 2.20, "ag": 5.28, "exc": 6.83},
-        "MELI PRO":  {"str": 0.64, "sv": 2.29, "ag": 3.90, "exc": 5.93},
-        "SELLER DEV":{"str": 0.66, "sv": 1.92, "ag": 6.10, "exc": 6.50},
+        "3P":        {"str": 0.69, "sv": 2.08, "ag": 5.14, "exc": 6.56},
+        "CBT":       {"str": 1.11, "sv": 4.68, "ag": 3.01, "exc": 14.15},
+        "3P+CBT":    {"str": 0.69, "sv": 2.08, "ag": 5.14, "exc": 6.56},
+        "MELI PRO":  {"str": 0.73, "sv": 2.21, "ag": 3.95, "exc": 5.84},
+        "SELLER DEV":{"str": 0.64, "sv": 1.80, "ag": 5.87, "exc": 6.24},
     },
     "MCO": {
-        "3P":        {"str": 1.17, "sv": 2.31, "ag": 8.96, "exc": 7.63},
-        "3P+CBT":    {"str": 1.17, "sv": 2.31, "ag": 8.96, "exc": 7.63},
-        "MELI PRO":  {"str": 1.19, "sv": 2.33, "ag": 5.13, "exc": 8.08},
-        "SELLER DEV":{"str": 1.16, "sv": 2.30, "ag": 10.80, "exc": 7.41},
+        "3P":        {"str": 0.98, "sv": 2.22, "ag": 8.87, "exc": 7.34},
+        "3P+CBT":    {"str": 0.98, "sv": 2.22, "ag": 8.87, "exc": 7.34},
+        "MELI PRO":  {"str": 0.96, "sv": 2.13, "ag": 5.41, "exc": 7.85},
+        "SELLER DEV":{"str": 0.99, "sv": 2.27, "ag": 10.51, "exc": 7.10},
     },
 }
 
 prev_vert = {
-    "MLB": {"BEAUTY":8.80,"CONSTRUCTION & INDUSTRY":10.38,"CPG":7.60,"ENTERTAINMENT":10.28,"FASHION":9.92,"FURNISHING & HOUSEWARE":8.70,"HEALTH":6.57,"HOME ELECTRONICS":9.72,"OTHERS":10.35,"SPORTS":10.22,"T & B":13.88,"TECHNOLOGY":10.37,"VEHICLE PARTS & ACCESSORIES":9.87},
-    "MLM": {"BEAUTY":11.24,"CONSTRUCTION & INDUSTRY":12.85,"CPG":9.17,"ENTERTAINMENT":19.36,"FASHION":16.85,"FURNISHING & HOUSEWARE":13.88,"HEALTH":11.20,"HOME ELECTRONICS":11.14,"OTHERS":13.04,"SPORTS":14.56,"T & B":19.85,"TECHNOLOGY":19.00,"VEHICLE PARTS & ACCESSORIES":14.94},
-    "MLA": {"BEAUTY":9.08,"CONSTRUCTION & INDUSTRY":10.22,"CPG":11.18,"ENTERTAINMENT":12.44,"FASHION":13.46,"FURNISHING & HOUSEWARE":9.52,"HEALTH":6.96,"HOME ELECTRONICS":9.41,"OTHERS":30.84,"SPORTS":10.86,"T & B":17.14,"TECHNOLOGY":10.04,"VEHICLE PARTS & ACCESSORIES":11.09},
-    "MLC": {"BEAUTY":11.95,"CONSTRUCTION & INDUSTRY":15.42,"CPG":10.47,"ENTERTAINMENT":24.57,"FASHION":20.75,"FURNISHING & HOUSEWARE":13.15,"HEALTH":16.30,"HOME ELECTRONICS":10.14,"OTHERS":15.21,"SPORTS":19.06,"T & B":24.60,"TECHNOLOGY":16.20,"VEHICLE PARTS & ACCESSORIES":17.86},
-    "MCO": {"BEAUTY":17.61,"CONSTRUCTION & INDUSTRY":19.38,"CPG":19.76,"ENTERTAINMENT":29.87,"FASHION":27.60,"FURNISHING & HOUSEWARE":19.37,"HEALTH":19.84,"HOME ELECTRONICS":12.94,"OTHERS":24.58,"SPORTS":18.48,"T & B":32.43,"TECHNOLOGY":19.82,"VEHICLE PARTS & ACCESSORIES":20.08},
+    "MLB": {"BEAUTY":7.99,"CONSTRUCTION & INDUSTRY":10.00,"CPG":8.09,"ENTERTAINMENT":10.26,"FASHION":9.04,"FURNISHING & HOUSEWARE":8.68,"HEALTH":6.90,"HOME ELECTRONICS":10.67,"OTHERS":9.71,"SPORTS":10.74,"T & B":14.47,"TECHNOLOGY":10.75,"VEHICLE PARTS & ACCESSORIES":9.69},
+    "MLM": {"BEAUTY":10.26,"CONSTRUCTION & INDUSTRY":11.40,"CPG":8.21,"ENTERTAINMENT":18.38,"FASHION":14.32,"FURNISHING & HOUSEWARE":12.13,"HEALTH":10.59,"HOME ELECTRONICS":9.68,"OTHERS":13.35,"SPORTS":13.01,"T & B":18.87,"TECHNOLOGY":17.34,"VEHICLE PARTS & ACCESSORIES":13.66},
+    "MLA": {"BEAUTY":10.85,"CONSTRUCTION & INDUSTRY":10.83,"CPG":11.43,"ENTERTAINMENT":26.66,"FASHION":15.40,"FURNISHING & HOUSEWARE":10.63,"HEALTH":6.88,"HOME ELECTRONICS":8.92,"OTHERS":20.26,"SPORTS":11.99,"T & B":17.00,"TECHNOLOGY":12.44,"VEHICLE PARTS & ACCESSORIES":11.34},
+    "MLC": {"BEAUTY":9.20,"CONSTRUCTION & INDUSTRY":14.25,"CPG":8.81,"ENTERTAINMENT":20.16,"FASHION":17.69,"FURNISHING & HOUSEWARE":11.33,"HEALTH":13.99,"HOME ELECTRONICS":9.13,"OTHERS":13.17,"SPORTS":17.13,"T & B":20.67,"TECHNOLOGY":13.49,"VEHICLE PARTS & ACCESSORIES":15.48},
+    "MCO": {"BEAUTY":15.98,"CONSTRUCTION & INDUSTRY":17.03,"CPG":16.58,"ENTERTAINMENT":30.71,"FASHION":23.46,"FURNISHING & HOUSEWARE":18.51,"HEALTH":16.46,"HOME ELECTRONICS":12.73,"OTHERS":27.67,"SPORTS":18.86,"T & B":26.59,"TECHNOLOGY":19.99,"VEHICLE PARTS & ACCESSORIES":17.38},
 }
 
 
@@ -193,15 +193,15 @@ if __name__ == "__main__":
     webhook_url = sys.argv[1]
 
     msg = build_message(
-        week_id="W20",
-        week_date=date(2026, 5, 16),
+        week_id="W23",
+        week_date=date(2026, 6, 6),
         curr_kpi=curr_kpi,
         prev_kpi=prev_kpi,
         curr_bd=curr_bd,
         prev_bd=prev_bd,
         curr_vert=curr_vert,
         prev_vert=prev_vert,
-        month=5,
+        month=6,
     )
 
     import io, sys as _sys

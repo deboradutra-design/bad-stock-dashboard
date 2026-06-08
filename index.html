@@ -202,18 +202,22 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
       <option value="W17">W17 — 25/04/2026</option>
       <option value="W18">W18 — 02/05/2026</option>
       <option value="W19">W19 — 09/05/2026</option>
-      <option value="W20" selected>W20 — 16/05/2026 ★ atual</option>
+      <option value="W20">W20 — 16/05/2026</option>
+      <option value="W21">W21 — 23/05/2026</option>
+      <option value="W22">W22 — 30/05/2026</option>
+      <option value="W23" selected>W23 — 06/06/2026 ★ atual</option>
     </select>
   </div>
   <div class="filter-group">
     <span class="filter-label">Mês</span>
     <select class="filter-sel" id="month-sel" onchange="setMonth(this.value)">
-      <option value="ALL" selected>Todos (Jan–Mai)</option>
+      <option value="ALL" selected>Todos (Jan–Jun)</option>
       <option value="1">Janeiro 2026 (W1–W5)</option>
       <option value="2">Fevereiro 2026 (W6–W9)</option>
       <option value="3">Março 2026 (W10–W13)</option>
       <option value="4">Abril 2026 (W14–W17)</option>
-      <option value="5">Maio 2026 (W18–W20)</option>
+      <option value="5">Maio 2026 (W18–W22)</option>
+      <option value="6">Junho 2026 (W23–)</option>
     </select>
   </div>
 </div>
@@ -339,7 +343,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     <b>Como atualizar os dados do dashboard</b><br><br>
     Os dados são extraídos via <b>BigQuery</b> — tabela <code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code>.<br>
     Semanas MeLi: referência no <b>sábado</b> — W14 = 04/04/2026, W15 = 11/04/2026, etc.<br><br>
-    <b>Dados atuais:</b> W20 completo (16/05/2026) · W1–W20 completo para todos os países<br><br>
+    <b>Dados atuais:</b> W23 completo (06/06/2026) · W1–W23 completo para todos os países<br><br>
     Para atualizar com nova semana, peça ao Claude Code:<br>
     <code style="background:var(--card2);padding:3px 8px;border-radius:4px;font-size:11px;">
       "Atualize o dashboard de bad stock com os dados do BigQuery para W16 (18/04/2026)"
@@ -350,7 +354,10 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     <table>
       <thead><tr><th>Semana MeLi</th><th>Data de Referência</th><th>Data Atualização</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>W20 ★</td><td>16/05/2026 (completo)</td><td>18/05/2026</td><td><span style="color:var(--green)">✓ Atual via BigQuery</span></td></tr>
+        <tr><td>W23 ★</td><td>06/06/2026 (completo)</td><td>08/06/2026</td><td><span style="color:var(--green)">✓ Atual via BigQuery</span></td></tr>
+        <tr><td>W22</td><td>30/05/2026 (completo)</td><td>08/06/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
+        <tr><td>W21</td><td>23/05/2026 (completo)</td><td>08/06/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
+        <tr><td>W20</td><td>16/05/2026 (completo)</td><td>18/05/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W19</td><td>09/05/2026 (completo)</td><td>11/05/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W18</td><td>02/05/2026 (completo)</td><td>05/05/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W17</td><td>25/04/2026 (completo)</td><td>27/04/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
@@ -382,7 +389,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 
 <div class="footer">
   <span>Stock Quality · Stock Management · MeLi Shipping</span>
-  <span id="footer-date">BigQuery · DM_DASH_SHP_STOCK_QUALITY_SUMMARY · W20 (16/05/2026)★ atual · Atualizado: 18/05/2026</span>
+  <span id="footer-date">BigQuery · DM_DASH_SHP_STOCK_QUALITY_SUMMARY · W23 (06/06/2026)★ atual · Atualizado: 08/06/2026</span>
 </div>
 
 <script>
@@ -409,7 +416,10 @@ const WEEKS = [
   { id:'W17', date:'25/04/2026', month:4, label:'W17 (25/04)' },
   { id:'W18', date:'02/05/2026', month:5, label:'W18 (02/05)' },
   { id:'W19', date:'09/05/2026', month:5, label:'W19 (09/05)' },
-  { id:'W20', date:'16/05/2026', month:5, label:'W20 (16/05)★', current:true },
+  { id:'W20', date:'16/05/2026', month:5, label:'W20 (16/05)' },
+  { id:'W21', date:'23/05/2026', month:5, label:'W21 (23/05)' },
+  { id:'W22', date:'30/05/2026', month:5, label:'W22 (30/05)' },
+  { id:'W23', date:'06/06/2026', month:6, label:'W23 (06/06)★', current:true },
 ];
 
 // Bad Stock data: bs=Bad Stock%, str=Stranded, sv=Sin Venta, ag=Aging, exc=Aging+Exc
@@ -435,6 +445,9 @@ const KPI = {
   W18: { MLB:{bs:10.36,str:2.08,sv:1.38,ag:2.85,exc:4.04,u:72380824,bu:7496359}, MLM:{bs:14.57,str:1.15,sv:1.9,ag:4.72,exc:6.79,u:61070118,bu:8896410}, MLA:{bs:11.86,str:1.37,sv:1.29,ag:4.42,exc:4.76,u:7919036,bu:938979}, MLC:{bs:15.08,str:0.9,sv:2.34,ag:5.34,exc:6.5,u:5104045,bu:769934}, MCO:{bs:20.35,str:1.02,sv:2.74,ag:8.93,exc:7.6,u:937604,bu:190757} },
   W19: { MLB:{bs:10.33,str:2.11,sv:1.37,ag:2.78,exc:4.07,u:71696672,bu:7407129}, MLM:{bs:14.41,str:1.25,sv:1.84,ag:4.56,exc:6.75,u:62381898,bu:8986333}, MLA:{bs:11.68,str:0.97,sv:1.12,ag:4.23,exc:5.35,u:8634483,bu:1008728}, MLC:{bs:15.24,str:0.81,sv:2.3,ag:5.42,exc:6.69,u:5108131,bu:778695}, MCO:{bs:20.37,str:1.21,sv:2.52,ag:8.9,exc:7.69,u:893470,bu:182036} },
   W20: { MLB:{bs:9.95,str:2.17,sv:1.15,ag:2.64,exc:3.99,u:73437012,bu:7306506}, MLM:{bs:13.53,str:1.32,sv:1.76,ag:4.27,exc:6.18,u:65502435,bu:8865494}, MLA:{bs:11.9,str:1.14,sv:1.13,ag:4.39,exc:5.22,u:7733150,bu:919869}, MLC:{bs:14.81,str:0.85,sv:2.15,ag:5.3,exc:6.49,u:5607369,bu:830480}, MCO:{bs:19.8,str:1.04,sv:2.42,ag:8.75,exc:7.53,u:924696,bu:183068} },
+  W21: { MLB:{bs:9.62,str:2.17,sv:1.15,ag:2.64,exc:3.99,u:76052755,bu:7319674}, MLM:{bs:13.06,str:1.32,sv:1.76,ag:4.27,exc:6.18,u:67542742,bu:8818576}, MLA:{bs:12.17,str:1.14,sv:1.13,ag:4.39,exc:5.22,u:7681641,bu:934791}, MLC:{bs:15.07,str:0.85,sv:2.15,ag:5.3,exc:6.49,u:6053601,bu:912180}, MCO:{bs:19.39,str:1.04,sv:2.42,ag:8.75,exc:7.53,u:943333,bu:182949} },
+  W22: { MLB:{bs:9.59,str:2.17,sv:1.15,ag:2.64,exc:3.99,u:78619431,bu:7539076}, MLM:{bs:13.2,str:1.32,sv:1.76,ag:4.27,exc:6.18,u:63226185,bu:8347198}, MLA:{bs:13.11,str:1.14,sv:1.13,ag:4.39,exc:5.22,u:7630010,bu:1000212}, MLC:{bs:13.45,str:0.85,sv:2.15,ag:5.3,exc:6.49,u:6774362,bu:910956}, MCO:{bs:18.81,str:1.04,sv:2.42,ag:8.75,exc:7.53,u:976013,bu:183619} },
+  W23: { MLB:{bs:9.89,str:2.17,sv:1.15,ag:2.64,exc:3.99,u:78022169,bu:7720193}, MLM:{bs:13.39,str:1.32,sv:1.76,ag:4.27,exc:6.18,u:60513535,bu:8105217}, MLA:{bs:13.11,str:1.14,sv:1.13,ag:4.39,exc:5.22,u:7369102,bu:965990}, MLC:{bs:14.59,str:0.85,sv:2.15,ag:5.3,exc:6.49,u:5429637,bu:792377}, MCO:{bs:18.53,str:1.04,sv:2.42,ag:8.75,exc:7.53,u:956246,bu:177226} },
 };
 
 // Monthly targets — TOTAL / 3P+CBT (by month number)
@@ -444,32 +457,33 @@ const TARGETS = {
   3: {MLB:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},MLM:{bs:13.2,str:1.1,sv:1.8,ag:3.9,exc:5.5},MLA:{bs:11.1,str:0.9,sv:1.6,ag:5.2,exc:3.3},MLC:{bs:14.8,str:0.9,sv:1.9,ag:6.6,exc:5.1},MCO:{bs:23.4,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
   4: {MLB:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},MLM:{bs:13.3,str:1.1,sv:1.8,ag:3.9,exc:5.5},MLA:{bs:10.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},MLC:{bs:15.2,str:0.9,sv:1.9,ag:6.6,exc:5.1},MCO:{bs:26.0,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
   5: {MLB:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},MLM:{bs:13.4,str:1.1,sv:1.8,ag:3.9,exc:5.5},MLA:{bs:11.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},MLC:{bs:15.3,str:0.9,sv:1.9,ag:6.6,exc:5.1},MCO:{bs:24.2,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
+  6: {MLB:{bs:10.5,str:1.9,sv:1.1,ag:4.0,exc:4.0},MLM:{bs:13.7,str:1.1,sv:1.8,ag:3.9,exc:5.5},MLA:{bs:12.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},MLC:{bs:15.9,str:0.9,sv:1.9,ag:6.6,exc:5.1},MCO:{bs:24.3,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
 };
 
 // Targets por iniciativa — bs% da planilha de planejamento 2026
 // str/sv/ag/exc compartilhados com o target total do país (não temos por iniciativa)
 const INIT_TARGETS = {
   MLB: {
-    '3P':    {1:{bs:13.0,str:3.5,sv:1.4,ag:4.0,exc:4.1},2:{bs:12.0,str:2.5,sv:1.4,ag:4.0,exc:4.1},3:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},4:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},5:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0}},
-    '3P+CBT':{1:{bs:13.0,str:3.5,sv:1.4,ag:4.0,exc:4.1},2:{bs:12.0,str:2.5,sv:1.4,ag:4.0,exc:4.1},3:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},4:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},5:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0}},
+    '3P':    {1:{bs:13.0,str:3.5,sv:1.4,ag:4.0,exc:4.1},2:{bs:12.0,str:2.5,sv:1.4,ag:4.0,exc:4.1},3:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},4:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},5:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},6:{bs:10.5,str:1.9,sv:1.1,ag:4.0,exc:4.0}},
+    '3P+CBT':{1:{bs:13.0,str:3.5,sv:1.4,ag:4.0,exc:4.1},2:{bs:12.0,str:2.5,sv:1.4,ag:4.0,exc:4.1},3:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},4:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},5:{bs:11.0,str:1.9,sv:1.1,ag:4.0,exc:4.0},6:{bs:10.5,str:1.9,sv:1.1,ag:4.0,exc:4.0}},
   },
   MLM: {
-    '3P':    {1:{bs:12.9,str:1.3,sv:1.9,ag:4.1,exc:5.7},2:{bs:12.0,str:1.2,sv:1.9,ag:4.0,exc:4.9},3:{bs:12.3,str:1.1,sv:1.8,ag:3.9,exc:5.5},4:{bs:12.6,str:1.1,sv:1.8,ag:3.9,exc:5.5},5:{bs:12.9,str:1.1,sv:1.8,ag:3.9,exc:5.5}},
-    'CBT':   {1:{bs:14.5,str:1.3,sv:1.9,ag:4.1,exc:5.7},2:{bs:15.0,str:1.2,sv:1.9,ag:4.0,exc:4.9},3:{bs:15.5,str:1.1,sv:1.8,ag:3.9,exc:5.5},4:{bs:15.0,str:1.1,sv:1.8,ag:3.9,exc:5.5},5:{bs:15.0,str:1.1,sv:1.8,ag:3.9,exc:5.5}},
-    '3P+CBT':{1:{bs:13.3,str:1.3,sv:1.9,ag:4.1,exc:5.7},2:{bs:12.8,str:1.2,sv:1.9,ag:4.0,exc:4.9},3:{bs:13.2,str:1.1,sv:1.8,ag:3.9,exc:5.5},4:{bs:13.3,str:1.1,sv:1.8,ag:3.9,exc:5.5},5:{bs:13.4,str:1.1,sv:1.8,ag:3.9,exc:5.5}},
+    '3P':    {1:{bs:12.9,str:1.3,sv:1.9,ag:4.1,exc:5.7},2:{bs:12.0,str:1.2,sv:1.9,ag:4.0,exc:4.9},3:{bs:12.3,str:1.1,sv:1.8,ag:3.9,exc:5.5},4:{bs:12.6,str:1.1,sv:1.8,ag:3.9,exc:5.5},5:{bs:12.9,str:1.1,sv:1.8,ag:3.9,exc:5.5},6:{bs:13.4,str:1.1,sv:1.8,ag:3.9,exc:5.5}},
+    'CBT':   {1:{bs:14.5,str:1.3,sv:1.9,ag:4.1,exc:5.7},2:{bs:15.0,str:1.2,sv:1.9,ag:4.0,exc:4.9},3:{bs:15.5,str:1.1,sv:1.8,ag:3.9,exc:5.5},4:{bs:15.0,str:1.1,sv:1.8,ag:3.9,exc:5.5},5:{bs:15.0,str:1.1,sv:1.8,ag:3.9,exc:5.5},6:{bs:15.0,str:1.1,sv:1.8,ag:3.9,exc:5.5}},
+    '3P+CBT':{1:{bs:13.3,str:1.3,sv:1.9,ag:4.1,exc:5.7},2:{bs:12.8,str:1.2,sv:1.9,ag:4.0,exc:4.9},3:{bs:13.2,str:1.1,sv:1.8,ag:3.9,exc:5.5},4:{bs:13.3,str:1.1,sv:1.8,ag:3.9,exc:5.5},5:{bs:13.4,str:1.1,sv:1.8,ag:3.9,exc:5.5},6:{bs:13.7,str:1.1,sv:1.8,ag:3.9,exc:5.5}},
   },
   MLA: {
-    '3P':    {1:{bs:12.6,str:1.1,sv:1.6,ag:5.5,exc:4.5},2:{bs:11.5,str:1.0,sv:1.7,ag:5.5,exc:3.4},3:{bs:11.1,str:0.9,sv:1.6,ag:5.2,exc:3.3},4:{bs:10.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},5:{bs:11.5,str:0.9,sv:1.6,ag:5.2,exc:3.3}},
-    '3P+CBT':{1:{bs:12.6,str:1.1,sv:1.6,ag:5.5,exc:4.5},2:{bs:11.5,str:1.0,sv:1.7,ag:5.5,exc:3.4},3:{bs:11.1,str:0.9,sv:1.6,ag:5.2,exc:3.3},4:{bs:10.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},5:{bs:11.5,str:0.9,sv:1.6,ag:5.2,exc:3.3}},
+    '3P':    {1:{bs:12.6,str:1.1,sv:1.6,ag:5.5,exc:4.5},2:{bs:11.5,str:1.0,sv:1.7,ag:5.5,exc:3.4},3:{bs:11.1,str:0.9,sv:1.6,ag:5.2,exc:3.3},4:{bs:10.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},5:{bs:11.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},6:{bs:12.5,str:0.9,sv:1.6,ag:5.2,exc:3.3}},
+    '3P+CBT':{1:{bs:12.6,str:1.1,sv:1.6,ag:5.5,exc:4.5},2:{bs:11.5,str:1.0,sv:1.7,ag:5.5,exc:3.4},3:{bs:11.1,str:0.9,sv:1.6,ag:5.2,exc:3.3},4:{bs:10.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},5:{bs:11.5,str:0.9,sv:1.6,ag:5.2,exc:3.3},6:{bs:12.5,str:0.9,sv:1.6,ag:5.2,exc:3.3}},
   },
   MLC: {
-    '3P':    {1:{bs:16.0,str:1.6,sv:2.2,ag:6.2,exc:6.0},2:{bs:15.0,str:0.9,sv:2.0,ag:7.0,exc:5.1},3:{bs:14.5,str:0.9,sv:1.9,ag:6.6,exc:5.1},4:{bs:15.0,str:0.9,sv:1.9,ag:6.6,exc:5.1},5:{bs:15.0,str:0.9,sv:1.9,ag:6.6,exc:5.1}},
-    'CBT':   {1:{bs:21.9,str:1.6,sv:2.2,ag:6.2,exc:6.0},2:{bs:20.3,str:0.9,sv:2.0,ag:7.0,exc:5.1},3:{bs:18.9,str:0.9,sv:1.9,ag:6.6,exc:5.1},4:{bs:18.0,str:0.9,sv:1.9,ag:6.6,exc:5.1},5:{bs:20.0,str:0.9,sv:1.9,ag:6.6,exc:5.1}},
-    '3P+CBT':{1:{bs:16.4,str:1.6,sv:2.2,ag:6.2,exc:6.0},2:{bs:15.4,str:0.9,sv:2.0,ag:7.0,exc:5.1},3:{bs:14.8,str:0.9,sv:1.9,ag:6.6,exc:5.1},4:{bs:15.2,str:0.9,sv:1.9,ag:6.6,exc:5.1},5:{bs:15.3,str:0.9,sv:1.9,ag:6.6,exc:5.1}},
+    '3P':    {1:{bs:16.0,str:1.6,sv:2.2,ag:6.2,exc:6.0},2:{bs:15.0,str:0.9,sv:2.0,ag:7.0,exc:5.1},3:{bs:14.5,str:0.9,sv:1.9,ag:6.6,exc:5.1},4:{bs:15.0,str:0.9,sv:1.9,ag:6.6,exc:5.1},5:{bs:15.0,str:0.9,sv:1.9,ag:6.6,exc:5.1},6:{bs:15.5,str:0.9,sv:1.9,ag:6.6,exc:5.1}},
+    'CBT':   {1:{bs:21.9,str:1.6,sv:2.2,ag:6.2,exc:6.0},2:{bs:20.3,str:0.9,sv:2.0,ag:7.0,exc:5.1},3:{bs:18.9,str:0.9,sv:1.9,ag:6.6,exc:5.1},4:{bs:18.0,str:0.9,sv:1.9,ag:6.6,exc:5.1},5:{bs:20.0,str:0.9,sv:1.9,ag:6.6,exc:5.1},6:{bs:22.0,str:0.9,sv:1.9,ag:6.6,exc:5.1}},
+    '3P+CBT':{1:{bs:16.4,str:1.6,sv:2.2,ag:6.2,exc:6.0},2:{bs:15.4,str:0.9,sv:2.0,ag:7.0,exc:5.1},3:{bs:14.8,str:0.9,sv:1.9,ag:6.6,exc:5.1},4:{bs:15.2,str:0.9,sv:1.9,ag:6.6,exc:5.1},5:{bs:15.3,str:0.9,sv:1.9,ag:6.6,exc:5.1},6:{bs:15.9,str:0.9,sv:1.9,ag:6.6,exc:5.1}},
   },
   MCO: {
-    '3P':    {1:{bs:23.6,str:1.9,sv:3.1,ag:10.8,exc:7.7},2:{bs:21.2,str:1.2,sv:2.9,ag:11.5,exc:5.6},3:{bs:23.4,str:1.1,sv:2.9,ag:12.0,exc:7.4},4:{bs:26.0,str:1.1,sv:2.9,ag:12.0,exc:7.4},5:{bs:24.2,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
-    '3P+CBT':{1:{bs:23.6,str:1.9,sv:3.1,ag:10.8,exc:7.7},2:{bs:21.2,str:1.2,sv:2.9,ag:11.5,exc:5.6},3:{bs:23.4,str:1.1,sv:2.9,ag:12.0,exc:7.4},4:{bs:26.0,str:1.1,sv:2.9,ag:12.0,exc:7.4},5:{bs:24.2,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
+    '3P':    {1:{bs:23.6,str:1.9,sv:3.1,ag:10.8,exc:7.7},2:{bs:21.2,str:1.2,sv:2.9,ag:11.5,exc:5.6},3:{bs:23.4,str:1.1,sv:2.9,ag:12.0,exc:7.4},4:{bs:26.0,str:1.1,sv:2.9,ag:12.0,exc:7.4},5:{bs:24.2,str:1.1,sv:2.9,ag:12.0,exc:7.4},6:{bs:24.3,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
+    '3P+CBT':{1:{bs:23.6,str:1.9,sv:3.1,ag:10.8,exc:7.7},2:{bs:21.2,str:1.2,sv:2.9,ag:11.5,exc:5.6},3:{bs:23.4,str:1.1,sv:2.9,ag:12.0,exc:7.4},4:{bs:26.0,str:1.1,sv:2.9,ag:12.0,exc:7.4},5:{bs:24.2,str:1.1,sv:2.9,ag:12.0,exc:7.4},6:{bs:24.3,str:1.1,sv:2.9,ag:12.0,exc:7.4}},
   },
 };
 
@@ -530,7 +544,7 @@ function getInitData(wid, site) {
 let state = {
   countries: [...ALL_SITES],
   initiatives: ['ALL'],
-  selectedWeek: 'W20',
+  selectedWeek: 'W23',
   filterMonth: 'ALL',
 };
 
@@ -1084,6 +1098,27 @@ const INIT_KPI = {
     MLC:{ '3P':{bs:13.99,str:0.67,sv:1.93,ag:5.26,exc:6.11}, CBT:{bs:22.94,str:1.11,sv:4.68,ag:3.01,exc:14.15}, '3P+CBT':{bs:14.49,str:0.69,sv:2.08,ag:5.14,exc:6.56}, '1P/PL':{bs:17.17,str:0,sv:0,ag:0,exc:0} },
     MCO:{ '3P':{bs:19.47,str:0.98,sv:2.22,ag:8.87,exc:7.34}, CBT:null, '3P+CBT':{bs:19.47,str:0.98,sv:2.22,ag:8.87,exc:7.34}, '1P/PL':{bs:23.28,str:0,sv:0,ag:0,exc:0} },
   },
+  W21: {
+    MLB:{ '3P':{bs:9.26,str:1.95,sv:1.01,ag:2.55,exc:3.96}, CBT:null, '3P+CBT':{bs:9.26,str:1.95,sv:1.01,ag:2.55,exc:3.96}, '1P/PL':{bs:11.97,str:0,sv:0,ag:0,exc:0} },
+    MLM:{ '3P':{bs:12.68,str:1.08,sv:1.85,ag:4.16,exc:6.49}, CBT:{bs:14.02,str:1.0,sv:2.24,ag:3.8,exc:7.32}, '3P+CBT':{bs:13.11,str:1.08,sv:1.85,ag:4.16,exc:6.49}, '1P/PL':{bs:12.72,str:0,sv:0,ag:0,exc:0} },
+    MLA:{ '3P':{bs:10.82,str:1.04,sv:1.07,ag:4.41,exc:4.64}, CBT:null, '3P+CBT':{bs:10.82,str:1.04,sv:1.07,ag:4.41,exc:4.64}, '1P/PL':{bs:20.44,str:0,sv:0,ag:0,exc:0} },
+    MLC:{ '3P':{bs:14.18,str:0.69,sv:2.08,ag:5.14,exc:6.56}, CBT:{bs:22.29,str:1.11,sv:4.68,ag:3.01,exc:14.15}, '3P+CBT':{bs:14.59,str:0.69,sv:2.08,ag:5.14,exc:6.56}, '1P/PL':{bs:18.59,str:0,sv:0,ag:0,exc:0} },
+    MCO:{ '3P':{bs:18.87,str:0.98,sv:2.22,ag:8.87,exc:7.34}, CBT:null, '3P+CBT':{bs:18.87,str:0.98,sv:2.22,ag:8.87,exc:7.34}, '1P/PL':{bs:25.55,str:0,sv:0,ag:0,exc:0} },
+  },
+  W22: {
+    MLB:{ '3P':{bs:9.36,str:1.95,sv:1.01,ag:2.55,exc:3.96}, CBT:null, '3P+CBT':{bs:9.36,str:1.95,sv:1.01,ag:2.55,exc:3.96}, '1P/PL':{bs:11.03,str:0,sv:0,ag:0,exc:0} },
+    MLM:{ '3P':{bs:12.72,str:1.08,sv:1.85,ag:4.16,exc:6.49}, CBT:{bs:13.7,str:1.0,sv:2.24,ag:3.8,exc:7.32}, '3P+CBT':{bs:13.05,str:1.08,sv:1.85,ag:4.16,exc:6.49}, '1P/PL':{bs:14.56,str:0,sv:0,ag:0,exc:0} },
+    MLA:{ '3P':{bs:11.59,str:1.04,sv:1.07,ag:4.41,exc:4.64}, CBT:null, '3P+CBT':{bs:11.59,str:1.04,sv:1.07,ag:4.41,exc:4.64}, '1P/PL':{bs:22.55,str:0,sv:0,ag:0,exc:0} },
+    MLC:{ '3P':{bs:12.25,str:0.69,sv:2.08,ag:5.14,exc:6.56}, CBT:{bs:23.89,str:1.11,sv:4.68,ag:3.01,exc:14.15}, '3P+CBT':{bs:12.82,str:0.69,sv:2.08,ag:5.14,exc:6.56}, '1P/PL':{bs:17.64,str:0,sv:0,ag:0,exc:0} },
+    MCO:{ '3P':{bs:18.21,str:0.98,sv:2.22,ag:8.87,exc:7.34}, CBT:null, '3P+CBT':{bs:18.21,str:0.98,sv:2.22,ag:8.87,exc:7.34}, '1P/PL':{bs:26.2,str:0,sv:0,ag:0,exc:0} },
+  },
+  W23: {
+    MLB:{ '3P':{bs:9.52,str:1.95,sv:1.01,ag:2.55,exc:3.96}, CBT:null, '3P+CBT':{bs:9.52,str:1.95,sv:1.01,ag:2.55,exc:3.96}, '1P/PL':{bs:12.21,str:0,sv:0,ag:0,exc:0} },
+    MLM:{ '3P':{bs:12.72,str:1.08,sv:1.85,ag:4.16,exc:6.49}, CBT:{bs:13.9,str:1.0,sv:2.24,ag:3.8,exc:7.32}, '3P+CBT':{bs:13.1,str:1.08,sv:1.85,ag:4.16,exc:6.49}, '1P/PL':{bs:16.44,str:0,sv:0,ag:0,exc:0} },
+    MLA:{ '3P':{bs:11.4,str:1.04,sv:1.07,ag:4.41,exc:4.64}, CBT:null, '3P+CBT':{bs:11.4,str:1.04,sv:1.07,ag:4.41,exc:4.64}, '1P/PL':{bs:24.02,str:0,sv:0,ag:0,exc:0} },
+    MLC:{ '3P':{bs:13.3,str:0.69,sv:2.08,ag:5.14,exc:6.56}, CBT:{bs:27.15,str:1.11,sv:4.68,ag:3.01,exc:14.15}, '3P+CBT':{bs:14.09,str:0.69,sv:2.08,ag:5.14,exc:6.56}, '1P/PL':{bs:18.88,str:0,sv:0,ag:0,exc:0} },
+    MCO:{ '3P':{bs:18.03,str:0.98,sv:2.22,ag:8.87,exc:7.34}, CBT:null, '3P+CBT':{bs:18.03,str:0.98,sv:2.22,ag:8.87,exc:7.34}, '1P/PL':{bs:24.49,str:0,sv:0,ag:0,exc:0} },
+  },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1330,6 +1365,27 @@ const SEG_UNITS = {
     MLC: { '3P':{u:4660946,bu:652130},'MELI PRO':{u:1477418,bu:188304},'SELLER DEV':{u:3183528,bu:463826},'CBT':{u:274221,bu:62910},'1P/PL':{u:672202,bu:115440},'3P+CBT':{u:4935167,bu:715040} },
     MCO: { '3P':{u:845541,bu:164639},'MELI PRO':{u:271779,bu:44534},'SELLER DEV':{u:573762,bu:120105},'1P/PL':{u:79155,bu:18429},'3P+CBT':{u:845541,bu:164639} },
   },
+  W21: {
+    MLB: { '3P':{u:65893904,bu:6103463},'MELI PRO':{u:17216682,bu:1259140},'SELLER DEV':{u:48677222,bu:4844323},'1P/PL':{u:10158851,bu:1216211},'3P+CBT':{u:65893904,bu:6103463} },
+    MLM: { '3P':{u:39999954,bu:5070334},'MELI PRO':{u:11397753,bu:1056450},'SELLER DEV':{u:28602201,bu:4013884},'CBT':{u:18809776,bu:2637058},'1P/PL':{u:8733012,bu:1111184},'3P+CBT':{u:58809730,bu:7707392} },
+    MLA: { '3P':{u:6606573,bu:715044},'MELI PRO':{u:2413269,bu:213579},'SELLER DEV':{u:4193304,bu:501465},'1P/PL':{u:1075068,bu:219747},'3P+CBT':{u:6606573,bu:715044} },
+    MLC: { '3P':{u:5060612,bu:717572},'MELI PRO':{u:1676687,bu:205756},'SELLER DEV':{u:3383925,bu:511816},'CBT':{u:271206,bu:60453},'1P/PL':{u:721783,bu:134155},'3P+CBT':{u:5331818,bu:778025} },
+    MCO: { '3P':{u:869348,bu:164049},'MELI PRO':{u:266226,bu:40635},'SELLER DEV':{u:603122,bu:123414},'1P/PL':{u:73985,bu:18900},'3P+CBT':{u:869348,bu:164049} },
+  },
+  W22: {
+    MLB: { '3P':{u:67930656,bu:6359923},'MELI PRO':{u:17720918,bu:1297534},'SELLER DEV':{u:50209738,bu:5062389},'1P/PL':{u:10688775,bu:1179153},'3P+CBT':{u:67930656,bu:6359923} },
+    MLM: { '3P':{u:37929909,bu:4826409},'MELI PRO':{u:10601722,bu:953237},'SELLER DEV':{u:27328187,bu:3873172},'CBT':{u:18779624,bu:2571899},'1P/PL':{u:6516652,bu:948890},'3P+CBT':{u:56709533,bu:7398308} },
+    MLA: { '3P':{u:6571635,bu:761557},'MELI PRO':{u:2374989,bu:219214},'SELLER DEV':{u:4196646,bu:542343},'1P/PL':{u:1058375,bu:238655},'3P+CBT':{u:6571635,bu:761557} },
+    MLC: { '3P':{u:5603060,bu:686366},'MELI PRO':{u:1963521,bu:220917},'SELLER DEV':{u:3639539,bu:465449},'CBT':{u:288027,bu:68801},'1P/PL':{u:883275,bu:155789},'3P+CBT':{u:5891087,bu:755167} },
+    MCO: { '3P':{u:902420,bu:164341},'MELI PRO':{u:273469,bu:43376},'SELLER DEV':{u:628951,bu:120965},'1P/PL':{u:73593,bu:19278},'3P+CBT':{u:902420,bu:164341} },
+  },
+  W23: {
+    MLB: { '3P':{u:67203409,bu:6399515},'MELI PRO':{u:17173797,bu:1231809},'SELLER DEV':{u:50029612,bu:5167706},'1P/PL':{u:10818760,bu:1320678},'3P+CBT':{u:67203409,bu:6399515} },
+    MLM: { '3P':{u:37156038,bu:4724620},'MELI PRO':{u:9849412,bu:916987},'SELLER DEV':{u:27306626,bu:3807633},'CBT':{u:18057867,bu:2509573},'1P/PL':{u:5299630,bu:871024},'3P+CBT':{u:55213905,bu:7234193} },
+    MLA: { '3P':{u:6373644,bu:726901},'MELI PRO':{u:2258298,bu:222012},'SELLER DEV':{u:4115346,bu:504889},'1P/PL':{u:995458,bu:239089},'3P+CBT':{u:6373644,bu:726901} },
+    MLC: { '3P':{u:4581202,bu:609124},'MELI PRO':{u:1421766,bu:180682},'SELLER DEV':{u:3159436,bu:428442},'CBT':{u:279336,bu:75834},'1P/PL':{u:569099,bu:107419},'3P+CBT':{u:4860538,bu:684958} },
+    MCO: { '3P':{u:882345,bu:159129},'MELI PRO':{u:267449,bu:38063},'SELLER DEV':{u:614896,bu:121066},'1P/PL':{u:73901,bu:18097},'3P+CBT':{u:882345,bu:159129} },
+  },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1551,6 +1607,27 @@ const SEG_KPI = {
     MLA: { 'MELI PRO':{bs:8.92,str:0.59,sv:0.76,ag:2.58,exc:4.98,u:2450050},  'SELLER DEV':{bs:12.54,str:1.31,sv:1.26,ag:5.51,exc:4.44,u:4096881} },
     MLC: { 'MELI PRO':{bs:12.75,str:0.73,sv:2.21,ag:3.95,exc:5.84,u:1477418}, 'SELLER DEV':{bs:14.57,str:0.64,sv:1.8,ag:5.87,exc:6.24,u:3183528} },
     MCO: { 'MELI PRO':{bs:16.39,str:0.96,sv:2.13,ag:5.41,exc:7.85,u:271779},  'SELLER DEV':{bs:20.93,str:0.99,sv:2.27,ag:10.51,exc:7.1,u:573762} },
+  },
+  W21: {
+    MLB: { 'MELI PRO':{bs:7.31,str:1.53,sv:0.75,ag:1.66,exc:3.8,u:17216682},  'SELLER DEV':{bs:9.95,str:2.1,sv:1.1,ag:2.85,exc:4.02,u:48677222} },
+    MLM: { 'MELI PRO':{bs:9.27,str:1.21,sv:1.25,ag:2.8,exc:4.3,u:11397753},   'SELLER DEV':{bs:14.03,str:1.08,sv:1.83,ag:4.91,exc:6.78,u:28602201} },
+    MLA: { 'MELI PRO':{bs:8.85,str:0.59,sv:0.76,ag:2.58,exc:4.98,u:2413269},  'SELLER DEV':{bs:11.96,str:1.31,sv:1.26,ag:5.51,exc:4.44,u:4193304} },
+    MLC: { 'MELI PRO':{bs:12.27,str:0.73,sv:2.21,ag:3.95,exc:5.84,u:1676687}, 'SELLER DEV':{bs:15.12,str:0.64,sv:1.8,ag:5.87,exc:6.24,u:3383925} },
+    MCO: { 'MELI PRO':{bs:15.26,str:0.96,sv:2.13,ag:5.41,exc:7.85,u:266226},  'SELLER DEV':{bs:20.46,str:0.99,sv:2.27,ag:10.51,exc:7.1,u:603122} },
+  },
+  W22: {
+    MLB: { 'MELI PRO':{bs:7.32,str:1.53,sv:0.75,ag:1.66,exc:3.8,u:17720918},  'SELLER DEV':{bs:10.08,str:2.1,sv:1.1,ag:2.85,exc:4.02,u:50209738} },
+    MLM: { 'MELI PRO':{bs:8.99,str:1.21,sv:1.25,ag:2.8,exc:4.3,u:10601722},   'SELLER DEV':{bs:14.17,str:1.08,sv:1.83,ag:4.91,exc:6.78,u:27328187} },
+    MLA: { 'MELI PRO':{bs:9.23,str:0.59,sv:0.76,ag:2.58,exc:4.98,u:2374989},  'SELLER DEV':{bs:12.92,str:1.31,sv:1.26,ag:5.51,exc:4.44,u:4196646} },
+    MLC: { 'MELI PRO':{bs:11.25,str:0.73,sv:2.21,ag:3.95,exc:5.84,u:1963521}, 'SELLER DEV':{bs:12.79,str:0.64,sv:1.8,ag:5.87,exc:6.24,u:3639539} },
+    MCO: { 'MELI PRO':{bs:15.86,str:0.96,sv:2.13,ag:5.41,exc:7.85,u:273469},  'SELLER DEV':{bs:19.23,str:0.99,sv:2.27,ag:10.51,exc:7.1,u:628951} },
+  },
+  W23: {
+    MLB: { 'MELI PRO':{bs:7.17,str:1.53,sv:0.75,ag:1.66,exc:3.8,u:17173797},  'SELLER DEV':{bs:10.33,str:2.1,sv:1.1,ag:2.85,exc:4.02,u:50029612} },
+    MLM: { 'MELI PRO':{bs:9.31,str:1.21,sv:1.25,ag:2.8,exc:4.3,u:9849412},    'SELLER DEV':{bs:13.94,str:1.08,sv:1.83,ag:4.91,exc:6.78,u:27306626} },
+    MLA: { 'MELI PRO':{bs:9.83,str:0.59,sv:0.76,ag:2.58,exc:4.98,u:2258298},  'SELLER DEV':{bs:12.27,str:1.31,sv:1.26,ag:5.51,exc:4.44,u:4115346} },
+    MLC: { 'MELI PRO':{bs:12.71,str:0.73,sv:2.21,ag:3.95,exc:5.84,u:1421766}, 'SELLER DEV':{bs:13.56,str:0.64,sv:1.8,ag:5.87,exc:6.24,u:3159436} },
+    MCO: { 'MELI PRO':{bs:14.23,str:0.96,sv:2.13,ag:5.41,exc:7.85,u:267449},  'SELLER DEV':{bs:19.69,str:0.99,sv:2.27,ag:10.51,exc:7.1,u:614896} },
   },
 };
 
