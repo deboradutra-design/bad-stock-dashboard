@@ -285,7 +285,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
   </div>
   <div class="card">
     <div class="sec">Detalhamento por Vertical</div>
-    <div style="font-size:10px;color:var(--muted);margin-bottom:8px;">Fonte: BigQuery · W13 (28/03/2026) · TOTAL initiative · todos os KPIs disponíveis. Target = Mar/2026.</div>
+    <div style="font-size:10px;color:var(--muted);margin-bottom:8px;">Fonte: BigQuery · W28 (11/07/2026) · 3P+CBT initiative · todos os KPIs disponíveis. Target = Jul/2026.</div>
     <div style="overflow-x:auto;overflow-y:auto;max-height:360px;">
     <table>
       <thead style="position:sticky;top:0;background:var(--card);z-index:1;"><tr><th>País</th><th>Iniciativa</th><th>Vertical</th><th>Bad Stock %</th><th>vs Target</th><th>BS (un.)</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
@@ -1481,83 +1481,83 @@ const SEG_UNITS = {
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
-// VERT DATA — Bad Stock % por Vertical · W13 (28/03/2026) · Fonte: BigQuery
+// VERT DATA — Bad Stock % por Vertical · W28 (11/07/2026) · Fonte: BigQuery
 // ══════════════════════════════════════════════════════════════════════════════
 const VERT_DATA = {
   MLB: [
-    {v:'ENTERTAINMENT',              bs:18.11,str:2.04,sv:1.48,ag:5.84,exc:8.74,u:296533},
-    {v:'T & B',                      bs:15.56,str:1.93,sv:1.63,ag:5.02,exc:6.96,u:370691},
-    {v:'FASHION',                    bs:12.37,str:1.55,sv:2.01,ag:4.52,exc:4.25,u:1208362},
-    {v:'CPG',                        bs:11.97,str:2.31,sv:0.45,ag:3.44,exc:5.77,u:1140007},
-    {v:'OTHERS',                     bs:11.50,str:1.75,sv:1.04,ag:4.16,exc:4.54,u:24224},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:11.45,str:2.19,sv:0.97,ag:4.07,exc:4.21,u:452050},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:10.96,str:2.06,sv:2.33,ag:2.47,exc:4.10,u:1169720},
-    {v:'TECHNOLOGY',                 bs:10.04,str:3.38,sv:0.82,ag:2.31,exc:3.52,u:520142},
-    {v:'SPORTS',                     bs:9.81, str:1.43,sv:0.88,ag:2.68,exc:4.81,u:250018},
-    {v:'FURNISHING & HOUSEWARE',     bs:9.71, str:1.86,sv:0.95,ag:2.44,exc:4.46,u:706437},
-    {v:'HOME ELECTRONICS',           bs:9.33, str:3.21,sv:0.61,ag:2.39,exc:3.11,u:370751},
-    {v:'BEAUTY',                     bs:9.08, str:2.07,sv:0.82,ag:2.99,exc:3.19,u:426702},
-    {v:'HEALTH',                     bs:6.61, str:1.24,sv:0.45,ag:1.52,exc:3.40,u:370548},
+    {v:'T & B',                      bs:15.26,str:1.52,sv:1.51,ag:4.85,exc:7.37,u:2639052},
+    {v:'SPORTS',                     bs:14.04,str:1.57,sv:1.32,ag:4.04,exc:7.10,u:3246053},
+    {v:'ENTERTAINMENT',              bs:11.86,str:1.84,sv:1.19,ag:3.76,exc:5.05,u:971992},
+    {v:'HOME ELECTRONICS',           bs:11.84,str:1.86,sv:0.85,ag:2.75,exc:6.38,u:3376400},
+    {v:'OTHERS',                     bs:11.42,str:1.57,sv:1.45,ag:3.53,exc:4.86,u:323487},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:11.35,str:1.52,sv:1.17,ag:4.23,exc:4.43,u:5499707},
+    {v:'TECHNOLOGY',                 bs:11.18,str:1.95,sv:1.19,ag:2.90,exc:5.14,u:5128825},
+    {v:'FURNISHING & HOUSEWARE',     bs:10.19,str:1.22,sv:0.95,ag:2.79,exc:5.22,u:9537179},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:9.78, str:1.56,sv:0.96,ag:2.42,exc:4.84,u:14875347},
+    {v:'CPG',                        bs:8.96, str:0.98,sv:0.73,ag:2.64,exc:4.61,u:9969340},
+    {v:'BEAUTY',                     bs:8.82, str:1.62,sv:1.16,ag:2.58,exc:3.44,u:5065940},
+    {v:'HEALTH',                     bs:7.37, str:1.67,sv:0.56,ag:1.30,exc:3.83,u:8971813},
+    {v:'FASHION',                    bs:7.22, str:0.88,sv:1.26,ag:2.49,exc:2.58,u:20815796},
   ],
   MLM: [
-    {v:'T & B',                      bs:27.06,str:1.51,sv:3.01,ag:6.90,exc:15.64,u:932306},
-    {v:'ENTERTAINMENT',              bs:21.64,str:1.64,sv:2.95,ag:7.82,exc:9.19,u:125156},
-    {v:'TECHNOLOGY',                 bs:18.70,str:1.93,sv:2.24,ag:4.65,exc:9.88,u:1287140},
-    {v:'OTHERS',                     bs:15.99,str:1.06,sv:1.33,ag:3.74,exc:9.86,u:39573},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:15.96,str:0.90,sv:2.02,ag:4.73,exc:8.30,u:786171},
-    {v:'SPORTS',                     bs:15.95,str:0.66,sv:1.66,ag:3.77,exc:9.85,u:340708},
-    {v:'FURNISHING & HOUSEWARE',     bs:14.98,str:0.70,sv:2.07,ag:3.06,exc:9.14,u:916832},
-    {v:'FASHION',                    bs:14.81,str:1.08,sv:3.20,ag:3.76,exc:6.76,u:1634062},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:14.43,str:0.96,sv:1.53,ag:3.21,exc:8.73,u:1284783},
-    {v:'BEAUTY',                     bs:13.67,str:3.27,sv:1.41,ag:4.75,exc:4.24,u:725512},
-    {v:'HEALTH',                     bs:12.91,str:1.18,sv:1.42,ag:2.92,exc:7.39,u:301553},
-    {v:'CPG',                        bs:12.32,str:2.29,sv:0.71,ag:3.27,exc:6.06,u:461441},
-    {v:'HOME ELECTRONICS',           bs:12.11,str:1.23,sv:1.31,ag:2.93,exc:6.64,u:285897},
+    {v:'T & B',                      bs:19.32,str:1.58,sv:2.44,ag:4.63,exc:10.67,u:3027306},
+    {v:'ENTERTAINMENT',              bs:17.69,str:1.03,sv:2.04,ag:5.70,exc:8.90,u:561369},
+    {v:'TECHNOLOGY',                 bs:16.53,str:1.52,sv:1.82,ag:4.24,exc:8.94,u:6692949},
+    {v:'SPORTS',                     bs:14.35,str:1.71,sv:1.50,ag:3.50,exc:7.63,u:2642956},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:13.84,str:1.17,sv:1.51,ag:4.25,exc:6.91,u:5786550},
+    {v:'FURNISHING & HOUSEWARE',     bs:12.93,str:1.17,sv:1.25,ag:2.97,exc:7.53,u:7177954},
+    {v:'OTHERS',                     bs:12.66,str:2.63,sv:0.92,ag:4.19,exc:4.92,u:254281},
+    {v:'HOME ELECTRONICS',           bs:11.88,str:1.70,sv:1.35,ag:2.22,exc:6.61,u:3122036},
+    {v:'FASHION',                    bs:11.82,str:1.03,sv:2.29,ag:3.25,exc:5.24,u:13588573},
+    {v:'BEAUTY',                     bs:11.38,str:1.70,sv:1.49,ag:2.68,exc:5.50,u:5361157},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:11.22,str:1.07,sv:1.17,ag:2.97,exc:6.01,u:11584746},
+    {v:'CPG',                        bs:10.49,str:1.59,sv:0.74,ag:2.99,exc:5.16,u:4058322},
+    {v:'HEALTH',                     bs:8.84, str:0.65,sv:0.61,ag:2.32,exc:5.25,u:4306178},
   ],
   MLA: [
-    {v:'OTHERS',                     bs:30.25,str:0.78,sv:1.29,ag:9.18,exc:18.98,u:5097},
-    {v:'T & B',                      bs:22.73,str:1.05,sv:2.95,ag:10.23,exc:8.46,u:40645},
-    {v:'FASHION',                    bs:17.09,str:1.12,sv:2.55,ag:8.43,exc:4.91,u:111685},
-    {v:'HOME ELECTRONICS',           bs:16.75,str:1.91,sv:0.88,ag:6.03,exc:7.93,u:51576},
-    {v:'BEAUTY',                     bs:16.04,str:2.93,sv:1.07,ag:5.26,exc:6.78,u:104039},
-    {v:'ENTERTAINMENT',              bs:12.54,str:1.87,sv:0.85,ag:6.59,exc:3.19,u:10448},
-    {v:'CPG',                        bs:12.50,str:1.69,sv:0.62,ag:3.35,exc:6.84,u:189499},
-    {v:'TECHNOLOGY',                 bs:12.12,str:1.34,sv:1.07,ag:6.02,exc:3.68,u:57547},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:11.78,str:1.16,sv:1.05,ag:6.55,exc:3.00,u:26179},
-    {v:'SPORTS',                     bs:10.73,str:0.99,sv:1.35,ag:4.69,exc:3.68,u:25227},
-    {v:'FURNISHING & HOUSEWARE',     bs:10.24,str:1.11,sv:1.04,ag:4.40,exc:3.67,u:73498},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:10.03,str:1.32,sv:1.05,ag:4.36,exc:3.29,u:88665},
-    {v:'HEALTH',                     bs:7.49, str:0.82,sv:0.81,ag:2.64,exc:3.22,u:30599},
+    {v:'OTHERS',                     bs:20.75,str:4.69,sv:1.85,ag:7.66,exc:6.54,u:16765},
+    {v:'T & B',                      bs:18.57,str:1.13,sv:1.45,ag:7.48,exc:8.48,u:221735},
+    {v:'ENTERTAINMENT',              bs:18.19,str:1.87,sv:1.77,ag:9.09,exc:5.35,u:107134},
+    {v:'CPG',                        bs:17.92,str:0.72,sv:0.83,ag:5.12,exc:11.25,u:1490286},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:17.23,str:0.83,sv:1.46,ag:6.40,exc:8.54,u:282221},
+    {v:'TECHNOLOGY',                 bs:15.10,str:1.25,sv:1.29,ag:6.11,exc:6.44,u:521401},
+    {v:'SPORTS',                     bs:14.83,str:0.58,sv:1.51,ag:6.43,exc:6.28,u:294916},
+    {v:'FASHION',                    bs:13.68,str:0.93,sv:1.84,ag:6.77,exc:4.10,u:680334},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:13.19,str:0.72,sv:1.24,ag:5.30,exc:5.92,u:1087328},
+    {v:'FURNISHING & HOUSEWARE',     bs:13.06,str:0.75,sv:1.04,ag:5.14,exc:6.13,u:778964},
+    {v:'BEAUTY',                     bs:13.04,str:1.15,sv:1.36,ag:5.16,exc:5.36,u:793620},
+    {v:'HOME ELECTRONICS',           bs:11.52,str:0.96,sv:0.78,ag:3.05,exc:6.72,u:324589},
+    {v:'HEALTH',                     bs:9.49, str:0.91,sv:0.82,ag:3.22,exc:4.52,u:727749},
   ],
   MLC: [
-    {v:'T & B',                      bs:25.73,str:0.86,sv:3.59,ag:11.46,exc:9.80,u:63504},
-    {v:'ENTERTAINMENT',              bs:21.20,str:1.85,sv:3.90,ag:7.82,exc:7.55,u:13474},
-    {v:'FASHION',                    bs:17.83,str:0.98,sv:5.36,ag:5.76,exc:5.72,u:117701},
-    {v:'SPORTS',                     bs:17.28,str:1.10,sv:2.55,ag:6.43,exc:7.19,u:35132},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:15.84,str:1.23,sv:1.95,ag:7.44,exc:5.20,u:30223},
-    {v:'OTHERS',                     bs:14.94,str:0.49,sv:0.95,ag:7.78,exc:5.72,u:2150},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:13.56,str:0.93,sv:1.44,ag:5.24,exc:5.93,u:107265},
-    {v:'TECHNOLOGY',                 bs:13.43,str:1.94,sv:1.38,ag:5.62,exc:4.48,u:52861},
-    {v:'HEALTH',                     bs:12.93,str:1.12,sv:1.39,ag:4.11,exc:6.31,u:34966},
-    {v:'HOME ELECTRONICS',           bs:12.65,str:1.62,sv:1.00,ag:4.30,exc:5.72,u:25090},
-    {v:'FURNISHING & HOUSEWARE',     bs:12.55,str:0.81,sv:1.53,ag:4.92,exc:5.28,u:52467},
-    {v:'CPG',                        bs:10.53,str:1.62,sv:0.57,ag:2.54,exc:5.81,u:145835},
-    {v:'BEAUTY',                     bs:9.90, str:1.46,sv:0.99,ag:4.14,exc:3.31,u:57016},
+    {v:'T & B',                      bs:21.56,str:0.57,sv:2.87,ag:8.49,exc:9.60,u:223199},
+    {v:'ENTERTAINMENT',              bs:20.65,str:0.95,sv:2.04,ag:10.00,exc:7.65,u:74845},
+    {v:'SPORTS',                     bs:19.11,str:0.56,sv:3.13,ag:5.91,exc:9.48,u:221300},
+    {v:'FASHION',                    bs:18.69,str:0.57,sv:4.53,ag:7.13,exc:6.45,u:1023326},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:15.49,str:0.67,sv:2.06,ag:6.81,exc:5.95,u:231105},
+    {v:'HEALTH',                     bs:14.68,str:0.45,sv:0.91,ag:4.24,exc:9.07,u:353632},
+    {v:'TECHNOLOGY',                 bs:14.11,str:0.63,sv:1.96,ag:4.40,exc:7.11,u:390484},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:14.01,str:0.39,sv:1.79,ag:4.75,exc:7.05,u:906434},
+    {v:'BEAUTY',                     bs:13.48,str:0.35,sv:1.93,ag:4.44,exc:6.75,u:516789},
+    {v:'FURNISHING & HOUSEWARE',     bs:12.24,str:0.54,sv:1.62,ag:4.27,exc:5.72,u:497353},
+    {v:'OTHERS',                     bs:11.90,str:0.29,sv:1.06,ag:5.88,exc:4.66,u:16620},
+    {v:'HOME ELECTRONICS',           bs:10.15,str:0.68,sv:1.25,ag:2.86,exc:5.36,u:230144},
+    {v:'CPG',                        bs:8.37, str:0.33,sv:0.52,ag:3.34,exc:4.19,u:1508825},
   ],
   MCO: [
-    {v:'T & B',                      bs:40.57,str:1.65,sv:7.64,ag:16.06,exc:15.13,u:18768},
-    {v:'ENTERTAINMENT',              bs:27.33,str:4.49,sv:5.02,ag:10.86,exc:6.93,u:2931},
-    {v:'CPG',                        bs:23.57,str:2.62,sv:3.31,ag:6.07,exc:11.57,u:22818},
-    {v:'FASHION',                    bs:22.10,str:0.77,sv:3.57,ag:14.46,exc:3.22,u:15975},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:21.43,str:1.16,sv:1.73,ag:12.61,exc:5.90,u:8476},
-    {v:'OTHERS',                     bs:20.04,str:0.25,sv:2.58,ag:14.20,exc:3.01,u:566},
-    {v:'TECHNOLOGY',                 bs:19.16,str:1.47,sv:2.35,ag:9.50,exc:5.79,u:26272},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:18.72,str:0.74,sv:3.49,ag:8.30,exc:6.18,u:18982},
-    {v:'FURNISHING & HOUSEWARE',     bs:17.71,str:0.62,sv:2.95,ag:7.16,exc:6.96,u:15617},
-    {v:'SPORTS',                     bs:17.30,str:0.46,sv:1.88,ag:8.15,exc:6.76,u:8529},
-    {v:'HEALTH',                     bs:17.26,str:0.92,sv:1.40,ag:8.04,exc:6.87,u:14350},
-    {v:'BEAUTY',                     bs:15.10,str:1.99,sv:2.27,ag:5.54,exc:5.29,u:18564},
-    {v:'HOME ELECTRONICS',           bs:12.43,str:0.61,sv:2.19,ag:4.84,exc:4.78,u:8192},
+    {v:'T & B',                      bs:27.50,str:0.61,sv:5.24,ag:14.26,exc:7.25,u:39107},
+    {v:'FASHION',                    bs:23.29,str:0.82,sv:3.63,ag:13.93,exc:4.87,u:55278},
+    {v:'ENTERTAINMENT',              bs:19.89,str:0.97,sv:1.73,ag:10.76,exc:6.39,u:9859},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:19.71,str:0.45,sv:2.86,ag:11.30,exc:5.08,u:47935},
+    {v:'HEALTH',                     bs:19.59,str:0.79,sv:2.12,ag:8.97,exc:7.69,u:105521},
+    {v:'FURNISHING & HOUSEWARE',     bs:19.53,str:0.52,sv:2.27,ag:7.68,exc:9.01,u:81289},
+    {v:'SPORTS',                     bs:19.49,str:0.80,sv:2.90,ag:9.80,exc:5.90,u:55053},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:17.79,str:1.16,sv:1.82,ag:7.31,exc:7.51,u:125074},
+    {v:'TECHNOLOGY',                 bs:17.58,str:0.84,sv:2.08,ag:8.55,exc:6.09,u:131757},
+    {v:'OTHERS',                     bs:17.51,str:0.03,sv:1.91,ag:11.78,exc:3.80,u:3609},
+    {v:'CPG',                        bs:15.77,str:0.82,sv:1.09,ag:8.40,exc:5.44,u:106567},
+    {v:'BEAUTY',                     bs:15.55,str:0.75,sv:2.41,ag:5.92,exc:6.47,u:113049},
+    {v:'HOME ELECTRONICS',           bs:12.14,str:1.14,sv:1.23,ag:4.80,exc:4.95,u:67951},
   ],
 };
 
@@ -1908,7 +1908,7 @@ function renderVertChart() {
     if (lblEl) lblEl.textContent = 'Sem dados para países selecionados';
     return;
   }
-  if (lblEl) lblEl.textContent = activeSites.join(' + ') + ' · W13 (28/03/2026) · Bad Stock %';
+  if (lblEl) lblEl.textContent = activeSites.join(' + ') + ' · W28 (11/07/2026) · Bad Stock %';
 
   // Collect union of all verticals, sorted by avg BS desc
   let vertSet = new Set();
