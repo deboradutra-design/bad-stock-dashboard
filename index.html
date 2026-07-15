@@ -154,6 +154,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 <!-- TABS -->
 <div class="tabs">
   <div class="tab active" onclick="showTab('overview',event)">Visão Geral</div>
+  <div class="tab" onclick="showTab('evolucao',event)">📈 Evolução</div>
   <div class="tab" onclick="showTab('vertical',event)">Verticais</div>
   <div class="tab" onclick="showTab('targets',event)">⚙ Targets</div>
   <div class="tab" onclick="showTab('refresh',event)">↺ Atualizar</div>
@@ -268,6 +269,47 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
         <table>
           <thead style="position:sticky;top:0;background:var(--card);z-index:1;"><tr><th>País</th><th>Iniciativa</th><th>Segmento</th><th>Bad Stock %</th><th>vs Target</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
           <tbody id="init-summary-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ EVOLUÇÃO ═══ -->
+<div id="panel-evolucao" class="panel">
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <div class="sec" style="margin-bottom:0">Evolução Bad Stock % — <span id="evol-period-lbl" style="color:var(--yellow)">—</span></div>
+      <div style="font-size:10px;color:var(--muted)">Segmento: <span id="evol-ini-lbl" style="color:var(--text)">—</span> · Seta = vs semana anterior</div>
+    </div>
+    <div style="overflow-x:auto">
+      <table id="evol-main-table">
+        <thead id="evol-thead"></thead>
+        <tbody id="evol-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="g2" style="margin-top:10px">
+    <div class="card">
+      <div class="sec" style="margin-bottom:8px">Componentes — <span id="evol-comp-lbl" style="color:var(--yellow)">Semana Atual</span></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>País</th><th>BS%</th><th>vs Target</th>
+            <th>Stranded</th><th>Sin Venta</th><th>Aging</th><th>Aging+Exc</th>
+          </tr></thead>
+          <tbody id="evol-comp-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec" style="margin-bottom:8px">Unidades — <span id="evol-units-lbl" style="color:var(--yellow)">Semana Atual</span></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>País</th><th>Stock Total</th><th>Bad Stock (un.)</th><th>BS%</th><th>Δ WoW (un.)</th>
+          </tr></thead>
+          <tbody id="evol-units-tbody"></tbody>
         </table>
       </div>
     </div>
@@ -2147,6 +2189,162 @@ function renderInitiativeUnitsChart() {
 // ══════════════════════════════════════════════════════════════════════════════
 // RENDER ALL
 // ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDER — EVOLUÇÃO WoW
+// ══════════════════════════════════════════════════════════════════════════════
+function renderEvolucao() {
+  const ini = state.initiatives[0] || 'ALL';
+  const iniLabel = INI_SHORT[ini] || ini;
+
+  // Get last 4 weeks with data
+  const allWeeks = WEEKS.filter(w => getDataFor(w.id, ALL_SITES[0], ini) !== null);
+  const recentWeeks = allWeeks.slice(-4);
+  if (!recentWeeks.length) return;
+
+  const currentWid = recentWeeks[recentWeeks.length - 1].id;
+  const prevWid    = recentWeeks.length > 1 ? recentWeeks[recentWeeks.length - 2].id : null;
+
+  // Update labels
+  const periodEl = document.getElementById('evol-period-lbl');
+  const iniEl    = document.getElementById('evol-ini-lbl');
+  const compEl   = document.getElementById('evol-comp-lbl');
+  const unitsEl  = document.getElementById('evol-units-lbl');
+  const currWObj = WEEKS.find(w => w.id === currentWid);
+  if (periodEl) periodEl.textContent = recentWeeks[0].id + ' – ' + currentWid;
+  if (iniEl)    iniEl.textContent    = iniLabel;
+  if (compEl && currWObj)  compEl.textContent  = currentWid + ' (' + currWObj.date + ')';
+  if (unitsEl && currWObj) unitsEl.textContent = currentWid + ' (' + currWObj.date + ')';
+
+  // ── Main evolution table ──────────────────────────────────────────────────
+  const thead = document.getElementById('evol-thead');
+  const tbody  = document.getElementById('evol-tbody');
+  if (!thead || !tbody) return;
+
+  let hdr = '<tr><th style="min-width:120px">País</th>';
+  recentWeeks.forEach(w => {
+    hdr += `<th colspan="2" style="text-align:center;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}</div></th>`;
+  });
+  hdr += '<th style="border-left:1px solid var(--border)">Target</th><th>Desvio</th><th>Tendência</th></tr>';
+
+  let sub = '<tr><th></th>';
+  recentWeeks.forEach(() => {
+    sub += '<th style="text-align:right;border-left:1px solid var(--border);font-size:9px">BS%</th><th style="text-align:center;font-size:9px">Δ</th>';
+  });
+  sub += '<th></th><th></th><th></th></tr>';
+  thead.innerHTML = hdr + sub;
+
+  const siteColors = { MLB:'var(--blue)', MLM:'var(--orange)', MLA:'var(--green)', MLC:'var(--purple)', MCO:'var(--red)' };
+
+  let rows = '';
+  ALL_SITES.forEach(site => {
+    const values = recentWeeks.map(w => {
+      const d = getDataFor(w.id, site, ini);
+      return d ? d.bs : null;
+    });
+
+    rows += `<tr>`;
+    rows += `<td><span style="font-weight:700;font-size:11px;color:${siteColors[site]}">${SITE_NAMES[site]}</span></td>`;
+
+    values.forEach((bs, idx) => {
+      const prev = idx > 0 ? values[idx - 1] : null;
+      const delta = (bs !== null && prev !== null) ? +(bs - prev).toFixed(2) : null;
+      const bsStr = bs !== null ? bs.toFixed(2) + '%' : '—';
+      const borderStyle = 'border-left:1px solid var(--border)';
+
+      let deltaHtml = '<span style="color:var(--muted)">—</span>';
+      if (delta !== null) {
+        const cls   = delta > 0.05 ? 'var(--red)' : delta < -0.05 ? 'var(--green)' : 'var(--muted)';
+        const arrow = delta > 0.05 ? '▲' : delta < -0.05 ? '▼' : '→';
+        deltaHtml = `<span style="color:${cls};font-size:10px">${arrow}${Math.abs(delta).toFixed(2)}</span>`;
+      }
+
+      rows += `<td style="text-align:right;font-size:12px;font-weight:600;${borderStyle}">${bsStr}</td>`;
+      rows += `<td style="text-align:center">${deltaHtml}</td>`;
+    });
+
+    // Target & deviation for current week
+    const tgt  = getTargetForIni(currentWid, site, ini);
+    const curr = getDataFor(currentWid, site, ini);
+    let tgtHtml = '—', devHtml = '—';
+    if (tgt && curr) {
+      const dev = +(curr.bs - tgt.bs).toFixed(2);
+      const devColor = dev > 1.0 ? 'var(--red)' : dev > 0 ? 'var(--orange)' : 'var(--green)';
+      const devIcon  = dev > 1.0 ? '🔴' : dev > 0 ? '⚠️' : '✅';
+      tgtHtml = `${tgt.bs.toFixed(1)}%`;
+      devHtml = `<span style="color:${devColor};font-weight:700">${dev > 0 ? '+' : ''}${dev.toFixed(2)}pp</span> ${devIcon}`;
+    }
+
+    // Trend arrow (last 2 weeks)
+    const v3 = values[values.length - 1], v2 = values[values.length - 2];
+    let trendHtml = '—';
+    if (v3 !== null && v2 !== null) {
+      const d = +(v3 - v2).toFixed(2);
+      const tc = d > 1.0 ? 'var(--red)' : d > 0.05 ? 'var(--orange)' : d < -0.05 ? 'var(--green)' : 'var(--muted)';
+      trendHtml = `<span style="color:${tc};font-size:13px">${d > 0.05 ? '↗' : d < -0.05 ? '↘' : '→'}</span>`;
+    }
+
+    rows += `<td style="border-left:1px solid var(--border)">${tgtHtml}</td>`;
+    rows += `<td>${devHtml}</td>`;
+    rows += `<td style="text-align:center">${trendHtml}</td>`;
+    rows += `</tr>`;
+  });
+  tbody.innerHTML = rows;
+
+  // ── Components table ──────────────────────────────────────────────────────
+  const compTbody = document.getElementById('evol-comp-tbody');
+  if (compTbody) {
+    let cRows = '';
+    ALL_SITES.forEach(site => {
+      const d   = getDataFor(currentWid, site, ini);
+      const tgt = getTargetForIni(currentWid, site, ini);
+      if (!d) return;
+      const dev    = tgt ? +(d.bs - tgt.bs).toFixed(2) : null;
+      const devStr = dev !== null ? `${dev > 0 ? '+' : ''}${dev.toFixed(2)}pp` : '—';
+      const devCol = dev === null ? '' : dev > 0 ? 'color:var(--red)' : 'color:var(--green)';
+      cRows += `<tr>
+        <td><span style="font-weight:700;color:${siteColors[site]}">${SITE_NAMES[site]}</span></td>
+        <td style="font-weight:700">${d.bs.toFixed(2)}%</td>
+        <td style="${devCol};font-weight:600">${devStr}</td>
+        <td>${(d.str||0).toFixed(2)}%</td>
+        <td>${(d.sv||0).toFixed(2)}%</td>
+        <td>${(d.ag||0).toFixed(2)}%</td>
+        <td>${(d.exc||0).toFixed(2)}%</td>
+      </tr>`;
+    });
+    compTbody.innerHTML = cRows;
+  }
+
+  // ── Units table ───────────────────────────────────────────────────────────
+  const unitsTbody = document.getElementById('evol-units-tbody');
+  if (unitsTbody) {
+    let uRows = '';
+    ALL_SITES.forEach(site => {
+      const u     = getUnitsData(currentWid, site, ini);
+      const uPrev = prevWid ? getUnitsData(prevWid, site, ini) : null;
+      if (!u) return;
+      const d     = getDataFor(currentWid, site, ini);
+      const totalM = (u.u / 1e6).toFixed(1) + 'M';
+      const buM    = (u.bu / 1e6).toFixed(2) + 'M';
+      const bsPct  = d ? d.bs.toFixed(2) + '%' : '—';
+      let deltaU   = '—';
+      if (uPrev && uPrev.u) {
+        const diff = u.u - uPrev.u;
+        const diffPct = ((diff / uPrev.u) * 100).toFixed(1);
+        const col  = diff > 0 ? 'color:var(--muted)' : 'color:var(--green)';
+        deltaU = `<span style="${col}">${diff > 0 ? '+' : ''}${(diff/1e6).toFixed(1)}M (${diff > 0 ? '+' : ''}${diffPct}%)</span>`;
+      }
+      uRows += `<tr>
+        <td><span style="font-weight:700;color:${siteColors[site]}">${SITE_NAMES[site]}</span></td>
+        <td style="font-weight:600">${totalM}</td>
+        <td style="color:var(--red)">${buM}</td>
+        <td style="font-weight:600">${bsPct}</td>
+        <td>${deltaU}</td>
+      </tr>`;
+    });
+    unitsTbody.innerHTML = uRows;
+  }
+}
+
 function renderAll() {
   renderKPIs();
   renderSummary();
@@ -2156,6 +2354,7 @@ function renderAll() {
   renderUnitsCompChart();
   renderTargetDetail();
   renderInitiativeTable();
+  renderEvolucao();
   renderVertChart();
   renderVertTable();
 }
