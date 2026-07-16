@@ -2491,8 +2491,9 @@ function renderEvolucao() {
 
   // Merge and sort by current bs desc
   const allVerts = currVerts.map(cv => {
-    const pv = prevMap[cv.v] || null;
-    return { v:cv.v, cBs:cv.bs, cU:cv.u, cBu:cv.bu, pBs:pv?pv.bs:null, pU:pv?pv.u:null, pBu:pv?pv.bu:null };
+    const pv  = prevMap[cv.v] || null;
+    const cBu = cv.bu != null ? cv.bu : (cv.u ? Math.round(cv.bs / 100 * cv.u) : null);
+    return { v:cv.v, cBs:cv.bs, cU:cv.u, cBu:cBu, pBs:pv?pv.bs:null, pU:pv?pv.u:null, pBu:pv?pv.bu:null };
   }).sort((a,b) => b.cBs - a.cBs);
 
   let vRows = '';
