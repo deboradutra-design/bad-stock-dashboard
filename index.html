@@ -2358,18 +2358,27 @@ function _deltaUnitsHtml(curr, prev, higherIsBad) {
   return `<span style="color:${col};font-size:10px">${diffM}<br><span style="font-size:9px">${sign}${pct}%</span></span>`;
 }
 
-function _buildWeekHeader(recentWeeks, firstColLabel, metricLabel, metricSubLabel) {
+// showTargetCols: true = mostra Target+Desvio+Trend (só tabela BS%); false = só Trend
+function _buildWeekHeader(recentWeeks, firstColLabel, metricLabel, showTargetCols) {
   let hdr = `<tr><th style="min-width:110px">${firstColLabel}</th>`;
   recentWeeks.forEach(w => {
     hdr += `<th colspan="2" style="text-align:center;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}</div></th>`;
   });
-  hdr += '<th style="border-left:1px solid var(--border)">Target</th><th>Desvio</th><th>Trend</th></tr>';
+  if (showTargetCols) {
+    hdr += '<th style="border-left:1px solid var(--border)">Target</th><th>Desvio</th><th>Trend</th></tr>';
+  } else {
+    hdr += '<th style="border-left:1px solid var(--border)">Trend</th></tr>';
+  }
   let sub = '<tr><th></th>';
   recentWeeks.forEach(() => {
-    sub += `<th style="text-align:right;border-left:1px solid var(--border);font-size:9px">${metricLabel}</th>`;
-    sub += `<th style="text-align:center;font-size:9px">${metricSubLabel || 'Δ'}</th>`;
+    sub += `<th style="text-align:center;border-left:1px solid var(--border);font-size:9px">${metricLabel}</th>`;
+    sub += `<th style="text-align:center;font-size:9px">Δ</th>`;
   });
-  sub += '<th></th><th></th><th></th></tr>';
+  if (showTargetCols) {
+    sub += '<th></th><th></th><th></th></tr>';
+  } else {
+    sub += '<th></th></tr>';
+  }
   return hdr + sub;
 }
 
@@ -2403,17 +2412,26 @@ function renderEvolucao() {
     const values = recentWeeks.map(w => valFn(w.id, site));
     let row = `<td><span style="font-weight:700;font-size:11px;color:${siteColors[site]}">${SITE_NAMES[site]}</span></td>`;
     values.forEach((v, idx) => {
-      row += `<td style="text-align:right;font-weight:600;border-left:1px solid var(--border)">${fmtFn(v)}</td>`;
+      row += `<td style="text-align:center;font-weight:600;border-left:1px solid var(--border)">${fmtFn(v)}</td>`;
       if (isUnits) {
         row += `<td style="text-align:center">${_deltaUnitsHtml(v, idx > 0 ? values[idx-1] : null, higherIsBad)}</td>`;
       } else {
         row += `<td style="text-align:center">${_deltaHtml(v, idx > 0 ? values[idx-1] : null, higherIsBad)}</td>`;
       }
     });
+    // Trend (sempre)
+    const v1 = values[values.length-1], v0 = values[values.length-2];
+    let trendH = '—';
+    if (v1 !== null && v0 !== null) {
+      const d = isUnits ? +((v1-v0)/v0*100).toFixed(1) : +(v1-v0).toFixed(2);
+      const bad = higherIsBad ? d > 0 : d < 0;
+      const tc = Math.abs(d) < (isUnits ? 0.5 : 0.05) ? 'var(--muted)' : bad ? (Math.abs(d) > (isUnits ? 5 : 1) ? 'var(--red)' : 'var(--orange)') : 'var(--green)';
+      trendH = `<span style="color:${tc};font-size:14px">${d > (isUnits?0.5:0.05) ? '↗' : d < -(isUnits?0.5:0.05) ? '↘' : '→'}</span>`;
+    }
     if (showTarget) {
       const tgt  = getTargetForIni(currentWid, site, ini);
       const curr = getDataFor(currentWid, site, ini);
-      let tgtH = '—', devH = '—', trendH = '—';
+      let tgtH = '—', devH = '—';
       if (tgt && curr) {
         const dev = +(curr.bs - tgt.bs).toFixed(2);
         const dc  = dev > 1 ? 'var(--red)' : dev > 0 ? 'var(--orange)' : 'var(--green)';
@@ -2421,15 +2439,10 @@ function renderEvolucao() {
         tgtH = tgt.bs.toFixed(1)+'%';
         devH = `<span style="color:${dc};font-weight:700">${dev>0?'+':''}${dev.toFixed(2)}pp</span> ${ic}`;
       }
-      const v1 = values[values.length-1], v0 = values[values.length-2];
-      if (v1 !== null && v0 !== null) {
-        const d = +(v1-v0).toFixed(2);
-        const tc = d > 1 ? 'var(--red)' : d > 0.05 ? 'var(--orange)' : d < -0.05 ? 'var(--green)' : 'var(--muted)';
-        trendH = `<span style="color:${tc};font-size:14px">${d > 0.05 ? '↗' : d < -0.05 ? '↘' : '→'}</span>`;
-      }
-      row += `<td style="border-left:1px solid var(--border)">${tgtH}</td><td>${devH}</td><td style="text-align:center">${trendH}</td>`;
+      row += `<td style="border-left:1px solid var(--border);text-align:center">${tgtH}</td><td style="text-align:center">${devH}</td><td style="text-align:center">${trendH}</td>`;
     } else {
-      row += '<td style="border-left:1px solid var(--border)">—</td><td>—</td><td>—</td>';
+      // Só Trend
+      row += `<td style="text-align:center;border-left:1px solid var(--border)">${trendH}</td>`;
     }
     return row;
   }
@@ -2438,7 +2451,7 @@ function renderEvolucao() {
   const thead = document.getElementById('evol-thead');
   const tbody  = document.getElementById('evol-tbody');
   if (thead && tbody) {
-    thead.innerHTML = _buildWeekHeader(recentWeeks, 'País', 'BS%', 'Δ');
+    thead.innerHTML = _buildWeekHeader(recentWeeks, 'País', 'BS%', true);
     let rows = '';
     sites.forEach(site => {
       rows += '<tr>' + buildSiteRow(site,
@@ -2452,29 +2465,21 @@ function renderEvolucao() {
   const unitsThead = document.getElementById('evol-units-thead');
   const unitsTbody = document.getElementById('evol-units-tbody');
   if (unitsThead && unitsTbody) {
-    // Two row groups: Stock Total and Bad Stock
-    let hdr = '<tr><th style="min-width:110px">País</th>';
-    recentWeeks.forEach(w => {
-      hdr += `<th colspan="2" style="text-align:center;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}</div></th>`;
-    });
-    hdr += '<th style="border-left:1px solid var(--border)" colspan="3"></th></tr>';
-    let sub = '<tr><th></th>';
-    recentWeeks.forEach(() => { sub += '<th style="text-align:right;border-left:1px solid var(--border);font-size:9px">M un.</th><th style="text-align:center;font-size:9px">Δ</th>'; });
-    sub += '<th colspan="3"></th></tr>';
-    unitsThead.innerHTML = hdr + sub;
+    unitsThead.innerHTML = _buildWeekHeader(recentWeeks, 'País', 'M un.', false);
 
     const fM = v => v ? (v/1e6).toFixed(1)+'M' : '—';
     const fMu = v => v !== null ? fM(v) : '—';
     let rows = '';
+    const nCols = 2 + recentWeeks.length*2 + 1;
     // Stock Total group
-    rows += `<tr><td colspan="${2+recentWeeks.length*2+3}" style="background:rgba(79,142,247,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted);padding:3px 8px">STOCK TOTAL</td></tr>`;
+    rows += `<tr><td colspan="${nCols}" style="background:rgba(79,142,247,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted);padding:3px 8px">STOCK TOTAL</td></tr>`;
     sites.forEach(site => {
       rows += '<tr>' + buildSiteRow(site,
         (wid, s) => { const u = getUnitsData(wid, s, ini); return u ? u.u : null; },
         null, fMu, false, false, true) + '</tr>';
     });
     // Bad Stock group
-    rows += `<tr><td colspan="${2+recentWeeks.length*2+3}" style="background:rgba(255,77,106,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted);padding:3px 8px">BAD STOCK (unidades)</td></tr>`;
+    rows += `<tr><td colspan="${nCols}" style="background:rgba(255,77,106,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted);padding:3px 8px">BAD STOCK (unidades)</td></tr>`;
     sites.forEach(site => {
       rows += '<tr>' + buildSiteRow(site,
         (wid, s) => { const u = getUnitsData(wid, s, ini); return u ? u.bu : null; },
@@ -2487,7 +2492,7 @@ function renderEvolucao() {
   const compThead = document.getElementById('evol-comp-thead');
   const compTbody = document.getElementById('evol-comp-tbody');
   if (compThead && compTbody) {
-    compThead.innerHTML = _buildWeekHeader(recentWeeks, 'KPI / País', '%', 'Δ');
+    compThead.innerHTML = _buildWeekHeader(recentWeeks, 'KPI / País', '%', false);
     const kpis = [
       { key:'str', label:'Stranded' },
       { key:'sv',  label:'Sin Venta' },
@@ -2497,7 +2502,7 @@ function renderEvolucao() {
     let rows = '';
     kpis.forEach(kpi => {
       // Section header row
-      rows += `<tr><td colspan="${2+recentWeeks.length*2+3}" style="background:rgba(255,230,0,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--yellow);padding:3px 8px">${kpi.label}</td></tr>`;
+      rows += `<tr><td colspan="${2+recentWeeks.length*2+1}" style="background:rgba(255,230,0,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--yellow);padding:3px 8px">${kpi.label}</td></tr>`;
       sites.forEach(site => {
         rows += '<tr>' + buildSiteRow(site,
           (wid, s) => { const d = getDataFor(wid, s, ini); return d ? (d[kpi.key] || 0) : null; },
@@ -2545,14 +2550,20 @@ function renderEvolucao() {
   // Get all vertical names from W29 sorted by BS% desc
   const vertNames = (VERT_DATA[evolVertSite] || []).map(v => v.v);
 
-  // Build header
+  // Build header — datas completas dd/mm/yyyy, valores centralizados
   let vHdr = '<tr><th style="min-width:160px">Vertical</th>';
   vertWeeks.forEach((w, idx) => {
-    vHdr += `<th style="text-align:right;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}</div></th>`;
+    vHdr += `<th style="text-align:center;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}/2026</div></th>`;
     if (idx > 0) vHdr += '<th style="text-align:center;font-size:9px">Δ</th>';
   });
-  vHdr += '<th style="border-left:1px solid var(--border)">Trend</th></tr>';
-  vertThead.innerHTML = vHdr;
+  vHdr += '<th style="border-left:1px solid var(--border);text-align:center">Trend</th></tr>';
+  let vSub = '<tr><th></th>';
+  vertWeeks.forEach((w, idx) => {
+    vSub += `<th style="text-align:center;border-left:1px solid var(--border);font-size:9px">BS%</th>`;
+    if (idx > 0) vSub += '<th style="text-align:center;font-size:9px"></th>';
+  });
+  vSub += '<th></th></tr>';
+  vertThead.innerHTML = vHdr + vSub;
 
   // Build rows
   let vRows = '';
@@ -2569,7 +2580,7 @@ function renderEvolucao() {
     vRows += `<tr><td style="font-weight:600">${vName}</td>`;
     vals.forEach((bs, idx) => {
       const bsStr = bs !== null ? `<span style="font-weight:${idx===vals.length-1?'700':'400'}">${bs.toFixed(2)}%</span>` : '—';
-      vRows += `<td style="text-align:right;border-left:1px solid var(--border)">${bsStr}</td>`;
+      vRows += `<td style="text-align:center;border-left:1px solid var(--border)">${bsStr}</td>`;
       if (idx > 0) vRows += `<td style="text-align:center">${_deltaHtml(bs, vals[idx-1], true)}</td>`;
     });
     vRows += `<td style="text-align:center;border-left:1px solid var(--border)">${trendH}</td></tr>`;
