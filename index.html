@@ -323,16 +323,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     </div>
     <div style="overflow-x:auto">
       <table>
-        <thead><tr>
-          <th>Vertical</th>
-          <th id="evol-vert-prev-hdr" style="text-align:right">— BS%</th>
-          <th id="evol-vert-curr-hdr" style="text-align:right">— BS%</th>
-          <th>Δ BS%</th>
-          <th style="text-align:right">Stock Total</th>
-          <th>Δ Stock</th>
-          <th style="text-align:right">Bad Stock (un.)</th>
-          <th>Δ Bad Stock</th>
-        </tr></thead>
+        <thead id="evol-vert-thead"></thead>
         <tbody id="evol-vert-tbody"></tbody>
       </table>
     </div>
@@ -1644,6 +1635,28 @@ const VERT_DATA = {
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
+// VERT DATA W26 — Bad Stock % por Vertical · W26 (27/06/2026) · Fonte: BigQuery
+// ══════════════════════════════════════════════════════════════════════════════
+const VERT_DATA_W26 = {
+  MLB: [{v:'T & B',bs:14.00},{v:'SPORTS',bs:12.10},{v:'ENTERTAINMENT',bs:11.48},{v:'HOME ELECTRONICS',bs:11.21},{v:'TECHNOLOGY',bs:10.70},{v:'OTHERS',bs:10.50},{v:'VEHICLE PARTS & ACCESSORIES',bs:10.33},{v:'CONSTRUCTION & INDUSTRY',bs:9.89},{v:'FASHION',bs:8.85},{v:'FURNISHING & HOUSEWARE',bs:8.73},{v:'BEAUTY',bs:8.27},{v:'CPG',bs:7.82},{v:'HEALTH',bs:7.28}],
+  MLM: [{v:'T & B',bs:19.37},{v:'TECHNOLOGY',bs:17.16},{v:'ENTERTAINMENT',bs:16.71},{v:'VEHICLE PARTS & ACCESSORIES',bs:13.43},{v:'FASHION',bs:13.39},{v:'SPORTS',bs:13.34},{v:'OTHERS',bs:12.65},{v:'FURNISHING & HOUSEWARE',bs:11.92},{v:'BEAUTY',bs:11.16},{v:'CONSTRUCTION & INDUSTRY',bs:11.09},{v:'HEALTH',bs:11.08},{v:'HOME ELECTRONICS',bs:10.42},{v:'CPG',bs:9.16}],
+  MLA: [{v:'OTHERS',bs:20.46},{v:'T & B',bs:16.87},{v:'FASHION',bs:14.88},{v:'VEHICLE PARTS & ACCESSORIES',bs:14.68},{v:'ENTERTAINMENT',bs:14.61},{v:'SPORTS',bs:13.94},{v:'CPG',bs:13.32},{v:'BEAUTY',bs:12.76},{v:'TECHNOLOGY',bs:12.39},{v:'CONSTRUCTION & INDUSTRY',bs:11.27},{v:'FURNISHING & HOUSEWARE',bs:11.10},{v:'HOME ELECTRONICS',bs:9.77},{v:'HEALTH',bs:7.68}],
+  MLC: [{v:'FASHION',bs:21.93},{v:'T & B',bs:19.05},{v:'SPORTS',bs:17.39},{v:'VEHICLE PARTS & ACCESSORIES',bs:15.80},{v:'ENTERTAINMENT',bs:14.86},{v:'TECHNOLOGY',bs:14.26},{v:'CONSTRUCTION & INDUSTRY',bs:13.52},{v:'OTHERS',bs:13.03},{v:'HEALTH',bs:12.95},{v:'BEAUTY',bs:11.27},{v:'FURNISHING & HOUSEWARE',bs:10.81},{v:'HOME ELECTRONICS',bs:9.85},{v:'CPG',bs:7.33}],
+  MCO: [{v:'FASHION',bs:24.23},{v:'OTHERS',bs:23.86},{v:'T & B',bs:23.16},{v:'ENTERTAINMENT',bs:23.04},{v:'TECHNOLOGY',bs:20.14},{v:'VEHICLE PARTS & ACCESSORIES',bs:19.20},{v:'SPORTS',bs:18.96},{v:'FURNISHING & HOUSEWARE',bs:18.70},{v:'HEALTH',bs:18.59},{v:'CONSTRUCTION & INDUSTRY',bs:17.20},{v:'CPG',bs:15.68},{v:'BEAUTY',bs:15.31},{v:'HOME ELECTRONICS',bs:14.98}],
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// VERT DATA W27 — Bad Stock % por Vertical · W27 (04/07/2026) · Fonte: BigQuery
+// ══════════════════════════════════════════════════════════════════════════════
+const VERT_DATA_W27 = {
+  MLB: [{v:'T & B',bs:14.75},{v:'SPORTS',bs:12.77},{v:'ENTERTAINMENT',bs:11.78},{v:'OTHERS',bs:11.16},{v:'HOME ELECTRONICS',bs:11.03},{v:'TECHNOLOGY',bs:10.89},{v:'VEHICLE PARTS & ACCESSORIES',bs:10.81},{v:'CONSTRUCTION & INDUSTRY',bs:10.77},{v:'FURNISHING & HOUSEWARE',bs:9.95},{v:'FASHION',bs:9.23},{v:'BEAUTY',bs:8.99},{v:'CPG',bs:8.52},{v:'HEALTH',bs:8.28}],
+  MLM: [{v:'T & B',bs:19.56},{v:'ENTERTAINMENT',bs:17.83},{v:'TECHNOLOGY',bs:17.21},{v:'SPORTS',bs:13.81},{v:'VEHICLE PARTS & ACCESSORIES',bs:13.64},{v:'FASHION',bs:13.40},{v:'FURNISHING & HOUSEWARE',bs:12.42},{v:'OTHERS',bs:12.22},{v:'HOME ELECTRONICS',bs:11.58},{v:'BEAUTY',bs:11.56},{v:'HEALTH',bs:11.37},{v:'CONSTRUCTION & INDUSTRY',bs:11.29},{v:'CPG',bs:10.19}],
+  MLA: [{v:'OTHERS',bs:20.46},{v:'T & B',bs:18.69},{v:'ENTERTAINMENT',bs:17.29},{v:'VEHICLE PARTS & ACCESSORIES',bs:15.64},{v:'FASHION',bs:14.52},{v:'SPORTS',bs:14.42},{v:'CPG',bs:14.08},{v:'TECHNOLOGY',bs:14.03},{v:'BEAUTY',bs:12.92},{v:'CONSTRUCTION & INDUSTRY',bs:12.33},{v:'FURNISHING & HOUSEWARE',bs:11.96},{v:'HOME ELECTRONICS',bs:10.49},{v:'HEALTH',bs:9.63}],
+  MLC: [{v:'FASHION',bs:22.84},{v:'T & B',bs:20.79},{v:'SPORTS',bs:18.03},{v:'ENTERTAINMENT',bs:17.85},{v:'VEHICLE PARTS & ACCESSORIES',bs:16.53},{v:'TECHNOLOGY',bs:15.03},{v:'HEALTH',bs:14.45},{v:'CONSTRUCTION & INDUSTRY',bs:14.22},{v:'BEAUTY',bs:13.26},{v:'OTHERS',bs:12.97},{v:'FURNISHING & HOUSEWARE',bs:11.79},{v:'HOME ELECTRONICS',bs:10.53},{v:'CPG',bs:8.24}],
+  MCO: [{v:'FASHION',bs:23.36},{v:'T & B',bs:22.75},{v:'ENTERTAINMENT',bs:22.29},{v:'TECHNOLOGY',bs:20.55},{v:'SPORTS',bs:20.09},{v:'FURNISHING & HOUSEWARE',bs:19.42},{v:'HEALTH',bs:19.33},{v:'OTHERS',bs:18.18},{v:'VEHICLE PARTS & ACCESSORIES',bs:18.05},{v:'CONSTRUCTION & INDUSTRY',bs:16.99},{v:'CPG',bs:16.06},{v:'BEAUTY',bs:15.41},{v:'HOME ELECTRONICS',bs:14.76}],
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
 // VERT DATA PREV — Bad Stock % por Vertical · W28 (11/07/2026) · Fonte: BigQuery
 // ══════════════════════════════════════════════════════════════════════════════
 const VERT_DATA_PREV = {
@@ -2494,7 +2507,7 @@ function renderEvolucao() {
     compTbody.innerHTML = rows;
   }
 
-  // ── 4. Verticais WoW table ─────────────────────────────────────────────────
+  // ── 4. Verticais WoW — evolução 4 semanas (W26-W27-W28-W29) ──────────────
   const sitesEl = document.getElementById('evol-vert-sites');
   if (sitesEl) {
     sitesEl.innerHTML = sites.map(s =>
@@ -2506,43 +2519,62 @@ function renderEvolucao() {
     ).join('');
   }
   if (!sites.includes(evolVertSite)) evolVertSite = sites[0];
-  const prevWid2 = recentWeeks.length > 1 ? recentWeeks[recentWeeks.length-2].id : null;
-  const vertLblEl = document.getElementById('evol-vert-lbl');
-  if (vertLblEl) vertLblEl.textContent = SITE_NAMES[evolVertSite] + ' — ' + currentWid + (prevWid2 ? ' vs '+prevWid2 : '');
-  const prevHdr = document.getElementById('evol-vert-prev-hdr');
-  const currHdr = document.getElementById('evol-vert-curr-hdr');
-  if (prevHdr) prevHdr.textContent = (prevWid2 || '—') + ' BS%';
-  if (currHdr) currHdr.textContent = currentWid + ' BS%';
 
+  const vertLblEl = document.getElementById('evol-vert-lbl');
+  if (vertLblEl) vertLblEl.textContent = SITE_NAMES[evolVertSite] + ' — W26 · W27 · W28 · W29';
+
+  const vertThead = document.getElementById('evol-vert-thead');
   const vertTbody = document.getElementById('evol-vert-tbody');
-  if (!vertTbody) return;
-  const currVerts = VERT_DATA[evolVertSite] || [];
-  const prevVerts = VERT_DATA_PREV[evolVertSite] || [];
-  const prevMap = {};
-  prevVerts.forEach(v => { prevMap[v.v] = v; });
-  const allVerts = currVerts.map(cv => {
-    const pv  = prevMap[cv.v] || null;
-    const cBu = cv.bu != null ? cv.bu : (cv.u ? Math.round(cv.bs/100*cv.u) : null);
-    return { v:cv.v, cBs:cv.bs, cU:cv.u, cBu:cBu, pBs:pv?pv.bs:null, pU:pv?pv.u:null, pBu:pv?pv.bu:null };
-  }).sort((a,b) => b.cBs-a.cBs);
-  const fM2 = v => v ? (v/1e6).toFixed(2)+'M' : '—';
-  let vRows = '';
-  allVerts.forEach(r => {
-    const dBs = r.pBs !== null ? +(r.cBs-r.pBs).toFixed(2) : null;
-    const dBsCol = dBs===null?'var(--muted)':dBs>1?'var(--red)':dBs>0.1?'var(--orange)':dBs<-0.1?'var(--green)':'var(--muted)';
-    const dBsStr = dBs===null?'—':`<span style="color:${dBsCol};font-weight:600">${dBs>0?'+':''}${dBs.toFixed(2)}pp</span>`;
-    vRows += `<tr>
-      <td style="font-weight:600">${r.v}</td>
-      <td style="text-align:right;color:var(--muted)">${r.pBs!==null?r.pBs.toFixed(2)+'%':'—'}</td>
-      <td style="text-align:right;font-weight:700">${r.cBs.toFixed(2)}%</td>
-      <td style="text-align:center">${dBsStr}</td>
-      <td style="text-align:right">${fM2(r.cU)}</td>
-      <td>${_deltaUnitsHtml(r.cU,r.pU)}</td>
-      <td style="text-align:right;color:var(--red)">${fM2(r.cBu)}</td>
-      <td>${_deltaUnitsHtml(r.cBu,r.pBu)}</td>
-    </tr>`;
+  if (!vertTbody || !vertThead) return;
+
+  // 4 data sources for the 4 weeks
+  const vertWeeks = [
+    { id:'W26', date:'27/06', data: VERT_DATA_W26[evolVertSite] || [] },
+    { id:'W27', date:'04/07', data: VERT_DATA_W27[evolVertSite] || [] },
+    { id:'W28', date:'11/07', data: (VERT_DATA_PREV[evolVertSite] || []).map(v => ({v:v.v, bs:v.bs})) },
+    { id:'W29', date:'18/07', data: (VERT_DATA[evolVertSite] || []).map(v => ({v:v.v, bs:v.bs})) },
+  ];
+
+  // Build lookup maps
+  const vertMaps = vertWeeks.map(w => {
+    const m = {};
+    w.data.forEach(d => { m[d.v] = d.bs; });
+    return m;
   });
-  vertTbody.innerHTML = vRows || '<tr><td colspan="8" style="color:var(--muted);text-align:center">Sem dados</td></tr>';
+
+  // Get all vertical names from W29 sorted by BS% desc
+  const vertNames = (VERT_DATA[evolVertSite] || []).map(v => v.v);
+
+  // Build header
+  let vHdr = '<tr><th style="min-width:160px">Vertical</th>';
+  vertWeeks.forEach((w, idx) => {
+    vHdr += `<th style="text-align:right;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}</div></th>`;
+    if (idx > 0) vHdr += '<th style="text-align:center;font-size:9px">Δ</th>';
+  });
+  vHdr += '<th style="border-left:1px solid var(--border)">Trend</th></tr>';
+  vertThead.innerHTML = vHdr;
+
+  // Build rows
+  let vRows = '';
+  vertNames.forEach(vName => {
+    const vals = vertMaps.map(m => m[vName] !== undefined ? m[vName] : null);
+    const curr = vals[vals.length-1], prev = vals[vals.length-2];
+    // Trend arrow
+    let trendH = '';
+    if (curr !== null && prev !== null) {
+      const d = +(curr-prev).toFixed(2);
+      const tc = d > 1 ? 'var(--red)' : d > 0.05 ? 'var(--orange)' : d < -0.05 ? 'var(--green)' : 'var(--muted)';
+      trendH = `<span style="color:${tc};font-size:14px">${d > 0.05 ? '↗' : d < -0.05 ? '↘' : '→'}</span>`;
+    }
+    vRows += `<tr><td style="font-weight:600">${vName}</td>`;
+    vals.forEach((bs, idx) => {
+      const bsStr = bs !== null ? `<span style="font-weight:${idx===vals.length-1?'700':'400'}">${bs.toFixed(2)}%</span>` : '—';
+      vRows += `<td style="text-align:right;border-left:1px solid var(--border)">${bsStr}</td>`;
+      if (idx > 0) vRows += `<td style="text-align:center">${_deltaHtml(bs, vals[idx-1], true)}</td>`;
+    });
+    vRows += `<td style="text-align:center;border-left:1px solid var(--border)">${trendH}</td></tr>`;
+  });
+  vertTbody.innerHTML = vRows || '<tr><td colspan="9" style="color:var(--muted);text-align:center">Sem dados</td></tr>';
 }
 
 function renderAll() {
