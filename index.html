@@ -278,55 +278,41 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 
 <!-- ═══════════════════ EVOLUÇÃO ═══ -->
 <div id="panel-evolucao" class="panel">
-  <!-- Main 4-week trend table -->
+
+  <!-- 1. Evolução Bad Stock % -->
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
       <div class="sec" style="margin-bottom:0">Evolução Bad Stock % — <span id="evol-period-lbl" style="color:var(--yellow)">—</span></div>
-      <div style="font-size:10px;color:var(--muted)">Segmento: <span id="evol-ini-lbl" style="color:var(--text)">—</span> · Use filtros de País e Segmento acima · ▲▼ = vs semana anterior</div>
+      <div style="font-size:10px;color:var(--muted)">Segmento: <span id="evol-ini-lbl" style="color:var(--text)">—</span> · Use filtros acima · ▲▼ = vs semana anterior</div>
     </div>
     <div style="overflow-x:auto">
       <table id="evol-main-table"><thead id="evol-thead"></thead><tbody id="evol-tbody"></tbody></table>
     </div>
   </div>
 
-  <!-- Components WoW + Units WoW -->
-  <div class="g2" style="margin-top:10px">
-    <div class="card">
-      <div class="sec" style="margin-bottom:6px">Componentes WoW — <span id="evol-comp-lbl" style="color:var(--yellow)">—</span></div>
-      <div style="font-size:9px;color:var(--muted);margin-bottom:6px">Δ = variação vs semana anterior · verde=melhora · vermelho=piora</div>
-      <div style="overflow-x:auto">
-        <table>
-          <thead><tr>
-            <th>País</th>
-            <th>BS%</th><th style="font-size:9px;color:var(--muted)">Δ</th>
-            <th>vs Tgt</th>
-            <th>Stranded</th><th style="font-size:9px;color:var(--muted)">Δ</th>
-            <th>Sin Venta</th><th style="font-size:9px;color:var(--muted)">Δ</th>
-            <th>Aging</th><th style="font-size:9px;color:var(--muted)">Δ</th>
-            <th>Aging+Exc</th><th style="font-size:9px;color:var(--muted)">Δ</th>
-          </tr></thead>
-          <tbody id="evol-comp-tbody"></tbody>
-        </table>
-      </div>
+  <!-- 2. Evolução Unidades -->
+  <div class="card" style="margin-top:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+      <div class="sec" style="margin-bottom:0">Evolução Unidades — <span id="evol-units-period-lbl" style="color:var(--yellow)">—</span></div>
+      <div style="font-size:10px;color:var(--muted)">Stock Total e Bad Stock (un.) · ▲ = cresceu · ▼ = reduziu</div>
     </div>
-    <div class="card">
-      <div class="sec" style="margin-bottom:6px">Unidades WoW — <span id="evol-units-lbl" style="color:var(--yellow)">—</span></div>
-      <div style="font-size:9px;color:var(--muted);margin-bottom:6px">Δ Stock = variação de stock total · Δ BS = variação de bad stock (unidades)</div>
-      <div style="overflow-x:auto">
-        <table>
-          <thead><tr>
-            <th>País</th>
-            <th>Stock Total</th><th style="font-size:9px;color:var(--muted)">Δ Stock</th>
-            <th>Bad Stock</th><th style="font-size:9px;color:var(--muted)">Δ BS</th>
-            <th>BS%</th>
-          </tr></thead>
-          <tbody id="evol-units-tbody"></tbody>
-        </table>
-      </div>
+    <div style="overflow-x:auto">
+      <table><thead id="evol-units-thead"></thead><tbody id="evol-units-tbody"></tbody></table>
     </div>
   </div>
 
-  <!-- Verticais WoW -->
+  <!-- 3. Evolução Componentes WoW -->
+  <div class="card" style="margin-top:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+      <div class="sec" style="margin-bottom:0">Evolução Componentes — <span id="evol-comp-period-lbl" style="color:var(--yellow)">—</span></div>
+      <div style="font-size:10px;color:var(--muted)">Linhas = KPIs de Bad Stock · ▲▼ = variação vs semana anterior · verde=melhora · vermelho=piora</div>
+    </div>
+    <div style="overflow-x:auto">
+      <table><thead id="evol-comp-thead"></thead><tbody id="evol-comp-tbody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- 4. Verticais WoW -->
   <div class="card" style="margin-top:10px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
       <div class="sec" style="margin-bottom:0">Verticais WoW — <span id="evol-vert-lbl" style="color:var(--yellow)">—</span></div>
@@ -2348,7 +2334,7 @@ function _deltaHtml(val, prev, higherIsBad, precision) {
 }
 
 function _deltaUnitsHtml(curr, prev) {
-  if (!curr || !prev || !prev) return '<span style="color:var(--muted)">—</span>';
+  if (!curr || !prev) return '<span style="color:var(--muted)">—</span>';
   const diff = curr - prev;
   if (Math.abs(diff) < 1000) return '<span style="color:var(--muted)">—</span>';
   const pct  = ((diff / prev) * 100).toFixed(1);
@@ -2357,66 +2343,64 @@ function _deltaUnitsHtml(curr, prev) {
   return `<span style="color:${col}">${sign}${(diff/1e6).toFixed(1)}M (${sign}${pct}%)</span>`;
 }
 
+function _buildWeekHeader(recentWeeks, firstColLabel, metricLabel, metricSubLabel) {
+  let hdr = `<tr><th style="min-width:110px">${firstColLabel}</th>`;
+  recentWeeks.forEach(w => {
+    hdr += `<th colspan="2" style="text-align:center;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}</div></th>`;
+  });
+  hdr += '<th style="border-left:1px solid var(--border)">Target</th><th>Desvio</th><th>Trend</th></tr>';
+  let sub = '<tr><th></th>';
+  recentWeeks.forEach(() => {
+    sub += `<th style="text-align:right;border-left:1px solid var(--border);font-size:9px">${metricLabel}</th>`;
+    sub += `<th style="text-align:center;font-size:9px">${metricSubLabel || 'Δ'}</th>`;
+  });
+  sub += '<th></th><th></th><th></th></tr>';
+  return hdr + sub;
+}
+
 function renderEvolucao() {
   const ini      = state.initiatives[0] || 'ALL';
   const iniLabel = INI_SHORT[ini] || ini;
   const sites    = (state.countries && state.countries.length > 0) ? state.countries : ALL_SITES;
-
   const siteColors = {MLB:'var(--blue)',MLM:'var(--orange)',MLA:'var(--green)',MLC:'var(--purple)',MCO:'var(--red)'};
 
-  // Get last 4 completed weeks with data for selected segment/site
-  const allWeeks = WEEKS.filter(w => sites.some(s => getDataFor(w.id, s, ini) !== null));
+  const allWeeks    = WEEKS.filter(w => sites.some(s => getDataFor(w.id, s, ini) !== null));
   const recentWeeks = allWeeks.slice(-4);
   if (!recentWeeks.length) return;
 
   const currentWid = recentWeeks[recentWeeks.length - 1].id;
-  const prevWid    = recentWeeks.length > 1 ? recentWeeks[recentWeeks.length - 2].id : null;
   const currWObj   = WEEKS.find(w => w.id === currentWid);
-  const prevWObj   = prevWid ? WEEKS.find(w => w.id === prevWid) : null;
-  const wowLabel   = prevWid ? `${currentWid} vs ${prevWid}` : currentWid;
+  const periodLbl  = recentWeeks[0].id + ' – ' + currentWid;
 
-  // Labels
-  ['evol-period-lbl','evol-comp-lbl','evol-units-lbl'].forEach((id,i) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (i === 0) el.textContent = recentWeeks[0].id + ' – ' + currentWid;
-    else el.textContent = wowLabel;
-  });
+  // Common labels
   const iniEl = document.getElementById('evol-ini-lbl');
+  const pEl   = document.getElementById('evol-period-lbl');
+  const upEl  = document.getElementById('evol-units-period-lbl');
+  const cpEl  = document.getElementById('evol-comp-period-lbl');
   if (iniEl) iniEl.textContent = iniLabel + (sites.length < 5 ? ' · ' + sites.join('+') : '');
+  if (pEl)   pEl.textContent   = periodLbl;
+  if (upEl)  upEl.textContent  = periodLbl;
+  if (cpEl)  cpEl.textContent  = periodLbl;
 
-  // ── 1. Main 4-week trend table ────────────────────────────────────────────
-  const thead = document.getElementById('evol-thead');
-  const tbody  = document.getElementById('evol-tbody');
-  if (thead && tbody) {
-    let hdr = '<tr><th style="min-width:115px">País</th>';
-    recentWeeks.forEach(w => {
-      hdr += `<th colspan="2" style="text-align:center;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}</div></th>`;
+  // Helper: build a row of week-values with delta + target/trend at end
+  function buildSiteRow(site, valFn, dp2, fmtFn, higherIsBad, showTarget) {
+    fmtFn = fmtFn || (v => v !== null ? v.toFixed(2)+'%' : '—');
+    const values = recentWeeks.map(w => valFn(w.id, site));
+    let row = `<td><span style="font-weight:700;font-size:11px;color:${siteColors[site]}">${SITE_NAMES[site]}</span></td>`;
+    values.forEach((v, idx) => {
+      row += `<td style="text-align:right;font-weight:600;border-left:1px solid var(--border)">${fmtFn(v)}</td>`;
+      row += `<td style="text-align:center">${_deltaHtml(v, idx > 0 ? values[idx-1] : null, higherIsBad)}</td>`;
     });
-    hdr += '<th style="border-left:1px solid var(--border)">Target</th><th>Desvio</th><th>Trend</th></tr>';
-    let sub = '<tr><th></th>';
-    recentWeeks.forEach(() => { sub += '<th style="text-align:right;border-left:1px solid var(--border);font-size:9px">BS%</th><th style="text-align:center;font-size:9px">Δ</th>'; });
-    sub += '<th></th><th></th><th></th></tr>';
-    thead.innerHTML = hdr + sub;
-
-    let rows = '';
-    sites.forEach(site => {
-      const values = recentWeeks.map(w => { const d = getDataFor(w.id, site, ini); return d ? d.bs : null; });
-      rows += `<tr><td><span style="font-weight:700;font-size:11px;color:${siteColors[site]}">${SITE_NAMES[site]}</span></td>`;
-      values.forEach((bs, idx) => {
-        const bsStr = bs !== null ? bs.toFixed(2) + '%' : '—';
-        rows += `<td style="text-align:right;font-size:12px;font-weight:600;border-left:1px solid var(--border)">${bsStr}</td>`;
-        rows += `<td style="text-align:center">${_deltaHtml(bs, idx > 0 ? values[idx-1] : null, true)}</td>`;
-      });
-      const tgt = getTargetForIni(currentWid, site, ini);
+    if (showTarget) {
+      const tgt  = getTargetForIni(currentWid, site, ini);
       const curr = getDataFor(currentWid, site, ini);
       let tgtH = '—', devH = '—', trendH = '—';
       if (tgt && curr) {
         const dev = +(curr.bs - tgt.bs).toFixed(2);
-        const devCol = dev > 1 ? 'var(--red)' : dev > 0 ? 'var(--orange)' : 'var(--green)';
-        const icon   = dev > 1 ? '🔴' : dev > 0 ? '⚠️' : '✅';
+        const dc  = dev > 1 ? 'var(--red)' : dev > 0 ? 'var(--orange)' : 'var(--green)';
+        const ic  = dev > 1 ? '🔴' : dev > 0 ? '⚠️' : '✅';
         tgtH = tgt.bs.toFixed(1)+'%';
-        devH = `<span style="color:${devCol};font-weight:700">${dev>0?'+':''}${dev.toFixed(2)}pp</span> ${icon}`;
+        devH = `<span style="color:${dc};font-weight:700">${dev>0?'+':''}${dev.toFixed(2)}pp</span> ${ic}`;
       }
       const v1 = values[values.length-1], v0 = values[values.length-2];
       if (v1 !== null && v0 !== null) {
@@ -2424,118 +2408,132 @@ function renderEvolucao() {
         const tc = d > 1 ? 'var(--red)' : d > 0.05 ? 'var(--orange)' : d < -0.05 ? 'var(--green)' : 'var(--muted)';
         trendH = `<span style="color:${tc};font-size:14px">${d > 0.05 ? '↗' : d < -0.05 ? '↘' : '→'}</span>`;
       }
-      rows += `<td style="border-left:1px solid var(--border)">${tgtH}</td><td>${devH}</td><td style="text-align:center">${trendH}</td></tr>`;
+      row += `<td style="border-left:1px solid var(--border)">${tgtH}</td><td>${devH}</td><td style="text-align:center">${trendH}</td>`;
+    } else {
+      row += '<td style="border-left:1px solid var(--border)">—</td><td>—</td><td>—</td>';
+    }
+    return row;
+  }
+
+  // ── 1. BS% evolution table ─────────────────────────────────────────────────
+  const thead = document.getElementById('evol-thead');
+  const tbody  = document.getElementById('evol-tbody');
+  if (thead && tbody) {
+    thead.innerHTML = _buildWeekHeader(recentWeeks, 'País', 'BS%', 'Δ');
+    let rows = '';
+    sites.forEach(site => {
+      rows += '<tr>' + buildSiteRow(site,
+        (wid, s) => { const d = getDataFor(wid, s, ini); return d ? d.bs : null; },
+        null, v => v !== null ? v.toFixed(2)+'%' : '—', true, true) + '</tr>';
     });
     tbody.innerHTML = rows;
   }
 
-  // ── 2. Components WoW table ───────────────────────────────────────────────
-  const compTbody = document.getElementById('evol-comp-tbody');
-  if (compTbody) {
-    let cRows = '';
-    sites.forEach(site => {
-      const d  = getDataFor(currentWid, site, ini);
-      const dp = prevWid ? getDataFor(prevWid, site, ini) : null;
-      const tgt = getTargetForIni(currentWid, site, ini);
-      if (!d) return;
-      const dev    = tgt ? +(d.bs - tgt.bs).toFixed(2) : null;
-      const devStr = dev !== null ? `${dev > 0 ? '+' : ''}${dev.toFixed(2)}pp` : '—';
-      const devCol = dev === null ? '' : dev > 0 ? 'color:var(--red)' : 'color:var(--green)';
-      const f = (v) => v !== null && v !== undefined ? v.toFixed(2)+'%' : '—';
-      cRows += `<tr>
-        <td><span style="font-weight:700;font-size:11px;color:${siteColors[site]}">${SITE_NAMES[site]}</span></td>
-        <td style="font-weight:700">${f(d.bs)}</td>
-        <td>${_deltaHtml(d.bs, dp?.bs, true)}</td>
-        <td style="${devCol};font-weight:600">${devStr}</td>
-        <td>${f(d.str)}</td><td>${_deltaHtml(d.str, dp?.str, true)}</td>
-        <td>${f(d.sv)}</td><td>${_deltaHtml(d.sv, dp?.sv, true)}</td>
-        <td>${f(d.ag)}</td><td>${_deltaHtml(d.ag, dp?.ag, true)}</td>
-        <td>${f(d.exc)}</td><td>${_deltaHtml(d.exc, dp?.exc, true)}</td>
-      </tr>`;
-    });
-    compTbody.innerHTML = cRows;
-  }
-
-  // ── 3. Units WoW table ────────────────────────────────────────────────────
+  // ── 2. Units evolution table ───────────────────────────────────────────────
+  const unitsThead = document.getElementById('evol-units-thead');
   const unitsTbody = document.getElementById('evol-units-tbody');
-  if (unitsTbody) {
-    let uRows = '';
-    sites.forEach(site => {
-      const u  = getUnitsData(currentWid, site, ini);
-      const up = prevWid ? getUnitsData(prevWid, site, ini) : null;
-      if (!u) return;
-      const d   = getDataFor(currentWid, site, ini);
-      const bsp = d ? d.bs.toFixed(2)+'%' : '—';
-      const fM  = v => v ? (v/1e6).toFixed(1)+'M' : '—';
-      uRows += `<tr>
-        <td><span style="font-weight:700;font-size:11px;color:${siteColors[site]}">${SITE_NAMES[site]}</span></td>
-        <td style="font-weight:600">${fM(u.u)}</td>
-        <td>${_deltaUnitsHtml(u.u, up?.u)}</td>
-        <td style="color:var(--red);font-weight:600">${fM(u.bu)}</td>
-        <td>${_deltaUnitsHtml(u.bu, up?.bu)}</td>
-        <td style="font-weight:600">${bsp}</td>
-      </tr>`;
+  if (unitsThead && unitsTbody) {
+    // Two row groups: Stock Total and Bad Stock
+    let hdr = '<tr><th style="min-width:110px">País</th>';
+    recentWeeks.forEach(w => {
+      hdr += `<th colspan="2" style="text-align:center;border-left:1px solid var(--border)">${w.id}<div style="font-weight:400;font-size:9px;color:var(--muted)">${w.date}</div></th>`;
     });
-    unitsTbody.innerHTML = uRows;
+    hdr += '<th style="border-left:1px solid var(--border)" colspan="3"></th></tr>';
+    let sub = '<tr><th></th>';
+    recentWeeks.forEach(() => { sub += '<th style="text-align:right;border-left:1px solid var(--border);font-size:9px">M un.</th><th style="text-align:center;font-size:9px">Δ</th>'; });
+    sub += '<th colspan="3"></th></tr>';
+    unitsThead.innerHTML = hdr + sub;
+
+    const fM = v => v ? (v/1e6).toFixed(1)+'M' : '—';
+    const fMu = v => v !== null ? fM(v) : '—';
+    let rows = '';
+    // Stock Total group
+    rows += `<tr><td colspan="${2+recentWeeks.length*2+3}" style="background:rgba(79,142,247,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted);padding:3px 8px">STOCK TOTAL</td></tr>`;
+    sites.forEach(site => {
+      rows += '<tr>' + buildSiteRow(site,
+        (wid, s) => { const u = getUnitsData(wid, s, ini); return u ? u.u : null; },
+        null, fMu, false, false) + '</tr>';
+    });
+    // Bad Stock group
+    rows += `<tr><td colspan="${2+recentWeeks.length*2+3}" style="background:rgba(255,77,106,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted);padding:3px 8px">BAD STOCK (unidades)</td></tr>`;
+    sites.forEach(site => {
+      rows += '<tr>' + buildSiteRow(site,
+        (wid, s) => { const u = getUnitsData(wid, s, ini); return u ? u.bu : null; },
+        null, fMu, true, false) + '</tr>';
+    });
+    unitsTbody.innerHTML = rows;
   }
 
-  // ── 4. Verticais WoW table ────────────────────────────────────────────────
-  // Site selector pills
+  // ── 3. Components WoW table (KPIs as primary rows, countries as sub-rows) ──
+  const compThead = document.getElementById('evol-comp-thead');
+  const compTbody = document.getElementById('evol-comp-tbody');
+  if (compThead && compTbody) {
+    compThead.innerHTML = _buildWeekHeader(recentWeeks, 'KPI / País', '%', 'Δ');
+    const kpis = [
+      { key:'str', label:'Stranded' },
+      { key:'sv',  label:'Sin Venta' },
+      { key:'ag',  label:'Aging' },
+      { key:'exc', label:'Aging+Exc.' },
+    ];
+    let rows = '';
+    kpis.forEach(kpi => {
+      // Section header row
+      rows += `<tr><td colspan="${2+recentWeeks.length*2+3}" style="background:rgba(255,230,0,.06);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--yellow);padding:3px 8px">${kpi.label}</td></tr>`;
+      sites.forEach(site => {
+        rows += '<tr>' + buildSiteRow(site,
+          (wid, s) => { const d = getDataFor(wid, s, ini); return d ? (d[kpi.key] || 0) : null; },
+          null, v => v !== null ? v.toFixed(2)+'%' : '—', true, false) + '</tr>';
+      });
+    });
+    compTbody.innerHTML = rows;
+  }
+
+  // ── 4. Verticais WoW table ─────────────────────────────────────────────────
   const sitesEl = document.getElementById('evol-vert-sites');
   if (sitesEl) {
     sitesEl.innerHTML = sites.map(s =>
       `<span onclick="evolVertSite='${s}';renderEvolucao();" style="cursor:pointer;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;
-        background:${s===evolVertSite ? siteColors[s] : 'var(--card2)'};
-        color:${s===evolVertSite ? '#0f1117' : 'var(--muted)'};
-        border:1px solid ${s===evolVertSite ? siteColors[s] : 'var(--border)'}">
+        background:${s===evolVertSite?siteColors[s]:'var(--card2)'};
+        color:${s===evolVertSite?'#0f1117':'var(--muted)'};
+        border:1px solid ${s===evolVertSite?siteColors[s]:'var(--border)'}">
         ${s}</span>`
     ).join('');
   }
-
-  // Make sure evolVertSite is valid for current selection
   if (!sites.includes(evolVertSite)) evolVertSite = sites[0];
-
+  const prevWid2 = recentWeeks.length > 1 ? recentWeeks[recentWeeks.length-2].id : null;
   const vertLblEl = document.getElementById('evol-vert-lbl');
-  if (vertLblEl) vertLblEl.textContent = SITE_NAMES[evolVertSite] + ' — ' + wowLabel;
-
-  // Update column headers
+  if (vertLblEl) vertLblEl.textContent = SITE_NAMES[evolVertSite] + ' — ' + currentWid + (prevWid2 ? ' vs '+prevWid2 : '');
   const prevHdr = document.getElementById('evol-vert-prev-hdr');
   const currHdr = document.getElementById('evol-vert-curr-hdr');
-  if (prevHdr) prevHdr.textContent = (prevWid || '—') + ' BS%';
+  if (prevHdr) prevHdr.textContent = (prevWid2 || '—') + ' BS%';
   if (currHdr) currHdr.textContent = currentWid + ' BS%';
 
   const vertTbody = document.getElementById('evol-vert-tbody');
   if (!vertTbody) return;
-
   const currVerts = VERT_DATA[evolVertSite] || [];
   const prevVerts = VERT_DATA_PREV[evolVertSite] || [];
-
-  // Build lookup maps
   const prevMap = {};
   prevVerts.forEach(v => { prevMap[v.v] = v; });
-
-  // Merge and sort by current bs desc
   const allVerts = currVerts.map(cv => {
     const pv  = prevMap[cv.v] || null;
-    const cBu = cv.bu != null ? cv.bu : (cv.u ? Math.round(cv.bs / 100 * cv.u) : null);
+    const cBu = cv.bu != null ? cv.bu : (cv.u ? Math.round(cv.bs/100*cv.u) : null);
     return { v:cv.v, cBs:cv.bs, cU:cv.u, cBu:cBu, pBs:pv?pv.bs:null, pU:pv?pv.u:null, pBu:pv?pv.bu:null };
-  }).sort((a,b) => b.cBs - a.cBs);
-
+  }).sort((a,b) => b.cBs-a.cBs);
+  const fM2 = v => v ? (v/1e6).toFixed(2)+'M' : '—';
   let vRows = '';
   allVerts.forEach(r => {
-    const dBs = r.pBs !== null ? +(r.cBs - r.pBs).toFixed(2) : null;
-    const dBsCol = dBs === null ? 'var(--muted)' : dBs > 1 ? 'var(--red)' : dBs > 0.1 ? 'var(--orange)' : dBs < -0.1 ? 'var(--green)' : 'var(--muted)';
-    const dBsStr = dBs === null ? '—' : `<span style="color:${dBsCol};font-weight:600">${dBs>0?'+':''}${dBs.toFixed(2)}pp</span>`;
-    const fM = v => v ? (v/1e6).toFixed(2)+'M' : '—';
+    const dBs = r.pBs !== null ? +(r.cBs-r.pBs).toFixed(2) : null;
+    const dBsCol = dBs===null?'var(--muted)':dBs>1?'var(--red)':dBs>0.1?'var(--orange)':dBs<-0.1?'var(--green)':'var(--muted)';
+    const dBsStr = dBs===null?'—':`<span style="color:${dBsCol};font-weight:600">${dBs>0?'+':''}${dBs.toFixed(2)}pp</span>`;
     vRows += `<tr>
       <td style="font-weight:600">${r.v}</td>
-      <td style="text-align:right;color:var(--muted)">${r.pBs !== null ? r.pBs.toFixed(2)+'%' : '—'}</td>
+      <td style="text-align:right;color:var(--muted)">${r.pBs!==null?r.pBs.toFixed(2)+'%':'—'}</td>
       <td style="text-align:right;font-weight:700">${r.cBs.toFixed(2)}%</td>
       <td style="text-align:center">${dBsStr}</td>
-      <td style="text-align:right">${fM(r.cU)}</td>
-      <td>${_deltaUnitsHtml(r.cU, r.pU)}</td>
-      <td style="text-align:right;color:var(--red)">${fM(r.cBu)}</td>
-      <td>${_deltaUnitsHtml(r.cBu, r.pBu)}</td>
+      <td style="text-align:right">${fM2(r.cU)}</td>
+      <td>${_deltaUnitsHtml(r.cU,r.pU)}</td>
+      <td style="text-align:right;color:var(--red)">${fM2(r.cBu)}</td>
+      <td>${_deltaUnitsHtml(r.cBu,r.pBu)}</td>
     </tr>`;
   });
   vertTbody.innerHTML = vRows || '<tr><td colspan="8" style="color:var(--muted);text-align:center">Sem dados</td></tr>';
