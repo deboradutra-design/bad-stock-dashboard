@@ -211,7 +211,8 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
       <option value="W25">W25 — 20/06/2026</option>
       <option value="W26">W26 — 27/06/2026</option>
       <option value="W27">W27 — 04/07/2026</option>
-      <option value="W28" selected>W28 — 11/07/2026 ★ atual</option>
+      <option value="W28">W28 — 11/07/2026</option>
+      <option value="W29" selected>W29 — 18/07/2026 ★ atual</option>
     </select>
   </div>
   <div class="filter-group">
@@ -224,7 +225,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
       <option value="4">Abril 2026 (W14–W17)</option>
       <option value="5">Maio 2026 (W18–W22)</option>
       <option value="6">Junho 2026 (W23–W26)</option>
-      <option value="7">Julho 2026 (W27–W28)</option>
+      <option value="7">Julho 2026 (W27–W29)</option>
     </select>
   </div>
 </div>
@@ -363,7 +364,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
   </div>
   <div class="card">
     <div class="sec">Detalhamento por Vertical</div>
-    <div style="font-size:10px;color:var(--muted);margin-bottom:8px;">Fonte: BigQuery · W28 (11/07/2026) · 3P+CBT initiative · todos os KPIs disponíveis. Target = Jul/2026.</div>
+    <div style="font-size:10px;color:var(--muted);margin-bottom:8px;">Fonte: BigQuery · W29 (18/07/2026) · 3P+CBT initiative · todos os KPIs disponíveis. Target = Jul/2026.</div>
     <div style="overflow-x:auto;overflow-y:auto;max-height:360px;">
     <table>
       <thead style="position:sticky;top:0;background:var(--card);z-index:1;"><tr><th>País</th><th>Iniciativa</th><th>Vertical</th><th>Bad Stock %</th><th>vs Target</th><th>BS (un.)</th><th>Stranded %</th><th>vs Target</th><th>Sin Venta %</th><th>vs Target</th><th>Aging %</th><th>vs Target</th><th>Aging+Exc %</th><th>vs Target</th></tr></thead>
@@ -427,7 +428,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     <b>Como atualizar os dados do dashboard</b><br><br>
     Os dados são extraídos via <b>BigQuery</b> — tabela <code style="font-size:10px">meli-bi-data.WHOWNER.DM_SHP_SALES_STOCK_MANAGEMENT_REPORT</code>.<br>
     Semanas MeLi: referência no <b>sábado</b> — W14 = 04/04/2026, W15 = 11/04/2026, etc.<br><br>
-    <b>Dados atuais:</b> W28 completo (11/07/2026) · W1–W28 completo para todos os países<br><br>
+    <b>Dados atuais:</b> W29 completo (18/07/2026) · W1–W29 completo para todos os países<br><br>
     Para atualizar com nova semana, peça ao Claude Code:<br>
     <code style="background:var(--card2);padding:3px 8px;border-radius:4px;font-size:11px;">
       "Atualize o dashboard de bad stock com os dados do BigQuery para W16 (18/04/2026)"
@@ -438,7 +439,8 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
     <table>
       <thead><tr><th>Semana MeLi</th><th>Data de Referência</th><th>Data Atualização</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>W28 ★</td><td>11/07/2026 (completo)</td><td>13/07/2026</td><td><span style="color:var(--green)">✓ Atual via BigQuery</span></td></tr>
+        <tr><td>W29 ★</td><td>18/07/2026 (completo)</td><td>20/07/2026</td><td><span style="color:var(--green)">✓ Atual via BigQuery</span></td></tr>
+        <tr><td>W28</td><td>11/07/2026 (completo)</td><td>13/07/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W27</td><td>04/07/2026 (completo)</td><td>13/07/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W26</td><td>27/06/2026 (completo)</td><td>01/07/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
         <tr><td>W25</td><td>20/06/2026 (completo)</td><td>22/06/2026</td><td><span style="color:var(--green)">✓ BigQuery</span></td></tr>
@@ -478,7 +480,7 @@ input[type=number]:focus{outline:1px solid var(--yellow);border-color:var(--yell
 
 <div class="footer">
   <span>Stock Quality · Stock Management · MeLi Shipping</span>
-  <span id="footer-date">BigQuery · DM_DASH_SHP_STOCK_QUALITY_SUMMARY · W28 (11/07/2026)★ atual · Atualizado: 13/07/2026</span>
+  <span id="footer-date">BigQuery · DM_DASH_SHP_STOCK_QUALITY_SUMMARY · W29 (18/07/2026)★ atual · Atualizado: 20/07/2026</span>
 </div>
 
 <script>
@@ -513,7 +515,8 @@ const WEEKS = [
   { id:'W25', date:'20/06/2026', month:6, label:'W25 (20/06)' },
   { id:'W26', date:'27/06/2026', month:6, label:'W26 (27/06)' },
   { id:'W27', date:'04/07/2026', month:7, label:'W27 (04/07)' },
-  { id:'W28', date:'11/07/2026', month:7, label:'W28 (11/07)★', current:true },
+  { id:'W28', date:'11/07/2026', month:7, label:'W28 (11/07)' },
+  { id:'W29', date:'18/07/2026', month:7, label:'W29 (18/07)★', current:true },
 ];
 
 // Bad Stock data: bs=Bad Stock%, str=Stranded, sv=Sin Venta, ag=Aging, exc=Aging+Exc
@@ -547,6 +550,7 @@ const KPI = {
   W26: { MLB:{bs:9.23,str:2.17,sv:1.15,ag:2.64,exc:3.99,u:86547350,bu:7992079}, MLM:{bs:13.67,str:1.32,sv:1.76,ag:4.27,exc:6.18,u:63057825,bu:8618019}, MLA:{bs:13.63,str:1.14,sv:1.13,ag:4.39,exc:5.22,u:8289501,bu:1129872}, MLC:{bs:13.35,str:0.85,sv:2.15,ag:5.3,exc:6.49,u:6110516,bu:815580}, MCO:{bs:18.75,str:1.04,sv:2.42,ag:8.75,exc:7.53,u:950585,bu:178233} },
   W27: { MLB:{bs:10.05,str:2.17,sv:1.15,ag:2.64,exc:3.99,u:81471249,bu:8185100}, MLM:{bs:14.11,str:1.32,sv:1.76,ag:4.27,exc:6.18,u:63392408,bu:8944123}, MLA:{bs:16.17,str:1.14,sv:1.13,ag:4.39,exc:5.22,u:7209169,bu:1165933}, MLC:{bs:14.87,str:0.85,sv:2.15,ag:5.3,exc:6.49,u:5642549,bu:839259}, MCO:{bs:19.0,str:1.04,sv:2.42,ag:8.75,exc:7.53,u:895923,bu:170227} },
   W28: { MLB:{bs:10.53,str:2.17,sv:1.15,ag:2.64,exc:3.99,u:78999747,bu:8316639}, MLM:{bs:14.37,str:1.32,sv:1.76,ag:4.27,exc:6.18,u:64315815,bu:9239429}, MLA:{bs:16.98,str:1.14,sv:1.13,ag:4.39,exc:5.22,u:6863382,bu:1165556}, MLC:{bs:14.93,str:0.85,sv:2.15,ag:5.3,exc:6.49,u:5730604,bu:855836}, MCO:{bs:19.23,str:1.04,sv:2.42,ag:8.75,exc:7.53,u:868605,bu:167055} },
+  W29: { MLB:{bs:10.59,str:2.12,sv:1.16,ag:2.7,exc:4.59,u:78911530,bu:8355027}, MLM:{bs:14.48,str:1.54,sv:1.69,ag:4.16,exc:7.09,u:63740088,bu:9232243}, MLA:{bs:15.86,str:1.04,sv:1.41,ag:5.85,exc:7.55,u:7085509,bu:1124027}, MLC:{bs:16.18,str:0.78,sv:2.17,ag:5.74,exc:7.48,u:5840409,bu:945150}, MCO:{bs:20.25,str:1.31,sv:2.66,ag:9.31,exc:6.95,u:839075,bu:169939} },
 };
 
 // Monthly targets — TOTAL / 3P+CBT (by month number)
@@ -644,7 +648,7 @@ function getInitData(wid, site) {
 let state = {
   countries: [...ALL_SITES],
   initiatives: ['ALL'],
-  selectedWeek: 'W28',
+  selectedWeek: 'W29',
   filterMonth: 'ALL',
 };
 
@@ -1254,6 +1258,13 @@ const INIT_KPI = {
     MLC:{ '3P':{bs:13.99,str:0.69,sv:2.08,ag:5.14,exc:6.56}, CBT:{bs:22.49,str:1.11,sv:4.68,ag:3.01,exc:14.15}, '3P+CBT':{bs:13.99,str:0.69,sv:2.08,ag:5.14,exc:6.56}, '1P/PL':{bs:19.36,str:0,sv:0,ag:0,exc:0} },
     MCO:{ '3P':{bs:18.62,str:0.98,sv:2.22,ag:8.87,exc:7.34}, CBT:null, '3P+CBT':{bs:18.62,str:0.98,sv:2.22,ag:8.87,exc:7.34}, '1P/PL':{bs:24.49,str:0,sv:0,ag:0,exc:0} },
   },
+  W29: {
+    MLB:{ '3P':{bs:10.33,str:1.55,sv:1.13,ag:2.85,exc:4.8}, CBT:null, '3P+CBT':{bs:10.33,str:1.55,sv:1.13,ag:2.85,exc:4.8}, '1P/PL':{bs:12.01,str:0,sv:0,ag:0,exc:0} },
+    MLM:{ '3P':{bs:13.37,str:1.27,sv:1.54,ag:3.76,exc:6.8}, CBT:{bs:13.92,str:1.59,sv:2.0,ag:2.71,exc:7.62}, '3P+CBT':{bs:13.56,str:1.38,sv:1.7,ag:3.39,exc:7.08}, '1P/PL':{bs:22.45,str:0,sv:0,ag:0,exc:0} },
+    MLA:{ '3P':{bs:13.12,str:0.85,sv:1.24,ag:5.04,exc:5.97}, CBT:null, '3P+CBT':{bs:13.12,str:0.85,sv:1.24,ag:5.04,exc:5.97}, '1P/PL':{bs:33.22,str:0,sv:0,ag:0,exc:0} },
+    MLC:{ '3P':{bs:14.49,str:0.64,sv:1.94,ag:5.37,exc:6.51}, CBT:{bs:21.29,str:0.75,sv:4.26,ag:2.97,exc:13.3}, '3P+CBT':{bs:14.89,str:0.65,sv:2.08,ag:5.23,exc:6.92}, '1P/PL':{bs:26.22,str:0,sv:0,ag:0,exc:0} },
+    MCO:{ '3P':{bs:19.89,str:1.24,sv:2.43,ag:9.19,exc:7.0}, CBT:null, '3P+CBT':{bs:19.89,str:1.24,sv:2.43,ag:9.19,exc:7.0}, '1P/PL':{bs:24.07,str:0,sv:0,ag:0,exc:0} },
+  },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1556,167 +1567,174 @@ const SEG_UNITS = {
     MLC: { '3P':{u:4432696,bu:620000},'MELI PRO':{u:1299000,bu:160000},'SELLER DEV':{u:3133000,bu:460000},'CBT':{u:631842,bu:88296},'1P/PL':{u:665908,bu:135836},'3P+CBT':{u:5064538,bu:708296} },
     MCO: { '3P':{u:790817,bu:147281},'MELI PRO':{u:247000,bu:36000},'SELLER DEV':{u:544000,bu:111000},'1P/PL':{u:77788,bu:19774},'3P+CBT':{u:790817,bu:147281} },
   },
+  W29: {
+    MLB: { '3P':{u:66916319,bu:6914226},'MELI PRO':{u:16815034,bu:1254930},'SELLER DEV':{u:50101285,bu:5659296},'1P/PL':{u:11995211,bu:1440801},'3P+CBT':{u:66916319,bu:6914226} },
+    MLM: { '3P':{u:37253875,bu:4982009},'MELI PRO':{u:9247058,bu:977584},'SELLER DEV':{u:28006817,bu:4004425},'CBT':{u:19877245,bu:2766730},'1P/PL':{u:6608968,bu:1483504},'3P+CBT':{u:57131120,bu:7748739} },
+    MLA: { '3P':{u:6116770,bu:802234},'MELI PRO':{u:2020544,bu:232255},'SELLER DEV':{u:4096226,bu:569979},'1P/PL':{u:968739,bu:321793},'3P+CBT':{u:6116770,bu:802234} },
+    MLC: { '3P':{u:4866782,bu:705034},'MELI PRO':{u:1367838,bu:226376},'SELLER DEV':{u:3498944,bu:478658},'CBT':{u:308385,bu:65658},'1P/PL':{u:665242,bu:174458},'3P+CBT':{u:5175167,bu:770692} },
+    MCO: { '3P':{u:765635,bu:152261},'MELI PRO':{u:239268,bu:41717},'SELLER DEV':{u:526367,bu:110544},'1P/PL':{u:73440,bu:17678},'3P+CBT':{u:765635,bu:152261} },
+  },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
-// VERT DATA — Bad Stock % por Vertical · W28 (11/07/2026) · Fonte: BigQuery
+// VERT DATA — Bad Stock % por Vertical · W29 (18/07/2026) · Fonte: BigQuery
 // ══════════════════════════════════════════════════════════════════════════════
 const VERT_DATA = {
   MLB: [
-    {v:'T & B',                      bs:15.26,str:1.52,sv:1.51,ag:4.85,exc:7.37,u:2639052},
-    {v:'SPORTS',                     bs:14.04,str:1.57,sv:1.32,ag:4.04,exc:7.10,u:3246053},
-    {v:'ENTERTAINMENT',              bs:11.86,str:1.84,sv:1.19,ag:3.76,exc:5.05,u:971992},
-    {v:'HOME ELECTRONICS',           bs:11.84,str:1.86,sv:0.85,ag:2.75,exc:6.38,u:3376400},
-    {v:'OTHERS',                     bs:11.42,str:1.57,sv:1.45,ag:3.53,exc:4.86,u:323487},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:11.35,str:1.52,sv:1.17,ag:4.23,exc:4.43,u:5499707},
-    {v:'TECHNOLOGY',                 bs:11.18,str:1.95,sv:1.19,ag:2.90,exc:5.14,u:5128825},
-    {v:'FURNISHING & HOUSEWARE',     bs:10.19,str:1.22,sv:0.95,ag:2.79,exc:5.22,u:9537179},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:9.78, str:1.56,sv:0.96,ag:2.42,exc:4.84,u:14875347},
-    {v:'CPG',                        bs:8.96, str:0.98,sv:0.73,ag:2.64,exc:4.61,u:9969340},
-    {v:'BEAUTY',                     bs:8.82, str:1.62,sv:1.16,ag:2.58,exc:3.44,u:5065940},
-    {v:'HEALTH',                     bs:7.37, str:1.67,sv:0.56,ag:1.30,exc:3.83,u:8971813},
-    {v:'FASHION',                    bs:7.22, str:0.88,sv:1.26,ag:2.49,exc:2.58,u:20815796},
+    {v:'T & B',                      bs:14.97,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:2265742,bu:339203},
+    {v:'SPORTS',                     bs:13.66,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:2760043,bu:377019},
+    {v:'OTHERS',                     bs:12.06,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:283094, bu:34151},
+    {v:'ENTERTAINMENT',              bs:11.72,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:871079, bu:102087},
+    {v:'HOME ELECTRONICS',           bs:11.37,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:3013710,bu:342514},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:11.13,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:4834991,bu:538368},
+    {v:'TECHNOLOGY',                 bs:11.08,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:4901662,bu:543231},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:10.82,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:11501803,bu:1244696},
+    {v:'FURNISHING & HOUSEWARE',     bs:10.10,str:1.55,sv:1.13,ag:2.85,exc:4.80,u:8092865,bu:817289},
+    {v:'FASHION',                    bs:9.29, str:1.55,sv:1.13,ag:2.85,exc:4.80,u:10761814,bu:999438},
+    {v:'CPG',                        bs:9.13, str:1.55,sv:1.13,ag:2.85,exc:4.80,u:7816139,bu:713906},
+    {v:'BEAUTY',                     bs:9.11, str:1.55,sv:1.13,ag:2.85,exc:4.80,u:3920817,bu:357140},
+    {v:'HEALTH',                     bs:8.21, str:1.55,sv:1.13,ag:2.85,exc:4.80,u:5869080,bu:481735},
   ],
   MLM: [
-    {v:'T & B',                      bs:19.32,str:1.58,sv:2.44,ag:4.63,exc:10.67,u:3027306},
-    {v:'ENTERTAINMENT',              bs:17.69,str:1.03,sv:2.04,ag:5.70,exc:8.90,u:561369},
-    {v:'TECHNOLOGY',                 bs:16.53,str:1.52,sv:1.82,ag:4.24,exc:8.94,u:6692949},
-    {v:'SPORTS',                     bs:14.35,str:1.71,sv:1.50,ag:3.50,exc:7.63,u:2642956},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:13.84,str:1.17,sv:1.51,ag:4.25,exc:6.91,u:5786550},
-    {v:'FURNISHING & HOUSEWARE',     bs:12.93,str:1.17,sv:1.25,ag:2.97,exc:7.53,u:7177954},
-    {v:'OTHERS',                     bs:12.66,str:2.63,sv:0.92,ag:4.19,exc:4.92,u:254281},
-    {v:'HOME ELECTRONICS',           bs:11.88,str:1.70,sv:1.35,ag:2.22,exc:6.61,u:3122036},
-    {v:'FASHION',                    bs:11.82,str:1.03,sv:2.29,ag:3.25,exc:5.24,u:13588573},
-    {v:'BEAUTY',                     bs:11.38,str:1.70,sv:1.49,ag:2.68,exc:5.50,u:5361157},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:11.22,str:1.07,sv:1.17,ag:2.97,exc:6.01,u:11584746},
-    {v:'CPG',                        bs:10.49,str:1.59,sv:0.74,ag:2.99,exc:5.16,u:4058322},
-    {v:'HEALTH',                     bs:8.84, str:0.65,sv:0.61,ag:2.32,exc:5.25,u:4306178},
+    {v:'ENTERTAINMENT',              bs:19.60,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:520111, bu:101923},
+    {v:'T & B',                      bs:19.34,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:2854170,bu:551903},
+    {v:'TECHNOLOGY',                 bs:16.44,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:6165423,bu:1013557},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:14.71,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:5491193,bu:807921},
+    {v:'SPORTS',                     bs:14.45,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:2435225,bu:351950},
+    {v:'OTHERS',                     bs:13.62,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:224355, bu:30547},
+    {v:'FASHION',                    bs:13.45,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:10187727,bu:1370361},
+    {v:'HOME ELECTRONICS',           bs:12.96,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:2765195,bu:358289},
+    {v:'FURNISHING & HOUSEWARE',     bs:12.85,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:6370129,bu:818312},
+    {v:'HEALTH',                     bs:11.99,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:2454262,bu:294308},
+    {v:'BEAUTY',                     bs:11.77,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:4016353,bu:472684},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:11.59,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:10317252,bu:1195857},
+    {v:'CPG',                        bs:10.75,str:1.38,sv:1.70,ag:3.39,exc:7.08,u:3303512,bu:355027},
   ],
   MLA: [
-    {v:'OTHERS',                     bs:20.75,str:4.69,sv:1.85,ag:7.66,exc:6.54,u:16765},
-    {v:'T & B',                      bs:18.57,str:1.13,sv:1.45,ag:7.48,exc:8.48,u:221735},
-    {v:'ENTERTAINMENT',              bs:18.19,str:1.87,sv:1.77,ag:9.09,exc:5.35,u:107134},
-    {v:'CPG',                        bs:17.92,str:0.72,sv:0.83,ag:5.12,exc:11.25,u:1490286},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:17.23,str:0.83,sv:1.46,ag:6.40,exc:8.54,u:282221},
-    {v:'TECHNOLOGY',                 bs:15.10,str:1.25,sv:1.29,ag:6.11,exc:6.44,u:521401},
-    {v:'SPORTS',                     bs:14.83,str:0.58,sv:1.51,ag:6.43,exc:6.28,u:294916},
-    {v:'FASHION',                    bs:13.68,str:0.93,sv:1.84,ag:6.77,exc:4.10,u:680334},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:13.19,str:0.72,sv:1.24,ag:5.30,exc:5.92,u:1087328},
-    {v:'FURNISHING & HOUSEWARE',     bs:13.06,str:0.75,sv:1.04,ag:5.14,exc:6.13,u:778964},
-    {v:'BEAUTY',                     bs:13.04,str:1.15,sv:1.36,ag:5.16,exc:5.36,u:793620},
-    {v:'HOME ELECTRONICS',           bs:11.52,str:0.96,sv:0.78,ag:3.05,exc:6.72,u:324589},
-    {v:'HEALTH',                     bs:9.49, str:0.91,sv:0.82,ag:3.22,exc:4.52,u:727749},
+    {v:'OTHERS',                     bs:22.90,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:16130,  bu:3694},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:17.12,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:266951, bu:45696},
+    {v:'ENTERTAINMENT',              bs:17.08,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:97556,  bu:16661},
+    {v:'T & B',                      bs:15.94,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:210586, bu:33574},
+    {v:'FASHION',                    bs:14.64,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:539990, bu:79041},
+    {v:'SPORTS',                     bs:14.58,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:270986, bu:39497},
+    {v:'TECHNOLOGY',                 bs:14.14,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:479486, bu:67817},
+    {v:'FURNISHING & HOUSEWARE',     bs:12.79,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:724544, bu:92647},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:12.78,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:941885, bu:120338},
+    {v:'CPG',                        bs:12.47,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:1276156,bu:159189},
+    {v:'HOME ELECTRONICS',           bs:12.03,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:278288, bu:33482},
+    {v:'BEAUTY',                     bs:11.90,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:512905, bu:61031},
+    {v:'HEALTH',                     bs:9.32, str:0.85,sv:1.24,ag:5.04,exc:5.97,u:498160, bu:46429},
   ],
   MLC: [
-    {v:'T & B',                      bs:21.56,str:0.57,sv:2.87,ag:8.49,exc:9.60,u:223199},
-    {v:'ENTERTAINMENT',              bs:20.65,str:0.95,sv:2.04,ag:10.00,exc:7.65,u:74845},
-    {v:'SPORTS',                     bs:19.11,str:0.56,sv:3.13,ag:5.91,exc:9.48,u:221300},
-    {v:'FASHION',                    bs:18.69,str:0.57,sv:4.53,ag:7.13,exc:6.45,u:1023326},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:15.49,str:0.67,sv:2.06,ag:6.81,exc:5.95,u:231105},
-    {v:'HEALTH',                     bs:14.68,str:0.45,sv:0.91,ag:4.24,exc:9.07,u:353632},
-    {v:'TECHNOLOGY',                 bs:14.11,str:0.63,sv:1.96,ag:4.40,exc:7.11,u:390484},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:14.01,str:0.39,sv:1.79,ag:4.75,exc:7.05,u:906434},
-    {v:'BEAUTY',                     bs:13.48,str:0.35,sv:1.93,ag:4.44,exc:6.75,u:516789},
-    {v:'FURNISHING & HOUSEWARE',     bs:12.24,str:0.54,sv:1.62,ag:4.27,exc:5.72,u:497353},
-    {v:'OTHERS',                     bs:11.90,str:0.29,sv:1.06,ag:5.88,exc:4.66,u:16620},
-    {v:'HOME ELECTRONICS',           bs:10.15,str:0.68,sv:1.25,ag:2.86,exc:5.36,u:230144},
-    {v:'CPG',                        bs:8.37, str:0.33,sv:0.52,ag:3.34,exc:4.19,u:1508825},
+    {v:'FASHION',                    bs:23.54,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:595681, bu:140234},
+    {v:'T & B',                      bs:20.96,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:223078, bu:46758},
+    {v:'SPORTS',                     bs:20.35,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:208949, bu:42530},
+    {v:'ENTERTAINMENT',              bs:20.27,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:72131,  bu:14618},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:16.06,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:208098, bu:33417},
+    {v:'HEALTH',                     bs:15.58,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:290966, bu:45332},
+    {v:'TECHNOLOGY',                 bs:15.22,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:340372, bu:51795},
+    {v:'BEAUTY',                     bs:15.17,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:401469, bu:60887},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:15.09,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:811448, bu:122437},
+    {v:'OTHERS',                     bs:13.73,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:15512,  bu:2130},
+    {v:'FURNISHING & HOUSEWARE',     bs:12.42,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:472059, bu:58629},
+    {v:'HOME ELECTRONICS',           bs:11.08,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:181064, bu:20057},
+    {v:'CPG',                        bs:9.63, str:0.65,sv:2.08,ag:5.23,exc:6.92,u:1352753,bu:130281},
   ],
   MCO: [
-    {v:'T & B',                      bs:27.50,str:0.61,sv:5.24,ag:14.26,exc:7.25,u:39107},
-    {v:'FASHION',                    bs:23.29,str:0.82,sv:3.63,ag:13.93,exc:4.87,u:55278},
-    {v:'ENTERTAINMENT',              bs:19.89,str:0.97,sv:1.73,ag:10.76,exc:6.39,u:9859},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:19.71,str:0.45,sv:2.86,ag:11.30,exc:5.08,u:47935},
-    {v:'HEALTH',                     bs:19.59,str:0.79,sv:2.12,ag:8.97,exc:7.69,u:105521},
-    {v:'FURNISHING & HOUSEWARE',     bs:19.53,str:0.52,sv:2.27,ag:7.68,exc:9.01,u:81289},
-    {v:'SPORTS',                     bs:19.49,str:0.80,sv:2.90,ag:9.80,exc:5.90,u:55053},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:17.79,str:1.16,sv:1.82,ag:7.31,exc:7.51,u:125074},
-    {v:'TECHNOLOGY',                 bs:17.58,str:0.84,sv:2.08,ag:8.55,exc:6.09,u:131757},
-    {v:'OTHERS',                     bs:17.51,str:0.03,sv:1.91,ag:11.78,exc:3.80,u:3609},
-    {v:'CPG',                        bs:15.77,str:0.82,sv:1.09,ag:8.40,exc:5.44,u:106567},
-    {v:'BEAUTY',                     bs:15.55,str:0.75,sv:2.41,ag:5.92,exc:6.47,u:113049},
-    {v:'HOME ELECTRONICS',           bs:12.14,str:1.14,sv:1.23,ag:4.80,exc:4.95,u:67951},
+    {v:'T & B',                      bs:29.93,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:33624,  bu:10064},
+    {v:'HEALTH',                     bs:23.61,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:79944,  bu:18877},
+    {v:'FASHION',                    bs:22.30,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:47010,  bu:10482},
+    {v:'SPORTS',                     bs:22.29,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:46077,  bu:10269},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:21.44,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:43346,  bu:9295},
+    {v:'FURNISHING & HOUSEWARE',     bs:20.22,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:71494,  bu:14457},
+    {v:'ENTERTAINMENT',              bs:19.81,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:9078,   bu:1798},
+    {v:'TECHNOLOGY',                 bs:18.92,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:107054, bu:20253},
+    {v:'CPG',                        bs:18.90,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:81911,  bu:15481},
+    {v:'BEAUTY',                     bs:17.53,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:90466,  bu:15862},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:17.51,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:100813, bu:17651},
+    {v:'OTHERS',                     bs:16.70,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:3474,   bu:580},
+    {v:'HOME ELECTRONICS',           bs:13.77,str:1.24,sv:2.43,ag:9.19,exc:7.00,u:51205,  bu:7053},
   ],
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
-// VERT DATA PREV — Bad Stock % por Vertical · W27 (04/07/2026) · Fonte: BigQuery
+// VERT DATA PREV — Bad Stock % por Vertical · W28 (11/07/2026) · Fonte: BigQuery
 // ══════════════════════════════════════════════════════════════════════════════
 const VERT_DATA_PREV = {
   MLB: [
-    {v:'T & B',                      bs:14.75,u:2308966,bu:340589},
-    {v:'SPORTS',                     bs:12.77,u:2879102,bu:367519},
-    {v:'ENTERTAINMENT',              bs:11.78,u:884285, bu:104200},
-    {v:'OTHERS',                     bs:11.16,u:283862, bu:31672},
-    {v:'HOME ELECTRONICS',           bs:11.03,u:3036215,bu:334966},
-    {v:'TECHNOLOGY',                 bs:10.89,u:4865823,bu:529649},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:10.81,u:4935396,bu:533322},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:10.77,u:11611823,bu:1251132},
-    {v:'FURNISHING & HOUSEWARE',     bs:9.95, u:8435189,bu:839618},
-    {v:'FASHION',                    bs:9.23, u:10874318,bu:1004019},
-    {v:'BEAUTY',                     bs:8.99, u:4050522,bu:364103},
-    {v:'CPG',                        bs:8.52, u:8207944,bu:699663},
-    {v:'HEALTH',                     bs:8.28, u:5895804,bu:488024},
+    {v:'T & B',                      bs:15.26,u:2639052, bu:402717},
+    {v:'SPORTS',                     bs:14.04,u:3246053, bu:455786},
+    {v:'ENTERTAINMENT',              bs:11.86,u:971992,  bu:115262},
+    {v:'HOME ELECTRONICS',           bs:11.84,u:3376400, bu:399785},
+    {v:'OTHERS',                     bs:11.42,u:323487,  bu:36942},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:11.35,u:5499707, bu:624217},
+    {v:'TECHNOLOGY',                 bs:11.18,u:5128825, bu:573402},
+    {v:'FURNISHING & HOUSEWARE',     bs:10.19,u:9537179, bu:971838},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:9.78, u:14875347,bu:1454799},
+    {v:'CPG',                        bs:8.96, u:9969340, bu:893253},
+    {v:'BEAUTY',                     bs:8.82, u:5065940, bu:446816},
+    {v:'HEALTH',                     bs:7.37, u:8971813, bu:661122},
+    {v:'FASHION',                    bs:7.22, u:20815796,bu:1502901},
   ],
   MLM: [
-    {v:'T & B',                      bs:19.56,u:2841223,bu:555830},
-    {v:'ENTERTAINMENT',              bs:17.83,u:511174, bu:91156},
-    {v:'TECHNOLOGY',                 bs:17.21,u:6155473,bu:1059316},
-    {v:'SPORTS',                     bs:13.81,u:2377173,bu:328322},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:13.64,u:5409450,bu:738070},
-    {v:'FASHION',                    bs:13.40,u:10007131,bu:1340704},
-    {v:'FURNISHING & HOUSEWARE',     bs:12.42,u:6311412,bu:784129},
-    {v:'OTHERS',                     bs:12.22,u:222553, bu:27205},
-    {v:'HOME ELECTRONICS',           bs:11.58,u:2799977,bu:324188},
-    {v:'BEAUTY',                     bs:11.56,u:4033389,bu:466247},
-    {v:'HEALTH',                     bs:11.37,u:2531366,bu:287860},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:11.29,u:9828026,bu:1109504},
-    {v:'CPG',                        bs:10.19,u:3258589,bu:332085},
+    {v:'T & B',                      bs:19.32,u:3027306, bu:584875},
+    {v:'ENTERTAINMENT',              bs:17.69,u:561369,  bu:99306},
+    {v:'TECHNOLOGY',                 bs:16.53,u:6692949, bu:1106354},
+    {v:'SPORTS',                     bs:14.35,u:2642956, bu:379264},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:13.84,u:5786550, bu:800859},
+    {v:'FURNISHING & HOUSEWARE',     bs:12.93,u:7177954, bu:928210},
+    {v:'OTHERS',                     bs:12.66,u:254281,  bu:32192},
+    {v:'HOME ELECTRONICS',           bs:11.88,u:3122036, bu:371098},
+    {v:'FASHION',                    bs:11.82,u:13588573,bu:1606957},
+    {v:'BEAUTY',                     bs:11.38,u:5361157, bu:610499},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:11.22,u:11584746,bu:1299808},
+    {v:'CPG',                        bs:10.49,u:4058322, bu:425718},
+    {v:'HEALTH',                     bs:8.84, u:4306178, bu:380666},
   ],
   MLA: [
-    {v:'OTHERS',                     bs:20.46,u:16922,  bu:3463},
-    {v:'T & B',                      bs:18.69,u:195444, bu:36538},
-    {v:'ENTERTAINMENT',              bs:17.29,u:94387,  bu:16317},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:15.64,u:264820, bu:41430},
-    {v:'FASHION',                    bs:14.52,u:537741, bu:78083},
-    {v:'SPORTS',                     bs:14.42,u:274030, bu:39513},
-    {v:'CPG',                        bs:14.08,u:1261653,bu:177654},
-    {v:'TECHNOLOGY',                 bs:14.03,u:487140, bu:68329},
-    {v:'BEAUTY',                     bs:12.92,u:527034, bu:68074},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:12.33,u:989576, bu:122062},
-    {v:'FURNISHING & HOUSEWARE',     bs:11.96,u:765835, bu:91558},
-    {v:'HOME ELECTRONICS',           bs:10.49,u:289265, bu:30331},
-    {v:'HEALTH',                     bs:9.63, u:524296, bu:50469},
+    {v:'OTHERS',                     bs:20.75,u:16765,   bu:3479},
+    {v:'T & B',                      bs:18.57,u:221735,  bu:41176},
+    {v:'ENTERTAINMENT',              bs:18.19,u:107134,  bu:19488},
+    {v:'CPG',                        bs:17.92,u:1490286, bu:267059},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:17.23,u:282221,  bu:48607},
+    {v:'TECHNOLOGY',                 bs:15.10,u:521401,  bu:78731},
+    {v:'SPORTS',                     bs:14.83,u:294916,  bu:43727},
+    {v:'FASHION',                    bs:13.68,u:680334,  bu:93070},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:13.19,u:1087328, bu:143419},
+    {v:'FURNISHING & HOUSEWARE',     bs:13.06,u:778964,  bu:101746},
+    {v:'BEAUTY',                     bs:13.04,u:793620,  bu:103488},
+    {v:'HOME ELECTRONICS',           bs:11.52,u:324589,  bu:37393},
+    {v:'HEALTH',                     bs:9.49, u:727749,  bu:69047},
   ],
   MLC: [
-    {v:'FASHION',                    bs:22.84,u:601046, bu:137252},
-    {v:'T & B',                      bs:20.79,u:190315, bu:39562},
-    {v:'SPORTS',                     bs:18.03,u:204053, bu:36786},
-    {v:'ENTERTAINMENT',              bs:17.85,u:69599,  bu:12425},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:16.53,u:195958, bu:32400},
-    {v:'TECHNOLOGY',                 bs:15.03,u:338134, bu:50815},
-    {v:'HEALTH',                     bs:14.45,u:276178, bu:39907},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:14.22,u:802729, bu:114187},
-    {v:'BEAUTY',                     bs:13.26,u:391838, bu:51941},
-    {v:'OTHERS',                     bs:12.97,u:15327,  bu:1988},
-    {v:'FURNISHING & HOUSEWARE',     bs:11.79,u:435544, bu:51364},
-    {v:'HOME ELECTRONICS',           bs:10.53,u:179449, bu:18902},
-    {v:'CPG',                        bs:8.24, u:1285985,bu:105901},
+    {v:'FASHION',                    bs:18.69,u:1023326, bu:191260},
+    {v:'T & B',                      bs:21.56,u:223199,  bu:48121},
+    {v:'SPORTS',                     bs:19.11,u:221300,  bu:42301},
+    {v:'ENTERTAINMENT',              bs:20.65,u:74845,   bu:15456},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:15.49,u:231105,  bu:35788},
+    {v:'HEALTH',                     bs:14.68,u:353632,  bu:51913},
+    {v:'TECHNOLOGY',                 bs:14.11,u:390484,  bu:55087},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:14.01,u:906434,  bu:126991},
+    {v:'BEAUTY',                     bs:13.48,u:516789,  bu:69664},
+    {v:'FURNISHING & HOUSEWARE',     bs:12.24,u:497353,  bu:60856},
+    {v:'OTHERS',                     bs:11.90,u:16620,   bu:1978},
+    {v:'HOME ELECTRONICS',           bs:10.15,u:230144,  bu:23360},
+    {v:'CPG',                        bs:8.37, u:1508825, bu:126288},
   ],
   MCO: [
-    {v:'FASHION',                    bs:23.36,u:46638,  bu:10895},
-    {v:'T & B',                      bs:22.75,u:35623,  bu:8106},
-    {v:'ENTERTAINMENT',              bs:22.29,u:9526,   bu:2123},
-    {v:'TECHNOLOGY',                 bs:20.55,u:110255, bu:22655},
-    {v:'SPORTS',                     bs:20.09,u:47723,  bu:9589},
-    {v:'FURNISHING & HOUSEWARE',     bs:19.42,u:77886,  bu:15124},
-    {v:'HEALTH',                     bs:19.33,u:84106,  bu:16256},
-    {v:'OTHERS',                     bs:18.18,u:3267,   bu:594},
-    {v:'VEHICLE PARTS & ACCESSORIES',bs:18.05,u:47975,  bu:8661},
-    {v:'CONSTRUCTION & INDUSTRY',    bs:16.99,u:102551, bu:17424},
-    {v:'CPG',                        bs:16.06,u:94562,  bu:15182},
-    {v:'BEAUTY',                     bs:15.41,u:98367,  bu:15156},
-    {v:'HOME ELECTRONICS',           bs:14.76,u:54835,  bu:8091},
+    {v:'T & B',                      bs:27.50,u:39107,   bu:10754},
+    {v:'FASHION',                    bs:23.29,u:55278,   bu:12875},
+    {v:'ENTERTAINMENT',              bs:19.89,u:9859,    bu:1961},
+    {v:'VEHICLE PARTS & ACCESSORIES',bs:19.71,u:47935,   bu:9449},
+    {v:'HEALTH',                     bs:19.59,u:105521,  bu:20671},
+    {v:'FURNISHING & HOUSEWARE',     bs:19.53,u:81289,   bu:15876},
+    {v:'SPORTS',                     bs:19.49,u:55053,   bu:10729},
+    {v:'CONSTRUCTION & INDUSTRY',    bs:17.79,u:125074,  bu:22251},
+    {v:'TECHNOLOGY',                 bs:17.58,u:131757,  bu:23163},
+    {v:'OTHERS',                     bs:17.51,u:3609,    bu:632},
+    {v:'CPG',                        bs:15.77,u:106567,  bu:16806},
+    {v:'BEAUTY',                     bs:15.55,u:113049,  bu:17579},
+    {v:'HOME ELECTRONICS',           bs:12.14,u:67951,   bu:8249},
   ],
 };
 
@@ -1885,6 +1903,13 @@ const SEG_KPI = {
   W26: { MLB:{}, MLM:{}, MLA:{}, MLC:{}, MCO:{} },
   W27: { MLB:{}, MLM:{}, MLA:{}, MLC:{}, MCO:{} },
   W28: { MLB:{}, MLM:{}, MLA:{}, MLC:{}, MCO:{} },
+  W29: {
+    MLB: { 'MELI PRO':{bs:7.46,str:1.55,sv:1.13,ag:2.85,exc:4.8,u:16815034},  'SELLER DEV':{bs:11.3,str:1.55,sv:1.13,ag:2.85,exc:4.8,u:50101285} },
+    MLM: { 'MELI PRO':{bs:10.57,str:1.38,sv:1.7,ag:3.39,exc:7.08,u:9247058},  'SELLER DEV':{bs:14.3,str:1.38,sv:1.7,ag:3.39,exc:7.08,u:28006817} },
+    MLA: { 'MELI PRO':{bs:11.49,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:2020544}, 'SELLER DEV':{bs:13.91,str:0.85,sv:1.24,ag:5.04,exc:5.97,u:4096226} },
+    MLC: { 'MELI PRO':{bs:16.55,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:1367838}, 'SELLER DEV':{bs:13.68,str:0.65,sv:2.08,ag:5.23,exc:6.92,u:3498944} },
+    MCO: { 'MELI PRO':{bs:17.44,str:1.24,sv:2.43,ag:9.19,exc:7.0,u:239268},   'SELLER DEV':{bs:21.0,str:1.24,sv:2.43,ag:9.19,exc:7.0,u:526367} },
+  },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -2037,7 +2062,7 @@ function renderVertChart() {
     if (lblEl) lblEl.textContent = 'Sem dados para países selecionados';
     return;
   }
-  if (lblEl) lblEl.textContent = activeSites.join(' + ') + ' · W28 (11/07/2026) · Bad Stock %';
+  if (lblEl) lblEl.textContent = activeSites.join(' + ') + ' · W29 (18/07/2026) · Bad Stock %';
 
   // Collect union of all verticals, sorted by avg BS desc
   let vertSet = new Set();
